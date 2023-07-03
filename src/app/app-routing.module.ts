@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {IsLoggedInGuard} from "./guards/is-logged-in.guard";
 import {IsNotLoggedInGuard} from "./guards/is-not-logged-in.guard";
 import {CustomPreloadStrategyService} from "./utils/custom-preload-strategy.service";
