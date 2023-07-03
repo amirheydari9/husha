@@ -1,2 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~jqwidgets-ng/jqwidgets/styles/jqx.base.css";
+
+@import "assets/fonts/font.css";
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+* {
+  font-family: IRANSans, serif;
+}
+
+a, a:hover, a:focus, a:active {
+  text-decoration: none;
+  color: inherit;
+}
