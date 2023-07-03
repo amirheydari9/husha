@@ -21,6 +21,7 @@
     "@ngxs-labs/dispatch-decorator": "^5.0.0",
     "@ngxs/router-plugin": "^3.8.1",
     "@ngxs/store": "^3.8.1",
+    "jqwidgets-ng": "^16.0.2",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
