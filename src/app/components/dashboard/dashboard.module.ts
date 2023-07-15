@@ -6,8 +6,6 @@ import {RouterModule} from "@angular/router";
 import {SubLevelMenuComponent} from "./sidenav/sub-level-menu.component";
 import {BodyComponent} from "./body/body.component";
 import {HeaderComponent} from './header/header.component';
-import {CdkMenuModule} from "@angular/cdk/menu";
-import {OverlayModule} from "@angular/cdk/overlay";
 
 
 @NgModule({
@@ -24,8 +22,6 @@ import {OverlayModule} from "@angular/cdk/overlay";
   imports: [
     CommonModule,
     RouterModule,
-    CdkMenuModule,
-    OverlayModule
   ]
 })
 export class DashboardModule {
