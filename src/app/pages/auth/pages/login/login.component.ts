@@ -22,7 +22,11 @@ export class LoginComponent implements OnInit {
       username: this.fb.control(null, [Validators.required]),
       password: this.fb.control(null, [Validators.required]),
     })
-    await this.oauthFacade.loadCaptch()
+    try {
+      await this.oauthFacade.loadCaptch()
+    } catch (e) {
+      console.log(e)
+    }
   }
 
 }
