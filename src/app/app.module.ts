@@ -4,7 +4,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {environment} from "../environments/environment";
-import {NgxsDispatchPluginModule} from "@ngxs-labs/dispatch-decorator";
+// import {NgxsDispatchPluginModule} from "@ngxs-labs/dispatch-decorator";
 import {NgxsRouterPluginModule} from "@ngxs/router-plugin";
 import {NgxsModule} from "@ngxs/store";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
@@ -23,7 +23,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     NgxsModule.forRoot([], {
       developmentMode: !environment.production
     }),
-    NgxsDispatchPluginModule.forRoot(),
+    // NgxsDispatchPluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),
   ],
   providers: [

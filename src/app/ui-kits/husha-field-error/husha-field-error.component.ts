@@ -1,0 +1,54 @@
+import {Component, Input, NgModule, OnInit} from '@angular/core';
+import {FormControl} from "@angular/forms";
+import {CommonModule} from "@angular/common";
+
+@Component({
+  selector: 'app-husha-field-error',
+  template: `
+    <ul *ngIf="shouldShowErrors()">
+      <li style="color: red" *ngFor="let error of listOfErrors()">{{error}}</li>
+    </ul>
+  `,
+  styles: []
+})
+export class HushaFieldErrorComponent {
+
+  constructor() {
+  }
+
+  @Input()
+  public formField: FormControl;
+
+  public readonly errorMessages = {
+    required: () => 'This field is required',
+    minlength: (params) => 'The min number of characters is ' + params.requiredLength,
+    maxlength: (params) => 'The max allowed number of characters is ' + params.requiredLength,
+    pattern: (params) => 'The required pattern is: ' + params.requiredPattern,
+    nationalCode: (params) => params.message,
+  };
+
+  shouldShowErrors(): boolean {
+    return this.formField && this.formField.errors && (this.formField.dirty || this.formField.touched);
+  }
+
+  listOfErrors(): string[] {
+    return Object.keys(this.formField.errors)
+      .map(field => this.getMessage(field, this.formField.errors[field]));
+  }
+
+  getMessage(type: string, params: any): string {
+    return this.errorMessages[type](params);
+  }
+
+}
+
+@NgModule({
+  declarations: [HushaFieldErrorComponent],
+  imports: [
+    CommonModule
+  ],
+  exports: [HushaFieldErrorComponent]
+})
+export class HushaFieldErrorModule {
+
+}

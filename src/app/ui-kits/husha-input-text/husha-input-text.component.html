@@ -1,0 +1,15 @@
+<div class="flex flex-column gap-2">
+  <label>{{label}}</label>
+  <input
+    type="text"
+    #input
+    pInputText
+    [value]="value"
+    [disabled]="isDisabled"
+    [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
+    [style]="{'width':'100%'}"
+    (input)="onChanged($event)"
+    (blur)="touched()"
+  >
+  <app-husha-field-error [formField]="control"></app-husha-field-error>
+</div>
