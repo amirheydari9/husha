@@ -11,6 +11,7 @@ import {catchError, filter, finalize, map, Observable, takeUntil, throwError} fr
 import {TokenStorageService} from "./token-storage.service";
 import {NavigationEnd, Router} from "@angular/router";
 import {AppConfigService} from "./app-config.service";
+import {environment} from "../../environments/environment";
 
 // import {AuthFacade} from "../data-store/auth-store/auth.facade";
 
@@ -23,7 +24,6 @@ export class InterceptorService implements HttpInterceptor {
     private tokenStorageService: TokenStorageService,
     private router: Router,
     private appConfigService: AppConfigService,
-    // private authFacade: AuthFacade,
   ) {
     router.events.subscribe(event => {
       if (event instanceof NavigationEnd) this.appConfigService.cancelPendingRequests();
@@ -34,6 +34,7 @@ export class InterceptorService implements HttpInterceptor {
     let request = req;
     if (!request.url.startsWith('/assets')) {
       this.appConfigService.setLoading(true)
+      request = request.clone({url: environment.baseUrl.concat(request.url)})
       const token = this.tokenStorageService.getToken();
       if (token) {
         request = this.addTokenHeader(request, token)

@@ -7,7 +7,7 @@ import {environment} from "../environments/environment";
 import {NgxsDispatchPluginModule} from "@ngxs-labs/dispatch-decorator";
 import {NgxsRouterPluginModule} from "@ngxs/router-plugin";
 import {NgxsModule} from "@ngxs/store";
-import {HTTP_INTERCEPTORS} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {InterceptorService} from "./utils/interceptor.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
@@ -19,6 +19,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     NgxsModule.forRoot([], {
       developmentMode: !environment.production
     }),

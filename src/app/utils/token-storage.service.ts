@@ -6,7 +6,7 @@ import {StorageService} from "./storage.service";
 })
 export class TokenStorageService {
 
-  TOKEN_KEY = 'hampaToken';
+  TOKEN_KEY = 'hushaToken';
 
   constructor(
     private storageService: StorageService,
