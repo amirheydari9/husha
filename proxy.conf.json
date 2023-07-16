@@ -1,0 +1,12 @@
+{
+  "/api/*": {
+    "target": "http://dev.hushaerp.com",
+    "changeOrigin": true,
+    "secure": false,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api": ""
+    }
+  }
+}
+
