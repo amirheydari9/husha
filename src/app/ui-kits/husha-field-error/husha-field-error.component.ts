@@ -1,4 +1,4 @@
-import {Component, Input, NgModule, OnInit} from '@angular/core';
+import {Component, Input, NgModule} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 
@@ -6,7 +6,7 @@ import {CommonModule} from "@angular/common";
   selector: 'app-husha-field-error',
   template: `
     <ul *ngIf="shouldShowErrors()">
-      <li style="color: red" *ngFor="let error of listOfErrors()">{{error}}</li>
+      <li style="list-style: none" class="p-error" *ngFor="let error of listOfErrors()">{{error}}</li>
     </ul>
   `,
   styles: []

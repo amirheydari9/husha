@@ -8,8 +8,25 @@ import {InputTextModule} from "primeng/inputtext";
 
 @Component({
   selector: 'app-husha-input-password',
-  templateUrl: './husha-input-password.component.html',
-  styleUrls: ['./husha-input-password.component.scss']
+  template: `
+    <div class="flex flex-column gap-2 w-100" [ngClass]="class">
+      <label class="mb-2">{{label}}</label>
+      <p-password
+        #input
+        [toggleMask]="true"
+        [feedback]="false"
+        [(ngModel)]="value"
+        [disabled]="isDisabled"
+        [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
+        [inputStyle]="{'width':'100%'}"
+        [style]="{'width':'100%'}"
+        [ngStyle]="{'width':'100%'}"
+        (input)="onChanged($event)"
+        (onBlur)="touched()"
+      ></p-password>
+      <app-husha-field-error [formField]="control"></app-husha-field-error>
+    </div>
+  `
 })
 export class HushaInputPasswordComponent extends BaseControlValueAccessor<string> implements OnInit {
 

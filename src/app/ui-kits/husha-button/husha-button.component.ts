@@ -4,8 +4,21 @@ import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-husha-button',
-  templateUrl: './husha-button.component.html',
-  styleUrls: ['./husha-button.component.scss']
+  template: `
+    <div [class]="class">
+      <p-button
+        [type]="type"
+        [label]="label"
+        [styleClass]="styleClass"
+        [loading]="loading"
+        [disabled]="disabled"
+        [icon]="icon"
+        iconPos="left"
+        [style]="{'width':'100%'}"
+        (onClick)="handleClick($event)"
+      ></p-button>
+    </div>
+  `
 })
 export class HushaButtonComponent {
 

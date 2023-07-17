@@ -7,8 +7,22 @@ import {FormControl, NgControl} from "@angular/forms";
 
 @Component({
   selector: 'app-husha-input-text',
-  templateUrl: './husha-input-text.component.html',
-  styleUrls: ['./husha-input-text.component.scss'],
+  template: `
+    <div class="flex flex-column gap-2 w-100" [ngClass]="class">
+      <label class="mb-2">{{label}}</label>
+      <input
+        type="text"
+        #input
+        pInputText
+        [value]="value"
+        [disabled]="isDisabled"
+        [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
+        [style]="{'width':'100%'}"
+        (input)="onChanged($event)"
+        (blur)="touched()">
+      <app-husha-field-error [formField]="control"></app-husha-field-error>
+    </div>
+  `
 })
 export class HushaInputTextComponent extends BaseControlValueAccessor<string> implements OnInit {
 

@@ -7,6 +7,8 @@ import {HushaInputTextModule} from "../../../../ui-kits/husha-input-text/husha-i
 import {HushaInputPasswordModule} from "../../../../ui-kits/husha-input-password/husha-input-password.component";
 import {CardModule} from "primeng/card";
 import {HushaButtonModule} from "../../../../ui-kits/husha-button/husha-button.component";
+import {HushaInputNumberModule} from "../../../../ui-kits/husha-input-number/husha-input-number.component";
+import {HushaTextAreaModule} from "../../../../ui-kits/husha-text-area/husha-text-area.component";
 
 
 @NgModule({
@@ -20,7 +22,9 @@ import {HushaButtonModule} from "../../../../ui-kits/husha-button/husha-button.c
     HushaInputTextModule,
     HushaInputPasswordModule,
     CardModule,
-    HushaButtonModule
+    HushaButtonModule,
+    HushaInputNumberModule,
+    HushaTextAreaModule
   ]
 })
 export class LoginModule {
