@@ -23,7 +23,17 @@ export class LoginComponent implements OnInit {
       password: this.fb.control(null, [Validators.required]),
     })
     try {
-      await this.oauthFacade.loadCaptch()
+      await this.oauthFacade.loadCaptcha()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  async handLogin() {
+    try {
+      const payload = this.loginForm.value
+      console.log(payload)
+      await this.oauthFacade.login(payload)
     } catch (e) {
       console.log(e)
     }

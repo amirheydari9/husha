@@ -1,6 +1,20 @@
-<div class="mt-5">
-  <form [formGroup]="loginForm">
-    <app-husha-input-text label="نام کاربری" formControlName="username"></app-husha-input-text>
-    <app-husha-input-password label="نام کاربری" formControlName="password"></app-husha-input-password>
-  </form>
+<div class="d-flex align-items-center justify-content-center vh-100">
+  <p-card>
+    <form [formGroup]="loginForm" (ngSubmit)="handLogin()">
+      <app-husha-input-text
+        class="mb-3"
+        label="نام کاربری"
+        formControlName="username"
+      ></app-husha-input-text>
+      <app-husha-input-password
+        class="mb-4"
+        label="رمز عبور"
+        formControlName="password"
+      ></app-husha-input-password>
+      <app-husha-button
+        [disabled]="loginForm.invalid"
+        label="ورود"
+      ></app-husha-button>
+    </form>
+  </p-card>
 </div>

@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {OauthService} from "../../api/oauth.service";
 import {TokenStorageService} from "../../utils/token-storage.service";
+import {LoginReqDto} from "../../models/DTOs/login-req.dto";
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +14,11 @@ export class OauthFacade {
   ) {
   }
 
-  login() {
-
+  async login(payload: LoginReqDto) {
+    await this.oauthService.login(payload)
   }
 
-  async loadCaptch(): Promise<any> {
+  async loadCaptcha(): Promise<any> {
     await this.oauthService.loadCaptcha()
   }
 

@@ -5,19 +5,23 @@ import {RouterModule} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
 import {HushaInputTextModule} from "../../../../ui-kits/husha-input-text/husha-input-text.component";
 import {HushaInputPasswordModule} from "../../../../ui-kits/husha-input-password/husha-input-password.component";
+import {CardModule} from "primeng/card";
+import {HushaButtonModule} from "../../../../ui-kits/husha-button/husha-button.component";
 
 
 @NgModule({
   declarations: [
     LoginComponent
   ],
-    imports: [
-        CommonModule,
-        RouterModule.forChild([{path: '', component: LoginComponent}]),
-        ReactiveFormsModule,
-        HushaInputTextModule,
-        HushaInputPasswordModule
-    ]
+  imports: [
+    CommonModule,
+    RouterModule.forChild([{path: '', component: LoginComponent}]),
+    ReactiveFormsModule,
+    HushaInputTextModule,
+    HushaInputPasswordModule,
+    CardModule,
+    HushaButtonModule
+  ]
 })
 export class LoginModule {
 }

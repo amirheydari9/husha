@@ -1,1 +1,13 @@
-<p>husha-button works!</p>
+<div [class]="class">
+  <p-button
+    [type]="type"
+    [label]="label"
+    [styleClass]="styleClass"
+    [loading]="loading"
+    [disabled]="disabled"
+    [icon]="icon"
+    iconPos="left"
+    [style]="{'width':'100%'}"
+    (onClick)="handleClick($event)"
+  ></p-button>
+</div>
