@@ -5,11 +5,8 @@ import {RouterModule} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
 import {HushaInputTextModule} from "../../../../ui-kits/husha-input-text/husha-input-text.component";
 import {HushaInputPasswordModule} from "../../../../ui-kits/husha-input-password/husha-input-password.component";
-import {CardModule} from "primeng/card";
 import {HushaButtonModule} from "../../../../ui-kits/husha-button/husha-button.component";
-import {HushaInputNumberModule} from "../../../../ui-kits/husha-input-number/husha-input-number.component";
-import {HushaTextAreaModule} from "../../../../ui-kits/husha-text-area/husha-text-area.component";
-import {HushaMultiSelectModule} from "../../../../ui-kits/husha-multi-select/husha-multi-select.component";
+import {HushaCardModule} from "../../../../ui-kits/husha-card/husha-card.component";
 
 
 @NgModule({
@@ -22,11 +19,8 @@ import {HushaMultiSelectModule} from "../../../../ui-kits/husha-multi-select/hus
     ReactiveFormsModule,
     HushaInputTextModule,
     HushaInputPasswordModule,
-    CardModule,
     HushaButtonModule,
-    HushaInputNumberModule,
-    HushaTextAreaModule,
-    HushaMultiSelectModule
+    HushaCardModule,
   ]
 })
 export class LoginModule {
