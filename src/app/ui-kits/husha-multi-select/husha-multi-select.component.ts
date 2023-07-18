@@ -1,42 +1,37 @@
 import {Component, Input, NgModule, OnInit, Self} from '@angular/core';
-import {DropdownModule} from "primeng/dropdown";
+import {MultiSelectModule} from "primeng/multiselect";
+import {FormControl, FormsModule, NgControl} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
-import {FormControl, FormsModule, NgControl} from "@angular/forms";
 import {HushaFieldErrorModule} from "../husha-field-error/husha-field-error.component";
 
 @Component({
-  selector: 'app-husha-dropdown',
+  selector: 'app-husha-multi-select',
   template: `
     <div class="flex flex-column gap-2 w-100" [class]="class">
       <label class="mb-2">{{label}}</label>
-      <p-dropdown
+      <p-multiSelect
         [(ngModel)]="value"
-        [showClear]="clearable"
-        [autoDisplayFirst]="false"
         [options]="options"
         [optionLabel]="optionLabel"
         [optionValue]="optionValue"
+        display="chip"
         emptyMessage="دیتایی موجود نیست"
         emptyFilterMessage="نتیجه ای یافت نشد"
-        [filter]="filter"
-        [filterBy]="optionLabel"
         [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
         [style]="{'width':'100%'}"
         (onChange)="onChanged($event)"
-        (onBlur)="touched()">
-      </p-dropdown>
+        (onBlur)="touched()"
+      ></p-multiSelect>
       <app-husha-field-error [formField]="control"></app-husha-field-error>
     </div>`,
-  styleUrls: ['./husha-dropdown.component.scss']
+  styleUrls: ['./husha-multi-select.component.scss']
 })
-export class HushaDropdownComponent extends BaseControlValueAccessor<string> implements OnInit {
+export class HushaMultiSelectComponent extends BaseControlValueAccessor<any> implements OnInit {
 
   control: FormControl;
 
   @Input() label: string;
-
-  @Input() clearable = true;
 
   @Input() options: any[];
 
@@ -45,8 +40,6 @@ export class HushaDropdownComponent extends BaseControlValueAccessor<string> imp
   @Input() optionLabel = 'name';
 
   @Input() optionValue = 'id';
-
-  @Input() filter = true;
 
   @Input() class: string;
 
@@ -57,27 +50,27 @@ export class HushaDropdownComponent extends BaseControlValueAccessor<string> imp
     this.controlDir.valueAccessor = this;
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.control = this.controlDir.control as FormControl
   }
 
   public onChanged(event: any): void {
-    const value: string = event.value;
+    const value: any[] = event.value;
     this.changed(value);
   }
 
 }
 
 @NgModule({
-  declarations: [HushaDropdownComponent],
+  declarations: [HushaMultiSelectComponent],
   imports: [
-    DropdownModule,
-    CommonModule,
+    MultiSelectModule,
     FormsModule,
+    CommonModule,
     HushaFieldErrorModule
   ],
-  exports: [HushaDropdownComponent]
+  exports: [HushaMultiSelectComponent]
 })
-export class HushaDropdownModule {
+export class HushaMultiSelectModule {
 
 }
