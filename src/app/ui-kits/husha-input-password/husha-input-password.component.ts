@@ -1,10 +1,11 @@
 import {Component, ElementRef, Input, NgModule, OnInit, Renderer2, Self, ViewChild} from '@angular/core';
-import {FormControl, FormsModule, NgControl} from "@angular/forms";
+import {FormControl, FormsModule, NgControl, Validators} from "@angular/forms";
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
 import {PasswordModule} from "primeng/password";
 import {HushaFieldErrorModule} from "../husha-field-error/husha-field-error.component";
 import {CommonModule} from "@angular/common";
 import {InputTextModule} from "primeng/inputtext";
+import {CustomValidators} from "../../utils/Custom-Validators";
 
 @Component({
   selector: 'app-husha-input-password',
@@ -48,6 +49,9 @@ export class HushaInputPasswordComponent extends BaseControlValueAccessor<string
 
   ngOnInit(): void {
     this.control = this.controlDir.control as FormControl
+    if (this.control.hasValidator(Validators.required)) {
+      this.control.addValidators(CustomValidators.noWhitespace)
+    }
   }
 
   public onChanged(event: Event): void {

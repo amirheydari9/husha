@@ -25,6 +25,7 @@ export class HushaFieldErrorComponent {
     maxlength: (params) => 'The max allowed number of characters is ' + params.requiredLength,
     pattern: (params) => 'The required pattern is: ' + params.requiredPattern,
     nationalCode: (params) => params.message,
+    noWhitespace: (params) => params.message,
   };
 
   shouldShowErrors(): boolean {

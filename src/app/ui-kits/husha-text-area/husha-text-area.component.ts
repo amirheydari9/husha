@@ -1,9 +1,10 @@
 import {Component, Input, NgModule, OnInit, Self} from '@angular/core';
 import {InputTextareaModule} from "primeng/inputtextarea";
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
-import {FormControl, NgControl} from "@angular/forms";
+import {FormControl, NgControl, Validators} from "@angular/forms";
 import {HushaFieldErrorModule} from "../husha-field-error/husha-field-error.component";
 import {CommonModule} from "@angular/common";
+import {CustomValidators} from "../../utils/Custom-Validators";
 
 @Component({
   selector: 'app-husha-text-area',
@@ -41,6 +42,9 @@ export class HushaTextAreaComponent extends BaseControlValueAccessor<string> imp
 
   ngOnInit() {
     this.control = this.controlDir.control as FormControl
+    if (this.control.hasValidator(Validators.required)) {
+      this.control.addValidators(CustomValidators.noWhitespace)
+    }
   }
 
   onChanged($event: any): void {

@@ -156,4 +156,10 @@ export class CustomValidators {
       authPassword: {message: 'پسورد نامعتبر است'}
     };
   }
+
+  static noWhitespace(control: AbstractControl): ValidationErrors | null {
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : {noWhitespace: {message: 'مقدار ورودی نامعتبر است '}}
+  }
 }
