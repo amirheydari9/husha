@@ -1,10 +1,9 @@
 import {Component, Input, NgModule, OnInit, Self} from '@angular/core';
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
-import {FormControl, FormsModule, NgControl, Validators} from "@angular/forms";
+import {FormControl, FormsModule, NgControl} from "@angular/forms";
 import {HushaFieldErrorModule} from "../husha-field-error/husha-field-error.component";
 import {CommonModule} from "@angular/common";
 import {InputNumberModule} from "primeng/inputnumber";
-import {CustomValidators} from "../../utils/Custom-Validators";
 
 @Component({
   selector: 'app-husha-input-number',
@@ -59,9 +58,6 @@ export class HushaInputNumberComponent extends BaseControlValueAccessor<number> 
 
   ngOnInit() {
     this.control = this.controlDir.control as FormControl
-    if (this.control.hasValidator(Validators.required)) {
-      this.control.addValidators(CustomValidators.noWhitespace)
-    }
   }
 
   onChanged($event: any): void {

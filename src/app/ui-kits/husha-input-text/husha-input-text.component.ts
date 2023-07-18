@@ -5,6 +5,7 @@ import {InputTextModule} from "primeng/inputtext";
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
 import {FormControl, NgControl, Validators} from "@angular/forms";
 import {CustomValidators} from "../../utils/Custom-Validators";
+import {ConvertNumberToEnglishDirectiveModule} from "../../directives/convert-number-to-english.directive";
 
 @Component({
   selector: 'app-husha-input-text',
@@ -13,6 +14,7 @@ import {CustomValidators} from "../../utils/Custom-Validators";
       <label class="mb-2">{{label}}</label>
       <input
         type="text"
+        [convertNumberToEnglish]="true"
         #input
         pInputText
         [value]="value"
@@ -67,7 +69,8 @@ export class HushaInputTextComponent extends BaseControlValueAccessor<string> im
   imports: [
     HushaFieldErrorModule,
     CommonModule,
-    InputTextModule
+    InputTextModule,
+    ConvertNumberToEnglishDirectiveModule
   ],
   exports: [
     HushaInputTextComponent

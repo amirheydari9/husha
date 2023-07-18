@@ -49,9 +49,7 @@ export class HushaInputPasswordComponent extends BaseControlValueAccessor<string
 
   ngOnInit(): void {
     this.control = this.controlDir.control as FormControl
-    if (this.control.hasValidator(Validators.required)) {
-      this.control.addValidators(CustomValidators.noWhitespace)
-    }
+    this.control.addValidators(CustomValidators.authPassword)
   }
 
   public onChanged(event: Event): void {

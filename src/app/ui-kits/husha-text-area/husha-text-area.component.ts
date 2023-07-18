@@ -5,6 +5,7 @@ import {FormControl, NgControl, Validators} from "@angular/forms";
 import {HushaFieldErrorModule} from "../husha-field-error/husha-field-error.component";
 import {CommonModule} from "@angular/common";
 import {CustomValidators} from "../../utils/Custom-Validators";
+import {ConvertNumberToEnglishDirectiveModule} from "../../directives/convert-number-to-english.directive";
 
 @Component({
   selector: 'app-husha-text-area',
@@ -12,6 +13,7 @@ import {CustomValidators} from "../../utils/Custom-Validators";
     <div class="flex flex-column gap-2 w-100" [class]="class">
       <label class="mb-2">{{label}}</label>
       <textarea
+        [convertNumberToEnglish]="true"
         pInputTextarea
         [autoResize]="false"
         [value]="value"
@@ -58,7 +60,8 @@ export class HushaTextAreaComponent extends BaseControlValueAccessor<string> imp
   imports: [
     InputTextareaModule,
     HushaFieldErrorModule,
-    CommonModule
+    CommonModule,
+    ConvertNumberToEnglishDirectiveModule
   ],
   exports: [HushaTextAreaComponent]
 })

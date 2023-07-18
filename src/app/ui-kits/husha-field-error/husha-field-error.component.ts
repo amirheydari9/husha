@@ -27,6 +27,7 @@ export class HushaFieldErrorComponent {
     pattern: (params) => 'The required pattern is: ' + params.requiredPattern,
     nationalCode: (params) => params.message,
     noWhitespace: (params) => params.message,
+    authPassword: (params) => params.message,
   };
 
   shouldShowErrors(): boolean {
