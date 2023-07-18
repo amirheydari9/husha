@@ -10,6 +10,7 @@ import {NgxsModule} from "@ngxs/store";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {InterceptorService} from "./utils/interceptor.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {HushaToastModule} from "./ui-kits/husha-toast/husha-toast.component";
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     }),
     // NgxsDispatchPluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),
+    HushaToastModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true}

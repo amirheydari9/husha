@@ -12,8 +12,8 @@ import {TokenStorageService} from "./token-storage.service";
 import {NavigationEnd, Router} from "@angular/router";
 import {AppConfigService} from "./app-config.service";
 import {environment} from "../../environments/environment";
-
-// import {AuthFacade} from "../data-store/auth-store/auth.facade";
+import {NotificationService} from "../ui-kits/husha-toast/notification.service";
+import {OauthFacade} from "../data-core/oauth/oauth.facade";
 
 @Injectable()
 export class InterceptorService implements HttpInterceptor {
@@ -24,6 +24,8 @@ export class InterceptorService implements HttpInterceptor {
     private tokenStorageService: TokenStorageService,
     private router: Router,
     private appConfigService: AppConfigService,
+    private notificationService: NotificationService,
+    private oauthFacade: OauthFacade
   ) {
     router.events.subscribe(event => {
       if (event instanceof NavigationEnd) this.appConfigService.cancelPendingRequests();
@@ -63,6 +65,7 @@ export class InterceptorService implements HttpInterceptor {
       // show snackbar
     } else if (error.status === 401) {
       // خروج به استثنا زمانی که داره لاگین میکنه
+      this.oauthFacade.logout()
     } else if (error.status === 403) {
       this.router.navigate(['/error/not-allowed'])
     } else if (error.status === 404) {
