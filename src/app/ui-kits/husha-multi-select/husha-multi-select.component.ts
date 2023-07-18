@@ -25,7 +25,19 @@ import {HushaFieldErrorModule} from "../husha-field-error/husha-field-error.comp
       ></p-multiSelect>
       <app-husha-field-error [formField]="control"></app-husha-field-error>
     </div>`,
-  styleUrls: ['./husha-multi-select.component.scss']
+  styles: [`
+    :host ::ng-deep .p-multiselect.p-component {
+      .p-multiselect-header {
+        .p-multiselect-close {
+          margin-left: unset;
+          margin-right: 0.5rem;
+        }
+        .p-checkbox {
+          margin-left: 0.5rem;
+          margin-right: unset;
+        }
+      }
+    }`]
 })
 export class HushaMultiSelectComponent extends BaseControlValueAccessor<any> implements OnInit {
 

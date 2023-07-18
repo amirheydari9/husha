@@ -9,7 +9,7 @@ import {NotificationService} from "./notification.service";
 @Component({
   selector: 'app-husha-toast',
   template: `
-    <p-toast [baseZIndex]="5000" [position]="position" dir="rtl"></p-toast>`,
+    <p-toast [baseZIndex]="5000" [position]="position"></p-toast>`,
   styles: [`
     :host ::ng-deep .p-toast .p-toast-message .p-toast-message-content .p-toast-message-text {
       margin: 0 1rem 0 1rem;

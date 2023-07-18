@@ -40,7 +40,11 @@ import {ReactiveFormsModule} from '@angular/forms';
       <app-husha-field-error [formField]="control"></app-husha-field-error>
     </div>
   `,
-  styleUrls: ['./husha-date-picker.component.scss']
+  styles: [`
+    :host ::ng-deep .datepicker-outer-container {
+      z-index: 1;
+    }
+  `]
 })
 export class HushaDatePickerComponent extends BaseControlValueAccessor<string> implements OnInit, AfterContentChecked {
 

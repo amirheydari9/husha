@@ -28,7 +28,23 @@ import {HushaFieldErrorModule} from "../husha-field-error/husha-field-error.comp
       </p-dropdown>
       <app-husha-field-error [formField]="control"></app-husha-field-error>
     </div>`,
-  styleUrls: ['./husha-dropdown.component.scss']
+  styles: [`
+    :host ::ng-deep .p-dropdown {
+
+      & .p-dropdown-clear-icon {
+        left: 2.357rem;
+        right: unset
+      }
+
+      &.p-dropdown-clearable .p-dropdown-label {
+        padding-right: 0.5rem;
+      }
+
+      & .p-dropdown-panel .p-dropdown-header .p-dropdown-filter {
+        margin-right: unset;
+      }
+    }
+  `]
 })
 export class HushaDropdownComponent extends BaseControlValueAccessor<string> implements OnInit {
 
