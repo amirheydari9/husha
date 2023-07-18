@@ -6,7 +6,8 @@ import {CommonModule} from "@angular/common";
   selector: 'app-husha-field-error',
   template: `
     <ul *ngIf="shouldShowErrors()">
-      <li style="list-style: none" class="p-error" *ngFor="let error of listOfErrors()">{{error}}</li>
+<!--      <li style="list-style: none" class="p-error" *ngFor="let error of listOfErrors()">{{error}}</li>-->
+      <li style="list-style: none" class="p-error">{{error()}}</li>
     </ul>
   `,
   styles: []
@@ -35,6 +36,11 @@ export class HushaFieldErrorComponent {
   listOfErrors(): string[] {
     return Object.keys(this.formField.errors)
       .map(field => this.getMessage(field, this.formField.errors[field]));
+  }
+
+  error(): string {
+    return Object.keys(this.formField.errors)
+      .map(field => this.getMessage(field, this.formField.errors[field]))[0];
   }
 
   getMessage(type: string, params: any): string {
