@@ -20,6 +20,7 @@
     "@angular/platform-browser-dynamic": "^14.2.0",
     "@angular/router": "^14.2.0",
     "@ngxs/router-plugin": "^3.8.1",
+    "@ngxs-labs/dispatch-decorator": "^4.0.2",
     "@ngxs/store": "^3.8.1",
     "bootstrap": "^5.3.0",
     "browser-image-compression": "^2.0.2",
