@@ -1,0 +1,16 @@
+::ng-deep .p-dropdown {
+  width: 100% !important;
+
+  & .p-dropdown-clear-icon {
+    left: 2.357rem;
+    right: unset
+  }
+
+  &.p-dropdown-clearable .p-dropdown-label {
+    padding-right: 0.5rem;
+  }
+
+  & .p-dropdown-panel .p-dropdown-header .p-dropdown-filter {
+    margin-right: unset;
+  }
+}

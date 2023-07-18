@@ -1,15 +1,83 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, NgModule, OnInit, Self} from '@angular/core';
+import {DropdownModule} from "primeng/dropdown";
+import {CommonModule} from "@angular/common";
+import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
+import {FormControl, FormsModule, NgControl} from "@angular/forms";
+import {HushaFieldErrorModule} from "../husha-field-error/husha-field-error.component";
 
 @Component({
   selector: 'app-husha-dropdown',
-  templateUrl: './husha-dropdown.component.html',
+  template: `
+    <div class="flex flex-column gap-2 w-100" [class]="class">
+      <label class="mb-2">{{label}}</label>
+      <p-dropdown
+        [(ngModel)]="value"
+        [showClear]="clearable"
+        [autoDisplayFirst]="false"
+        [options]="options"
+        [optionLabel]="optionLabel"
+        [optionValue]="optionValue"
+        emptyMessage="دیتایی موجود نیست"
+        emptyFilterMessage="نتیجه ای یافت نشد"
+        [filter]="filter"
+        [filterBy]="optionLabel"
+        [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
+        (onChange)="onChanged($event)"
+        (onBlur)="touched()">
+      </p-dropdown>
+      <label>{{label}}</label>
+      <app-husha-field-error [formField]="control"></app-husha-field-error>
+    </div>`,
   styleUrls: ['./husha-dropdown.component.scss']
 })
-export class HushaDropdownComponent implements OnInit {
+export class HushaDropdownComponent extends BaseControlValueAccessor<string> implements OnInit {
 
-  constructor() { }
+  control: FormControl;
+
+  @Input() label: string;
+
+  @Input() clearable = true;
+
+  @Input() options: any[];
+
+  @Input() required = false;
+
+  @Input() optionLabel = 'name';
+
+  @Input() optionValue = 'id';
+
+  @Input() filter = true;
+
+  @Input() class: string;
+
+  constructor(
+    @Self() public controlDir: NgControl
+  ) {
+    super()
+    this.controlDir.valueAccessor = this;
+  }
 
   ngOnInit(): void {
+    this.control = this.controlDir.control as FormControl
   }
+
+  public onChanged(event: any): void {
+    const value: string = event.value;
+    this.changed(value);
+  }
+
+}
+
+@NgModule({
+  declarations: [HushaDropdownComponent],
+  imports: [
+    DropdownModule,
+    CommonModule,
+    FormsModule,
+    HushaFieldErrorModule
+  ],
+  exports: [HushaDropdownComponent]
+})
+export class HushaDropdownModule {
 
 }
