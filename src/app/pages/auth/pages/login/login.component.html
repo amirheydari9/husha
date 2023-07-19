@@ -1,5 +1,5 @@
 <div class="d-flex align-items-center justify-content-center vh-100">
-  <app-husha-card>
+  <app-husha-card [ngStyle]="{'width':'500px'}">
     <form [formGroup]="loginForm" (ngSubmit)="handLogin()">
       <app-husha-input-text
         class="mb-3"
@@ -7,14 +7,27 @@
         formControlName="username"
       ></app-husha-input-text>
       <app-husha-input-password
-        class="mb-4"
+        class="mb-3"
         label="رمز عبور"
         formControlName="password"
       ></app-husha-input-password>
+
+      <div class="d-flex align-items-center justify-content-between mb-3">
+          <app-husha-input-number
+            class="col-6"
+            formControlName="captchaAnswer"
+          ></app-husha-input-number>
+        <div class="d-flex align-items-center col-6">
+          <span>sdssdsdd</span>
+          <i class="pi pi-refresh"></i>
+        </div>
+      </div>
+
       <app-husha-button
         [disabled]="loginForm.invalid"
         label="ورود"
       ></app-husha-button>
+
     </form>
   </app-husha-card>
 </div>

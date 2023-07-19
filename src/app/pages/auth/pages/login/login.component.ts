@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {OauthFacade} from "../../../../data-core/oauth/oauth.facade";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {LoginReqDto} from "../../../../models/DTOs/login-req.dto";
+import {grantType} from "../../../../constants/enums";
 
 @Component({
   selector: 'app-login',
@@ -10,10 +12,11 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup
+  captchaId: string
 
   constructor(
     private oauthFacade: OauthFacade,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
   }
 
@@ -21,6 +24,7 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       username: this.fb.control(null, [Validators.required]),
       password: this.fb.control(null, [Validators.required]),
+      captchaAnswer: this.fb.control(null, [Validators.required]),
     })
     try {
       await this.oauthFacade.loadCaptcha()
@@ -31,8 +35,13 @@ export class LoginComponent implements OnInit {
 
   async handLogin() {
     try {
-      const payload = this.loginForm.value
-      console.log(payload)
+      const payload = new LoginReqDto(
+        this.loginForm.controls['username'].value,
+        this.loginForm.controls['password'].value,
+        this.loginForm.controls['captchaAnswer'].value,
+        this.captchaId,
+        grantType.passwordCaptcha
+      )
       await this.oauthFacade.login(payload)
     } catch (e) {
       console.log(e)

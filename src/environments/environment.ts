@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl:'http://dev.hushaerp.com/'
+  baseUrl:'https://dev.hushaerp.com/'
 };
 
 /*
