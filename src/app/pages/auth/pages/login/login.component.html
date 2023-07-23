@@ -16,9 +16,11 @@
         <div class="d-flex align-items-center justify-content-between mb-4 captcha-container">
           <input formControlName="captchaAnswer" class="col-2 text-center"/>
           <div class="d-flex align-items-center justify-content-center flex-grow-1 captcha-image">
-            xdas
+            <img [src]="" alt="captcha"/>
           </div>
-          <i class="pi-desktop"></i>
+          <div class="d-flex pi-align-center justify-content-center">
+            <i class="pi pi-refresh text-center" (click)="handleFetchCaptcha()"></i>
+          </div>
         </div>
       </div>
 

@@ -23,6 +23,11 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
         border-left: 1px solid #ced4da;
         height: inherit
       }
+
+      i {
+        font-size: 1.5rem;
+        color: #2196F3;;
+      }
     }
   `]
 })
@@ -59,4 +64,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  handleFetchCaptcha() {
+
+  }
 }
