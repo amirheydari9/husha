@@ -5,7 +5,26 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styles: [`
+    .captcha-container {
+      border: 1px solid #ced4da;
+      border-radius: 3px;
+      height: 42px;
+      padding: 0.5rem;
+
+      input {
+        border: none;
+        height: 100%;
+        outline: unset
+      }
+
+      .captcha-image {
+        border-right: 1px solid #ced4da;
+        border-left: 1px solid #ced4da;
+        height: inherit
+      }
+    }
+  `]
 })
 export class LoginComponent implements OnInit {
 
@@ -21,6 +40,7 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       username: this.fb.control(null, [Validators.required]),
       password: this.fb.control(null, [Validators.required]),
+      captchaAnswer: this.fb.control(null, [Validators.required]),
     })
     try {
       await this.oauthFacade.loadCaptcha()
