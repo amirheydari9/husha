@@ -11,7 +11,7 @@ import {HushaFieldErrorModule} from "../../ui-kits/husha-field-error/husha-field
     <div class="d-flex flex-column mb-4">
       <div class="d-flex align-items-center justify-content-between captcha-container"
            [ngClass]="{'error-border':control.invalid && (control.dirty || control.touched)}">
-        <input [formControl]="control" class="col-2 text-center"/>
+        <input [formControl]="control" type="number" class="col-2 text-center"/>
         <div class="d-flex align-items-center justify-content-center flex-grow-1 captcha-image">
           <img [src]="" alt="captcha"/>
         </div>
@@ -63,7 +63,7 @@ export class CaptchaComponent implements OnInit {
   }
 
   createCaptcha() {
-    this.control = this.fb.control(null, [Validators.required, CustomValidators.noWhitespace])
+    this.control = this.fb.control(null, [Validators.required])
     return this.control
   }
 

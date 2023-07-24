@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
       const payload = new LoginReqDto(
         this.loginForm.controls['username'].value,
         this.loginForm.controls['password'].value,
-        +this.loginForm.controls['captchaAnswer'].value,
+        this.loginForm.controls['captchaAnswer'].value,
         this.captchaId,
         GRANT_TYPES.passwordCaptcha
       )
