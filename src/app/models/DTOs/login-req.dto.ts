@@ -1,4 +1,4 @@
-import {grantType} from "../../constants/enums";
+import {GRANT_TYPES} from "../../constants/enums";
 
 export class LoginReqDto {
   constructor(
@@ -6,7 +6,7 @@ export class LoginReqDto {
     public password: string,
     public captchaAnswer: number,
     public captchaId: string,
-    public grant_type: grantType,
+    public grant_type: GRANT_TYPES,
   ) {
   }
 }

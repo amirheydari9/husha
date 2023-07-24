@@ -7,23 +7,23 @@ import {HushaInputTextModule} from "../../../../ui-kits/husha-input-text/husha-i
 import {HushaInputPasswordModule} from "../../../../ui-kits/husha-input-password/husha-input-password.component";
 import {HushaButtonModule} from "../../../../ui-kits/husha-button/husha-button.component";
 import {HushaCardModule} from "../../../../ui-kits/husha-card/husha-card.component";
-import {HushaInputNumberModule} from "../../../../ui-kits/husha-input-number/husha-input-number.component";
+import {CaptchaModule} from "../../../../components/captcha/captcha.component";
 
 
 @NgModule({
   declarations: [
     LoginComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([{path: '', component: LoginComponent}]),
-    ReactiveFormsModule,
-    HushaInputTextModule,
-    HushaInputPasswordModule,
-    HushaButtonModule,
-    HushaCardModule,
-    HushaInputNumberModule,
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild([{path: '', component: LoginComponent}]),
+        ReactiveFormsModule,
+        HushaInputTextModule,
+        HushaInputPasswordModule,
+        HushaButtonModule,
+        HushaCardModule,
+        CaptchaModule,
+    ]
 })
 export class LoginModule {
 }

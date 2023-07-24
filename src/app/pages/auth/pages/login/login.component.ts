@@ -1,22 +1,24 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {OauthFacade} from "../../../../data-core/oauth/oauth.facade";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LoginReqDto} from "../../../../models/DTOs/login-req.dto";
-import {grantType} from "../../../../constants/enums";
+import {GRANT_TYPES} from "../../../../constants/enums";
+import {CaptchaComponent} from "../../../../components/captcha/captcha.component";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+
+  @ViewChild(CaptchaComponent, {static: true}) captchComponent: CaptchaComponent
 
   loginForm: FormGroup
   captchaId: string
 
   constructor(
     private oauthFacade: OauthFacade,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) {
   }
 
@@ -24,13 +26,9 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       username: this.fb.control(null, [Validators.required]),
       password: this.fb.control(null, [Validators.required]),
-      captchaAnswer: this.fb.control(null, [Validators.required]),
+      captchaAnswer: this.captchComponent.createCaptcha()
     })
-    try {
-      await this.oauthFacade.loadCaptcha()
-    } catch (e) {
-      console.log(e)
-    }
+    await this.handleFetchCaptcha()
   }
 
   async handLogin() {
@@ -38,9 +36,9 @@ export class LoginComponent implements OnInit {
       const payload = new LoginReqDto(
         this.loginForm.controls['username'].value,
         this.loginForm.controls['password'].value,
-        this.loginForm.controls['captchaAnswer'].value,
+        +this.loginForm.controls['captchaAnswer'].value,
         this.captchaId,
-        grantType.passwordCaptcha
+        GRANT_TYPES.passwordCaptcha
       )
       await this.oauthFacade.login(payload)
     } catch (e) {
@@ -48,4 +46,11 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  async handleFetchCaptcha(): Promise<void> {
+    try {
+      await this.oauthFacade.loadCaptcha()
+    } catch (e) {
+      console.log(e)
+    }
+  }
 }
