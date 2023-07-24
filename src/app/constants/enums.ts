@@ -1,4 +1,5 @@
 export enum GRANT_TYPES {
   passwordCaptcha = "password_captcha",
-  refreshToken = "refresh_token"
+  refreshToken = "refresh_token",
+  password = "password",
 }

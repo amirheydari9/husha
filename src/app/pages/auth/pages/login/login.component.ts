@@ -4,7 +4,11 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LoginReqDto} from "../../../../models/DTOs/login-req.dto";
 import {GRANT_TYPES} from "../../../../constants/enums";
 import {CaptchaComponent} from "../../../../components/captcha/captcha.component";
+import {Subscription} from "rxjs";
+import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
+import {ICaptchaRes} from "../../../../models/interface/captcha-res.interface";
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -13,8 +17,9 @@ export class LoginComponent implements OnInit {
 
   @ViewChild(CaptchaComponent, {static: true}) captchComponent: CaptchaComponent
 
+  subscription: Subscription
   loginForm: FormGroup
-  captchaId: string
+  captcha: ICaptchaRes
 
   constructor(
     private oauthFacade: OauthFacade,
@@ -28,7 +33,7 @@ export class LoginComponent implements OnInit {
       password: this.fb.control(null, [Validators.required]),
       captchaAnswer: this.captchComponent.createCaptcha()
     })
-    await this.handleFetchCaptcha()
+    this.subscription = this.oauthFacade.captcha$.subscribe(data => this.captcha = data)
   }
 
   async handLogin() {
@@ -37,8 +42,8 @@ export class LoginComponent implements OnInit {
         this.loginForm.controls['username'].value,
         this.loginForm.controls['password'].value,
         this.loginForm.controls['captchaAnswer'].value,
-        this.captchaId,
-        GRANT_TYPES.passwordCaptcha
+        this.captcha.id,
+        GRANT_TYPES.password
       )
       await this.oauthFacade.login(payload)
     } catch (e) {
@@ -46,11 +51,4 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  async handleFetchCaptcha(): Promise<void> {
-    try {
-      await this.oauthFacade.loadCaptcha()
-    } catch (e) {
-      console.log(e)
-    }
-  }
 }

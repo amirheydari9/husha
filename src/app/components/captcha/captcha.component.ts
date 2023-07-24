@@ -1,10 +1,14 @@
 import {Component, NgModule, OnInit} from '@angular/core';
 import {OauthFacade} from "../../data-core/oauth/oauth.facade";
 import {FormBuilder, FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
-import {CustomValidators} from "../../utils/Custom-Validators";
+
 import {CommonModule} from "@angular/common";
 import {HushaFieldErrorModule} from "../../ui-kits/husha-field-error/husha-field-error.component";
+import {ICaptchaRes} from "../../models/interface/captcha-res.interface";
+import {Subscription} from "rxjs";
+import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-captcha',
   template: `
@@ -13,7 +17,8 @@ import {HushaFieldErrorModule} from "../../ui-kits/husha-field-error/husha-field
            [ngClass]="{'error-border':control.invalid && (control.dirty || control.touched)}">
         <input [formControl]="control" type="number" class="col-2 text-center"/>
         <div class="d-flex align-items-center justify-content-center flex-grow-1 captcha-image">
-          <img [src]="" alt="captcha"/>
+          <img *ngIf="captcha" [src]="'data:image/png;base64,'+captcha.data" height="30" alt="captcha"
+               class="text-center"/>
         </div>
         <div class="d-flex align-items-center justify-content-center">
           <i class="pi pi-refresh text-center" (click)="handleFetchCaptcha()"></i>
@@ -55,10 +60,12 @@ import {HushaFieldErrorModule} from "../../ui-kits/husha-field-error/husha-field
 export class CaptchaComponent implements OnInit {
 
   control: FormControl
+  captcha: ICaptchaRes
+  subscription: Subscription
 
   constructor(
     private oauthFacade: OauthFacade,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
   }
 
@@ -74,6 +81,7 @@ export class CaptchaComponent implements OnInit {
   async handleFetchCaptcha(): Promise<void> {
     try {
       await this.oauthFacade.loadCaptcha()
+      this.subscription = this.oauthFacade.captcha$.subscribe(data => this.captcha = data)
     } catch (e) {
       console.log(e)
     }

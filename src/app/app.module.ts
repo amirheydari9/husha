@@ -11,6 +11,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {InterceptorService} from "./utils/interceptor.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HushaToastModule} from "./ui-kits/husha-toast/husha-toast.component";
+import {OauthStore} from "./data-core/oauth/oauth.store";
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import {HushaToastModule} from "./ui-kits/husha-toast/husha-toast.component";
     NgxsDispatchPluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),
     HushaToastModule,
+    OauthStore
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true}
