@@ -4,11 +4,9 @@ import {LoginReqDto} from "../../../../models/DTOs/login-req.dto";
 import {GRANT_TYPES} from "../../../../constants/enums";
 import {CaptchaComponent} from "../../../../components/captcha/captcha.component";
 import {Subscription} from "rxjs";
-import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {ICaptchaRes} from "../../../../models/interface/captcha-res.interface";
 import {OauthFacade} from "../../../../data-core/oauth/oauth.facade";
 
-@AutoUnsubscribe()
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -33,7 +31,6 @@ export class LoginComponent implements OnInit {
       password: this.fb.control(null, [Validators.required]),
       captchaAnswer: this.captchComponent.createCaptcha()
     })
-    this.subscription = this.oauthFacade.captcha$.subscribe(data => this.captcha = data)
   }
 
   async handLogin() {
@@ -42,8 +39,8 @@ export class LoginComponent implements OnInit {
         this.loginForm.controls['username'].value,
         this.loginForm.controls['password'].value,
         this.loginForm.controls['captchaAnswer'].value,
-        this.captcha.id,
-        GRANT_TYPES.password
+        this.captchComponent.captcha.id,
+        GRANT_TYPES.PASSWORD_CAPTCHA
       )
       await this.oauthFacade.login(payload)
     } catch (e) {
