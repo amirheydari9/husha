@@ -10,7 +10,7 @@ import {ConvertNumberToEnglishDirectiveModule} from "../../directives/convert-nu
 @Component({
   selector: 'app-husha-input-text',
   template: `
-    <div class="flex flex-column gap-2 w-100" [ngClass]="class">
+    <div class="flex flex-column gap-2 w-100 uikit-wrapper-height" [ngClass]="class">
       <label class="mb-2">{{label}}</label>
       <input
         type="text"

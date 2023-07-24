@@ -6,8 +6,8 @@ import {CommonModule} from "@angular/common";
   selector: 'app-husha-field-error',
   template: `
     <ul *ngIf="shouldShowErrors()">
-<!--      <li style="list-style: none" class="p-error" *ngFor="let error of listOfErrors()">{{error}}</li>-->
-      <li style="list-style: none" class="p-error">{{error()}}</li>
+      <!--      <li style="list-style: none" class="p-error" *ngFor="let error of listOfErrors()">{{error}}</li>-->
+      <li style="list-style: none;font-size: 10px" class="p-error">{{error()}}</li>
     </ul>
   `,
   styles: []

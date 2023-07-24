@@ -2,12 +2,11 @@
   <app-husha-card [ngClass]="'col-3'">
     <form [formGroup]="loginForm" (ngSubmit)="handLogin()">
       <app-husha-input-text
-        class="mb-3"
         label="نام کاربری"
         formControlName="username"
       ></app-husha-input-text>
       <app-husha-input-password
-        class="mb-4"
+        class="mb-2"
         label="رمز عبور"
         formControlName="password"
       ></app-husha-input-password>
