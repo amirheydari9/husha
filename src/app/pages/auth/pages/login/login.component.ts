@@ -1,5 +1,4 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {OauthFacade} from "../../../../data-core/oauth/oauth.facade";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LoginReqDto} from "../../../../models/DTOs/login-req.dto";
 import {GRANT_TYPES} from "../../../../constants/enums";
@@ -7,6 +6,7 @@ import {CaptchaComponent} from "../../../../components/captcha/captcha.component
 import {Subscription} from "rxjs";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {ICaptchaRes} from "../../../../models/interface/captcha-res.interface";
+import {OauthFacade} from "../../../../data-core/oauth/oauth.facade";
 
 @AutoUnsubscribe()
 @Component({

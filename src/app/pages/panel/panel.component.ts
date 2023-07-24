@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {BaseInfoFacade} from "../../data-core/base-info/base-info.facade";
 
 @Component({
   selector: 'app-panel',
@@ -9,11 +10,15 @@ export class PanelComponent implements OnInit {
 
 
   constructor(
+    private baseInfoFacade: BaseInfoFacade
   ) {
   }
 
-
-  ngOnInit(): void {
-
+  async ngOnInit(): Promise<void> {
+    try {
+      await this.baseInfoFacade.fetcMenu()
+    } catch (e) {
+      console.log(e)
+    }
   }
 }
