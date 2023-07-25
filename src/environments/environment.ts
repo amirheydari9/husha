@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl:'https://dev.hushaerp.com/'
+  baseUrl:'https://dev.hushaerp.com/api/'
   // baseUrl:'http://192.168.0.116:8080/api/'
 };
 
