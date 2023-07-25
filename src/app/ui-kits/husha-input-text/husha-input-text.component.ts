@@ -14,7 +14,6 @@ import {ConvertNumberToEnglishDirectiveModule} from "../../directives/convert-nu
       <label class="mb-2 text-1 font-sm-regular">{{label}}</label>
       <input
         type="text"
-        [maxLength]="maxLength"
         [convertNumberToEnglish]="true"
         #input
         pInputText
