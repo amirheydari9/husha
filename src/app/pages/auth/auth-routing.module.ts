@@ -16,6 +16,18 @@ const routes: Routes = [
         path: 'login',
         loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule),
       },
+      {
+        path: 'phone',
+        loadChildren: () => import('./pages/phone/phone.module').then(m => m.PhoneModule),
+      },
+      {
+        path: 'otp',
+        loadChildren: () => import('./pages/otp/otp.module').then(m => m.OtpModule),
+      },
+      {
+        path: 'forget-password',
+        loadChildren: () => import('./pages/forget-password/forget-password.module').then(m => m.ForgetPasswordModule),
+      },
     ],
   }
 ];

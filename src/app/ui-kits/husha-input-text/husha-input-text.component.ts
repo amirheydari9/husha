@@ -14,6 +14,7 @@ import {ConvertNumberToEnglishDirectiveModule} from "../../directives/convert-nu
       <label class="mb-2">{{label}}</label>
       <input
         type="text"
+        [maxLength]="maxLength"
         [convertNumberToEnglish]="true"
         #input
         pInputText
@@ -32,6 +33,8 @@ export class HushaInputTextComponent extends BaseControlValueAccessor<string> im
   control: FormControl;
 
   @Input() public label: string;
+
+  @Input() public maxLength: number;
 
   @Input() public class: string;
 

@@ -1,0 +1,14 @@
+<form [formGroup]="phoneForm" (ngSubmit)="handleSubmit()">
+  <app-husha-input-text
+    label="شماره موبایل"
+    formControlName="mobileNumber"
+    [maxLength]="11"
+  ></app-husha-input-text>
+
+  <app-captcha></app-captcha>
+
+  <app-husha-button
+    label="دریافت کد یکبار مصرف"
+    [disabled]="phoneForm.invalid"
+  ></app-husha-button>
+</form>

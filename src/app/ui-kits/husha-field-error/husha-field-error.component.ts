@@ -21,13 +21,14 @@ export class HushaFieldErrorComponent {
   public formField: FormControl;
 
   public readonly errorMessages = {
-    required: () => 'This field is required',
+    required: () => 'این فیلد اجباری است',
     minlength: (params) => 'The min number of characters is ' + params.requiredLength,
     maxlength: (params) => 'The max allowed number of characters is ' + params.requiredLength,
     pattern: (params) => 'The required pattern is: ' + params.requiredPattern,
     nationalCode: (params) => params.message,
     noWhitespace: (params) => params.message,
     authPassword: (params) => params.message,
+    mobile: (params) => params.message,
   };
 
   shouldShowErrors(): boolean {
