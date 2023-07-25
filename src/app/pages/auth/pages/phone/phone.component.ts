@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {CaptchaComponent} from "../../../../components/captcha/captcha.component";
 import {CustomValidators} from "../../../../utils/Custom-Validators";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-phone',
@@ -15,7 +16,8 @@ export class PhoneComponent implements OnInit {
 
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
   }
 
@@ -27,6 +29,6 @@ export class PhoneComponent implements OnInit {
   }
 
   handleSubmit() {
-
+    this.router.navigate(['/auth/otp'])
   }
 }

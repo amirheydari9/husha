@@ -1,1 +1,26 @@
-<p>otp works!</p>
+<ng-otp-input
+  dir="ltr"
+  [formCtrl]="otpControl"
+  [config]="otpConfig"
+  (submit)="handleSubmitOtp()"
+></ng-otp-input>
+
+<div class="d-flex align-items-center justify-content-center my-3">
+  <ng-container *ngIf="!showRetry;else retry">
+    <countdown
+      [config]="countDownConfig"
+      (event)="handleCountDownEvent($event)"
+    ></countdown>
+    <span class="text-2 font-sm-regular me-2">کمی صبر کنید</span>
+  </ng-container>
+  <ng-template #retry>
+    <span class="text-2 font-xs-regular">رمز دریافت نکردم</span>
+    <span class="text-primary font-sm-bold me-2" (click)="handleResendOtp()">ارسال مجدد</span>
+  </ng-template>
+</div>
+
+<app-husha-button
+  label="تایید"
+  [disabled]="otpControl.invalid"
+  (click)="handleSubmitOtp()"
+></app-husha-button>
