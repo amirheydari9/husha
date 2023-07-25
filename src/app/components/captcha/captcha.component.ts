@@ -12,7 +12,7 @@ import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 @Component({
   selector: 'app-captcha',
   template: `
-    <div class="d-flex flex-column captcha-container" style="height:65px">
+    <div class="d-flex flex-column captcha-container">
       <div class="d-flex align-items-center justify-content-between captcha"
            [ngClass]="{'error-border':control.invalid && (control.dirty || control.touched)}">
         <input [formControl]="control" type="number" class="col-2 text-center"/>
@@ -30,7 +30,7 @@ import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
     @import "../../../scss/variabels";
 
     .captcha-container {
-      height: 56px;
+      height:70px;
 
       .captcha {
         border: 1px solid $color-2;
