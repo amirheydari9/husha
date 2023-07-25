@@ -2,6 +2,9 @@
 //@import "~jqwidgets-ng/jqwidgets/styles/jqx.base.css";
 
 @import "assets/fonts/font.css";
+@import "assets/scss/theme";
+@import "assets/scss/text-fonts";
+@import "scss/variabels";
 
 html, body {
   height: 100%;
@@ -31,8 +34,12 @@ ul, li {
   padding: 0 !important;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .uikit-wrapper-height {
-  height: 92px;
+  height: 95px;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -40,3 +47,8 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.error-border {
+  border: 1px solid $forbidden;
+}
+

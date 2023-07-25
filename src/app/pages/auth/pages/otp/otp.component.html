@@ -11,11 +11,14 @@
       [config]="countDownConfig"
       (event)="handleCountDownEvent($event)"
     ></countdown>
-    <span class="text-2 font-sm-regular me-2">کمی صبر کنید</span>
+    <span class="text-1 font-sm-regular ms-2">کمی صبر کنید</span>
   </ng-container>
   <ng-template #retry>
-    <span class="text-2 font-xs-regular">رمز دریافت نکردم</span>
-    <span class="text-primary font-sm-bold me-2" (click)="handleResendOtp()">ارسال مجدد</span>
+    <span class="text-1 font-xs-regular">رمز دریافت نکردم</span>
+    <span class="text-primary font-sm-bold ms-2 cursor-pointer" (click)="handleResendOtp()">
+      ارسال مجدد
+      <i class="pi pi-refresh"></i>
+    </span>
   </ng-template>
 </div>
 

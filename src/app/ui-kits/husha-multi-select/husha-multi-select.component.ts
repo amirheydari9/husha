@@ -9,7 +9,7 @@ import {HushaFieldErrorModule} from "../husha-field-error/husha-field-error.comp
   selector: 'app-husha-multi-select',
   template: `
     <div class="flex flex-column gap-2 w-100" [class]="class">
-      <label class="mb-2">{{label}}</label>
+      <label class="mb-2 text-1 font-sm-regular">{{label}}</label>
       <p-multiSelect
         [(ngModel)]="value"
         [options]="options"

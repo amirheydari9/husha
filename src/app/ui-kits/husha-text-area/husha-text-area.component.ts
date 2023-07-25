@@ -11,7 +11,7 @@ import {ConvertNumberToEnglishDirectiveModule} from "../../directives/convert-nu
   selector: 'app-husha-text-area',
   template: `
     <div class="flex flex-column gap-2 w-100" [class]="class">
-      <label class="mb-2">{{label}}</label>
+      <label class="mb-2 text-1 font-sm-regular">{{label}}</label>
       <textarea
         [convertNumberToEnglish]="true"
         pInputTextarea

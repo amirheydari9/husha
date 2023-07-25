@@ -11,7 +11,7 @@ import {ConvertNumberToEnglishDirectiveModule} from "../../directives/convert-nu
   selector: 'app-husha-input-text',
   template: `
     <div class="flex flex-column gap-2 w-100 uikit-wrapper-height" [ngClass]="class">
-      <label class="mb-2">{{label}}</label>
+      <label class="mb-2 text-1 font-sm-regular">{{label}}</label>
       <input
         type="text"
         [maxLength]="maxLength"

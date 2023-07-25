@@ -27,15 +27,17 @@ import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
       <app-husha-field-error [formField]="control"></app-husha-field-error>
     </div>`,
   styles: [`
+    @import "../../../scss/variabels";
+
     .captcha-container {
-      border: 1px solid #ced4da;
+      border: 1px solid $color-2;
       border-radius: 3px;
       height: 42px;
       padding: 0.5rem;
       z-index: 2;
 
       &.error-border {
-        border: 1px solid #f44336;
+        border: 1px solid $forbidden;
       }
 
       input {
@@ -45,8 +47,8 @@ import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
       }
 
       .captcha-image {
-        border-right: 1px solid #ced4da;
-        border-left: 1px solid #ced4da;
+        border-right: 1px solid $color-2;
+        border-left: 1px solid $color-2;
         height: inherit
       }
 

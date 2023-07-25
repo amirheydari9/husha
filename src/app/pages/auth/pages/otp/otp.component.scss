@@ -1,21 +1,24 @@
+@import "src/scss/variabels";
+
 :host ::ng-deep {
   .otp-input {
-    width: 38px !important;
-    font-size: 18px;
-    height: 38px !important;
-    &.otp-valid{
-      border: 0.15rem solid black !important
+    width: 45px !important;
+    height: 45px !important;
+
+    &.otp-valid {
+      border: 0.15rem solid $primary
     }
-    &.otp-invalid{
-      border: 0.15rem solid red !important;
+
+    &.otp-invalid {
+      border: 0.15rem solid $color-2
     }
+
     &:not(:last-child) {
       margin-right: 16px !important;
     }
+
     &:focus-visible {
       outline: unset;
-      //border: 1px solid $primary !important;
-      //background-color: white;
     }
 
   }
