@@ -27,6 +27,16 @@ a, a:hover, a:focus, a:active {
 }
 
 ul, li {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.uikit-wrapper-height {
+  height: 92px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
   margin: 0;
-  padding: 0;
 }

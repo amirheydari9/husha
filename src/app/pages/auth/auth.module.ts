@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 
 import {AuthRoutingModule} from './auth-routing.module';
 import {AuthComponent} from './auth.component';
+import {OauthStore} from "../../data-core/oauth/oauth.store";
 
 @NgModule({
   declarations: [
@@ -11,7 +12,7 @@ import {AuthComponent} from './auth.component';
   imports: [
     CommonModule,
     AuthRoutingModule,
-
+    OauthStore
   ]
 })
 export class AuthModule {
