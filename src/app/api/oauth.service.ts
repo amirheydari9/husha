@@ -5,6 +5,7 @@ import {ICaptchaRes} from "../models/interface/captcha-res.interface";
 import {ITokenRes} from "../models/interface/token-res.interface";
 import {of, pipe} from "rxjs";
 import {HttpHeaders} from "@angular/common/http";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -27,10 +28,8 @@ export class OauthService {
     formData.append('captchaAnswer', payload.captchaAnswer.toString());
     formData.append('captchaId', payload.captchaId);
     formData.append('grant_type', payload.grant_type);
-    const username = 'HushaMicroService';
-    const password = 'Jfbg&z3dHM:m_Vcb';
     const headers = new HttpHeaders({
-      'Authorization': 'Basic ' + btoa(username + ':' + password)
+      'Authorization': 'Basic ' + btoa(environment.basicAuthUsername + ':' + environment.basicAuthPassword)
     });
     // return of({
     //   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEwOTY5NjAsInVzZXJfbmFtZSI6IjQ2OSIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJqdGkiOiJIaUEzaWF1UExPQzczQWJySWtRVUEyNlk5c0EiLCJjbGllbnRfaWQiOiJIdXNoYU1pY3JvU2VydmljZSIsInNjb3BlIjpbInNlcnZlciJdfQ.crqDQD-HQIHZA7NscJSyna6M3P1yYD8CdRlxHyklowo",
