@@ -12,8 +12,8 @@ export class BaseInfoService {
   ) {
   }
 
-  fetchMenu(): Promise<IMenuRes> {
-    return this.httpService.get<IMenuRes>('baseinfo/menu/access-menu').toPromise()
+  fetchMenu(): Promise<IMenuRes[]> {
+    return this.httpService.get<IMenuRes[]>('baseinfo/menu/access-menu').toPromise()
   }
 
 }

@@ -16,7 +16,7 @@ export class BaseInfoFacade {
   ) {
   }
 
-  @Select(BaseInfoState.menu) menu$: Observable<IMenuRes>
+  @Select(BaseInfoState.menu) menu$: Observable<IMenuRes[]>
 
   @Dispatch()
   async fetcMenu() {
