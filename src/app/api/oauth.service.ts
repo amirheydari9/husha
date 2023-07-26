@@ -4,6 +4,7 @@ import {LoginReqDto} from "../models/DTOs/login-req.dto";
 import {ICaptchaRes} from "../models/interface/captcha-res.interface";
 import {ITokenRes} from "../models/interface/token-res.interface";
 import {of, pipe} from "rxjs";
+import {HttpHeaders} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,17 @@ export class OauthService {
   }
 
   login(payload: LoginReqDto): Promise<ITokenRes> {
+    const formData = new FormData();
+    formData.append('username', payload.username);
+    formData.append('password', payload.password);
+    formData.append('captchaAnswer', payload.captchaAnswer.toString());
+    formData.append('captchaId', payload.captchaId);
+    formData.append('grant_type', payload.grant_type);
+    const username = 'HushaMicroService';
+    const password = 'Jfbg&z3dHM:m_Vcb';
+    const headers = new HttpHeaders({
+      'Authorization': 'Basic ' + btoa(username + ':' + password)
+    });
     // return of({
     //   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEwOTY5NjAsInVzZXJfbmFtZSI6IjQ2OSIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJqdGkiOiJIaUEzaWF1UExPQzczQWJySWtRVUEyNlk5c0EiLCJjbGllbnRfaWQiOiJIdXNoYU1pY3JvU2VydmljZSIsInNjb3BlIjpbInNlcnZlciJdfQ.crqDQD-HQIHZA7NscJSyna6M3P1yYD8CdRlxHyklowo",
     //   "token_type": "bearer",
@@ -28,7 +40,7 @@ export class OauthService {
     //   "scope": "server",
     //   "jti": "HiA3iauPLOC73AbrIkQUA26Y9sA"
     // }).pipe().toPromise()
-    return this.httpService.post<ITokenRes>('sso/oauth/token', payload).toPromise()
+    return this.httpService.post<ITokenRes>('sso/oauth/token', formData, null, headers).toPromise()
   }
 
 }

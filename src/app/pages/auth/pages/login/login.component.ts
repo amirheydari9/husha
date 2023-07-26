@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
         this.loginForm.controls['password'].value,
         this.loginForm.controls['captchaAnswer'].value,
         this.captchaComponent.captcha.id,
-        GRANT_TYPES.PASSWORD_CAPTCHA
+        GRANT_TYPES.PASSWORD
       )
       await this.oauthFacade.login(payload)
     } catch (e) {
