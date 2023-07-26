@@ -12,47 +12,52 @@ import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 @Component({
   selector: 'app-captcha',
   template: `
-    <div class="d-flex flex-column mb-4">
-      <div class="d-flex align-items-center justify-content-between captcha-container"
+    <div class="d-flex flex-column captcha-container">
+      <div class="d-flex align-items-center justify-content-between captcha"
            [ngClass]="{'error-border':control.invalid && (control.dirty || control.touched)}">
         <input [formControl]="control" type="number" class="col-2 text-center"/>
         <div class="d-flex align-items-center justify-content-center flex-grow-1 captcha-image">
           <img *ngIf="captcha" [src]="'data:image/png;base64,'+captcha.data" height="30" alt="captcha"
                class="text-center"/>
         </div>
-        <div class="d-flex align-items-center justify-content-center">
-          <i class="pi pi-refresh text-center" (click)="handleFetchCaptcha()"></i>
+        <div class="d-flex align-items-center justify-content-center px-2">
+          <i class="pi pi-refresh" (click)="handleFetchCaptcha()"></i>
         </div>
       </div>
       <app-husha-field-error [formField]="control"></app-husha-field-error>
     </div>`,
   styles: [`
+    @import "../../../scss/variabels";
+
     .captcha-container {
-      border: 1px solid #ced4da;
-      border-radius: 3px;
-      height: 42px;
-      padding: 0.5rem;
-      z-index: 2;
+      height:70px;
 
-      &.error-border {
-        border: 1px solid #f44336;
-      }
+      .captcha {
+        border: 1px solid $color-2;
+        border-radius: 3px;
+        height: 42px;
+        z-index: 2;
 
-      input {
-        border: none;
-        height: 100%;
-        outline: unset
-      }
+        &.error-border {
+          border: 1px solid $forbidden;
+        }
 
-      .captcha-image {
-        border-right: 1px solid #ced4da;
-        border-left: 1px solid #ced4da;
-        height: inherit
-      }
+        input {
+          border: none;
+          height: 100%;
+          outline: unset
+        }
 
-      i {
-        font-size: 1.5rem;
-        color: #2196F3;;
+        .captcha-image {
+          border-right: 1px solid $color-2;
+          border-left: 1px solid $color-2;
+          height: inherit
+        }
+
+        i {
+          font-size: 1.5rem;
+          color: $primary;
+        }
       }
     }
   `]

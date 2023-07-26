@@ -13,7 +13,7 @@ import {OauthFacade} from "../../../../data-core/oauth/oauth.facade";
 })
 export class LoginComponent implements OnInit {
 
-  @ViewChild(CaptchaComponent, {static: true}) captchComponent: CaptchaComponent
+  @ViewChild(CaptchaComponent, {static: true}) captchaComponent: CaptchaComponent
 
   subscription: Subscription
   loginForm: FormGroup
@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       username: this.fb.control(null, [Validators.required]),
       password: this.fb.control(null, [Validators.required]),
-      captchaAnswer: this.captchComponent.createCaptcha()
+      captchaAnswer: this.captchaComponent.createCaptcha()
     })
   }
 
@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
         this.loginForm.controls['username'].value,
         this.loginForm.controls['password'].value,
         this.loginForm.controls['captchaAnswer'].value,
-        this.captchComponent.captcha.id,
+        this.captchaComponent.captcha.id,
         GRANT_TYPES.PASSWORD_CAPTCHA
       )
       await this.oauthFacade.login(payload)

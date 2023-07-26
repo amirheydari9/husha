@@ -1,0 +1,66 @@
+@import "../../scss/variabels";
+
+.text-1 {
+  color: $color-1;
+}
+
+.background-1 {
+  background-color: $color-1;
+}
+
+.text-2 {
+  color: $color-2;
+}
+
+.background-2 {
+  background-color: $color-2;
+}
+
+.text-white {
+  color: white;
+}
+
+.background-white {
+  background-color: white;
+}
+
+.text-primary {
+  color: $primary !important;
+}
+
+.background-primary {
+  background-color: $primary;
+}
+
+.text-success {
+  color: $success;
+}
+
+.background-success {
+  background-color: $success;
+}
+
+.text-alert {
+  color: $alert;
+}
+
+.background-alert {
+  background-color: $alert;
+}
+
+.text-warning {
+  color: $warning;
+}
+
+.background-warning {
+  background-color: $warning;
+}
+
+.text-forbidden {
+  color: $forbidden;
+}
+
+.background-forbidden {
+  background-color: $forbidden;
+}
+

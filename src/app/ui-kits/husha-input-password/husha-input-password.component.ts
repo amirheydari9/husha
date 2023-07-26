@@ -11,7 +11,7 @@ import {CustomValidators} from "../../utils/Custom-Validators";
   selector: 'app-husha-input-password',
   template: `
     <div class="flex flex-column gap-2 w-100 uikit-wrapper-height" [ngClass]="class">
-      <label class="mb-2">{{label}}</label>
+      <label class="mb-2 text-1 font-sm-regular">{{label}}</label>
       <p-password
         #input
         [toggleMask]="true"
@@ -26,6 +26,7 @@ import {CustomValidators} from "../../utils/Custom-Validators";
         (onBlur)="touched()"
       ></p-password>
       <app-husha-field-error [formField]="control"></app-husha-field-error>
+      <ng-content></ng-content>
     </div>
   `
 })
@@ -49,7 +50,7 @@ export class HushaInputPasswordComponent extends BaseControlValueAccessor<string
 
   ngOnInit(): void {
     this.control = this.controlDir.control as FormControl
-    this.control.addValidators(CustomValidators.authPassword)
+    // this.control.addValidators(CustomValidators.authPassword)
   }
 
   public onChanged(event: Event): void {

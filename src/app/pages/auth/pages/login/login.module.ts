@@ -6,7 +6,6 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {HushaInputTextModule} from "../../../../ui-kits/husha-input-text/husha-input-text.component";
 import {HushaInputPasswordModule} from "../../../../ui-kits/husha-input-password/husha-input-password.component";
 import {HushaButtonModule} from "../../../../ui-kits/husha-button/husha-button.component";
-import {HushaCardModule} from "../../../../ui-kits/husha-card/husha-card.component";
 import {CaptchaModule} from "../../../../components/captcha/captcha.component";
 
 
@@ -14,16 +13,15 @@ import {CaptchaModule} from "../../../../components/captcha/captcha.component";
   declarations: [
     LoginComponent
   ],
-    imports: [
-        CommonModule,
-        RouterModule.forChild([{path: '', component: LoginComponent}]),
-        ReactiveFormsModule,
-        HushaInputTextModule,
-        HushaInputPasswordModule,
-        HushaButtonModule,
-        HushaCardModule,
-        CaptchaModule,
-    ]
+  imports: [
+    CommonModule,
+    RouterModule.forChild([{path: '', component: LoginComponent}]),
+    ReactiveFormsModule,
+    HushaInputTextModule,
+    HushaInputPasswordModule,
+    HushaButtonModule,
+    CaptchaModule,
+  ]
 })
 export class LoginModule {
 }

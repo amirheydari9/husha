@@ -22,7 +22,7 @@ import {ReactiveFormsModule} from '@angular/forms';
   selector: 'app-husha-date-picker',
   template: `
     <div class="flex flex-column gap-2 w-100" [ngClass]="class">
-      <label class="mb-2">{{label}}</label>
+      <label class="mb-2 text-1 font-sm-regular">{{label}}</label>
       <ng-persian-datepicker [dateInitValue]="!!value">
         <input
           readonly
