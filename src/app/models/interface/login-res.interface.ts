@@ -1,4 +1,4 @@
-export interface ITokenRes {
+export interface ILoginRes {
   "access_token": string,
   "token_type": string,
   "refresh_token": string,

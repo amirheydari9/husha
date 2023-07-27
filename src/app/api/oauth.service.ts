@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpService} from "../utils/http.service";
 import {LoginReqDto} from "../models/DTOs/login-req.dto";
 import {ICaptchaRes} from "../models/interface/captcha-res.interface";
-import {ITokenRes} from "../models/interface/token-res.interface";
+import {ILoginRes} from "../models/interface/login-res.interface";
 import {HttpHeaders} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {IUserAvatarRes} from "../models/interface/user-avatar-res.interface";
@@ -22,7 +22,7 @@ export class OauthService {
     return this.httpService.get<ICaptchaRes>('sso/oauth/captcha').toPromise()
   }
 
-  login(payload: LoginReqDto): Promise<ITokenRes> {
+  login(payload: LoginReqDto): Promise<ILoginRes> {
     const formData = new FormData();
     formData.append('username', payload.username);
     formData.append('password', payload.password);
@@ -32,7 +32,7 @@ export class OauthService {
     const headers = new HttpHeaders({
       'Authorization': 'Basic ' + btoa(environment.basicAuthUsername + ':' + environment.basicAuthPassword)
     });
-    return this.httpService.post<ITokenRes>('sso/oauth/token', formData, null, headers).toPromise()
+    return this.httpService.post<ILoginRes>('sso/oauth/token', formData, null, headers).toPromise()
   }
 
   fetchUserAvatar(): Promise<IUserAvatarRes> {
