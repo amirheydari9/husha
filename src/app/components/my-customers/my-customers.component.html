@@ -1,6 +1,7 @@
 <form [formGroup]="mCustomersForm" class="d-flex align-items-center justify-content-between">
 
   <app-husha-dropdown
+    [ngStyle]="{'width':'300px'}"
     class="me-2"
     label="مشتریان من"
     formControlName="parentCustomers"
@@ -9,6 +10,7 @@
 
   <app-husha-dropdown
     *ngIf="childCustomers.length"
+    [ngStyle]="{'width':'300px'}"
     class="me-2"
     label="مشتریان من"
     formControlName="childCustomers"
@@ -16,12 +18,14 @@
   ></app-husha-dropdown>
 
   <app-husha-dropdown
+    [ngStyle]="{'width':'300px'}"
     class="me-2"
     label="سرویس های من"
     formControlName="services"
   ></app-husha-dropdown>
 
   <app-husha-dropdown
+    [ngStyle]="{'width':'300px'}"
     class="me-2"
     label="سال مالی"
     formControlName="units"
