@@ -52,13 +52,13 @@ export class HushaDropdownComponent extends BaseControlValueAccessor<string> imp
 
   @Input() label: string;
 
-  @Input() clearable = true;
+  @Input() clearable = false;
 
   @Input() options: any[];
 
   @Input() required = false;
 
-  @Input() optionLabel = 'name';
+  @Input() optionLabel = 'title';
 
   @Input() optionValue = 'id';
 

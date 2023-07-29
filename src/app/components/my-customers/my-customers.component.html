@@ -4,12 +4,15 @@
     class="me-2"
     label="مشتریان من"
     formControlName="parentCustomers"
+    [options]="parentCustomers"
   ></app-husha-dropdown>
 
   <app-husha-dropdown
+    *ngIf="childCustomers.length"
     class="me-2"
     label="مشتریان من"
     formControlName="childCustomers"
+    [options]="childCustomers"
   ></app-husha-dropdown>
 
   <app-husha-dropdown

@@ -3,6 +3,8 @@ import {AvatarModule} from "primeng/avatar";
 import {MenuModule} from "primeng/menu";
 import {MenuItem} from "primeng/api";
 import {OauthFacade} from "../../data-core/oauth/oauth.facade";
+import {OauthStore} from "../../data-core/oauth/oauth.store";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-user-avatar',
@@ -13,6 +15,8 @@ import {OauthFacade} from "../../data-core/oauth/oauth.facade";
   styles: []
 })
 export class UserAvatarComponent implements OnInit {
+
+  subscription: Subscription
   items: MenuItem[] = [
     {
       label: 'مدیریت پروفابل',
@@ -21,17 +25,21 @@ export class UserAvatarComponent implements OnInit {
     {separator: true},
     {
       label: 'خروج',
-      icon: 'pi pi-fw pi-power-off',
+      icon: 'pi pi-power-off',
       command: () => this.oauthFacade.logout()
     }
   ]
 
   constructor(
-    private oauthFacade: OauthFacade
+    private oauthFacade: OauthFacade,
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.oauthFacade.fetchUserAvatar()
+    this.subscription = this.oauthFacade.userAvatar$.subscribe(data => {
+      console.log(data)
+    })
   }
 
 }
@@ -40,7 +48,8 @@ export class UserAvatarComponent implements OnInit {
   declarations: [UserAvatarComponent],
   imports: [
     AvatarModule,
-    MenuModule
+    MenuModule,
+    OauthStore
   ],
   exports: [UserAvatarComponent]
 })

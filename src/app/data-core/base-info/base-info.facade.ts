@@ -19,7 +19,7 @@ export class BaseInfoFacade {
   @Select(BaseInfoState.menu) menu$: Observable<IMenuRes[]>
 
   @Dispatch()
-  async fetcMenu() {
+  async fetchMenu() {
     const data = await this.baseInfoService.fetchMenu()
     return new FetchMenuAction(data)
   }
