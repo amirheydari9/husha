@@ -40,10 +40,9 @@ export class OauthFacade {
   }
 
 
-  @Dispatch()
   logout() {
     this.storageService.signOut()
-    return new Navigate(['/auth'])
+    window.location.reload()
   }
 
   @Dispatch()

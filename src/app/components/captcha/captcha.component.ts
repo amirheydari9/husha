@@ -7,6 +7,7 @@ import {HushaFieldErrorModule} from "../../ui-kits/husha-field-error/husha-field
 import {ICaptchaRes} from "../../models/interface/captcha-res.interface";
 import {Subscription} from "rxjs";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
+import {Base64PipeModule} from "../../pipes/base64.pipe";
 
 @AutoUnsubscribe()
 @Component({
@@ -17,7 +18,7 @@ import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
            [ngClass]="{'error-border':control.invalid && (control.dirty || control.touched)}">
         <input [formControl]="control" type="number" class="col-2 text-center"/>
         <div class="d-flex align-items-center justify-content-center flex-grow-1 captcha-image">
-          <img *ngIf="captcha" [src]="'data:image/png;base64,'+captcha.data" height="30" alt="captcha"
+          <img *ngIf="captcha" [src]="captcha.data|base64" height="30" alt="captcha"
                class="text-center"/>
         </div>
         <div class="d-flex align-items-center justify-content-center px-2">
@@ -30,7 +31,7 @@ import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
     @import "../../../scss/variabels";
 
     .captcha-container {
-      height:70px;
+      height: 70px;
 
       .captcha {
         border: 1px solid $color-2;
@@ -98,7 +99,8 @@ export class CaptchaComponent implements OnInit {
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    HushaFieldErrorModule
+    HushaFieldErrorModule,
+    Base64PipeModule
   ],
   exports: [CaptchaComponent]
 })
