@@ -1,42 +1,36 @@
-import {Component, EventEmitter, HostListener, OnInit, Output, ViewEncapsulation} from '@angular/core';
-import {animate, keyframes, style, transition, trigger} from "@angular/animations";
-import {navBaData} from "../nav-data";
+import {Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
 import {INavbarData} from "../navbar-data.interface";
-import {fadeInOut} from "../animations";
+import {fadeInOut, rotate} from "../animations";
 import {Router} from "@angular/router";
+import {BaseInfoFacade} from "../../../data-core/base-info/base-info.facade";
+import {AutoUnsubscribe} from "../../../decorators/AutoUnSubscribe";
+import {Subscription} from "rxjs";
 
 export interface SidenavToggle {
   screenWidth: number;
   collapsed: boolean
 }
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
-  animations: [
-    fadeInOut,
-    trigger('rotate', [
-      transition(':enter', [
-        animate('1000ms', keyframes([
-          style({transform: 'rotate(0deg)', offset: '0'}),
-          style({transform: 'rotate(2turn)', offset: '1'}),
-        ]))
-      ])
-    ]),
-  ]
+  animations: [fadeInOut, rotate]
 })
 export class SidenavComponent implements OnInit {
 
   collapsed: boolean = false;
   screenWidth = 0;
-  navData = navBaData
+  navData = []
   multiple: boolean = false
+  subscription: Subscription
 
   @Output() onToggleSidenav: EventEmitter<SidenavToggle> = new EventEmitter<SidenavToggle>()
 
   constructor(
-    private router: Router
+    private router: Router,
+    private baseInfoFacade: BaseInfoFacade
   ) {
   }
 
@@ -51,6 +45,21 @@ export class SidenavComponent implements OnInit {
 
   ngOnInit(): void {
     this.screenWidth = window.innerWidth
+    this.subscription = this.baseInfoFacade.menu$.subscribe(data => {
+      this.navData = data.map(menu => this.transformMenu(menu))
+    })
+  }
+
+  transformMenu(menu) {
+    const {title, subMenus, id, name, ...rest} = menu;
+    return {
+      id: id,
+      label: title,
+      routerLink: '/base-form/' + id,
+      items: subMenus && subMenus.length > 0 ? subMenus.map(this.transformMenu.bind(this)) : [],
+      expanded: false,
+      name: name,
+    };
   }
 
   toggleCollapse() {

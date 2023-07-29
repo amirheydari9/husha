@@ -3,5 +3,7 @@ export interface INavbarData {
   icon?: string;
   label: string;
   expanded?: boolean;
-  items?: INavbarData[]
+  items?: INavbarData[],
+  id: number,
+  name: string
 }
