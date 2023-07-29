@@ -1,4 +1,4 @@
-import {animate, style, transition, trigger} from "@angular/animations";
+import {animate, keyframes, style, transition, trigger} from "@angular/animations";
 
 export const fadeInOut = trigger('fadeInOut', [
   transition(':enter', [
@@ -8,5 +8,14 @@ export const fadeInOut = trigger('fadeInOut', [
   transition(':leave', [
     style({opacity: 1}),
     animate('350ms', style({opacity: 0}))
+  ])
+])
+
+export const rotate = trigger('rotate', [
+  transition(':enter', [
+    animate('1000ms', keyframes([
+      style({transform: 'rotate(0deg)', offset: '0'}),
+      style({transform: 'rotate(2turn)', offset: '1'}),
+    ]))
   ])
 ])

@@ -8,6 +8,7 @@ import {BodyComponent} from "./body/body.component";
 import {HeaderComponent} from './header/header.component';
 import {UserAvatarModule} from "../user-avatar/user-avatar.component";
 import {MyCustomersNodule} from "../my-customers/my-customers.component";
+import {BaseInfoStore} from "../../data-core/base-info/base-info.store";
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import {MyCustomersNodule} from "../my-customers/my-customers.component";
     RouterModule,
     UserAvatarModule,
     MyCustomersNodule,
+    BaseInfoStore
   ]
 })
 export class DashboardModule {
