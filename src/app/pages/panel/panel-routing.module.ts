@@ -12,8 +12,16 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'dashboard'
+        redirectTo: 'home'
       },
+      {
+        path: '',
+        loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
+      },
+      {
+        path: 'base-form/:id',
+        loadChildren: () => import('./pages/base-form/base-form.module').then(m => m.BaseFormModule)
+      }
     ]
   },
 ];
