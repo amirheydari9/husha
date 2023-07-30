@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {BaseInfoFacade} from "../../../data-core/base-info/base-info.facade";
 import {AutoUnsubscribe} from "../../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
+import {IMenuRes} from "../../../models/interface/menu-res.interface";
 
 export interface SidenavToggle {
   screenWidth: number;
@@ -50,7 +51,7 @@ export class SidenavComponent implements OnInit {
     })
   }
 
-  transformMenu(menu) {
+  transformMenu(menu: IMenuRes): INavbarData {
     const {title, subMenus, id, name, ...rest} = menu;
     return {
       id: id,
@@ -82,6 +83,10 @@ export class SidenavComponent implements OnInit {
   }
 
   shrinkItems(item: INavbarData): void {
+    const sideNavLinks = document.getElementsByClassName('sidenav-nav-link')
+    for (let i = 0; i < sideNavLinks.length; i++) {
+      sideNavLinks[i].classList.remove('active')
+    }
     if (!this.multiple) {
       for (let modelItem of this.navData) {
         if (item !== modelItem && modelItem.expanded) {

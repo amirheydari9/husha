@@ -1,4 +1,4 @@
-import {animate, keyframes, style, transition, trigger} from "@angular/animations";
+import {animate, keyframes, state, style, transition, trigger} from "@angular/animations";
 
 export const fadeInOut = trigger('fadeInOut', [
   transition(':enter', [
@@ -18,4 +18,16 @@ export const rotate = trigger('rotate', [
       style({transform: 'rotate(2turn)', offset: '1'}),
     ]))
   ])
+])
+
+export const subMenu = trigger('submenu', [
+  state('hidden', style({height: '0', overflow: 'hidden'})),
+  state('visible', style({height: '*'})),
+  transition('visible <=> hidden', [
+    style({overflow: 'hidden'}),
+    animate('{{transitionParams}}'),
+  ]),
+  transition('void => *', [
+    animate(0),
+  ]),
 ])

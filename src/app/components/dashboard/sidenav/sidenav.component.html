@@ -15,8 +15,8 @@
   <div class="scrollWrap scrollWrap_delayed">
     <ul class="sidenav-nav">
       <li class="sidenav-nav-item" *ngFor="let data of navData">
-        <a class="sidenav-nav-link"
-           *ngIf="data.items && data.items.length > 0"
+        <a *ngIf="data.items && data.items.length > 0"
+           class="sidenav-nav-link"
            (click)="handleClick(data)"
            [ngClass]="getActiveClass(data)">
           <i class="sidenav-link-icon" [class]="data.icon"></i>
@@ -27,9 +27,9 @@
           ></i>
         </a>
         <a *ngIf="!data.items || (data.items && data.items.length === 0)"
+           class="sidenav-nav-link"
            [routerLink]="[data.routerLink]" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
-           (click)="shrinkItems(data)"
-           class="sidenav-nav-link">
+           (click)="shrinkItems(data)">
           <i class="sidenav-link-icon" [class]="data.icon"></i>
           <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">{{data.label}}</span>
         </a>

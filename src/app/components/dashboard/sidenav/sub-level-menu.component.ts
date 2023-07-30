@@ -1,7 +1,6 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {INavbarData} from "../navbar-data.interface";
-import {animate, state, style, transition, trigger} from "@angular/animations";
-import {fadeInOut} from "../animations";
+import {fadeInOut, subMenu} from "../animations";
 import {Router} from "@angular/router";
 
 @Component({
@@ -23,6 +22,8 @@ import {Router} from "@angular/router";
              [ngClass]="item.expanded ? 'fal fa-angle-down' :'fal fa-angle-left'"></i>
         </a>
         <a *ngIf="!item.items || (item.items && item.items.length === 0)"
+           #subMenu
+           (click)="handleSelectMenu(item)"
            class="subLevel-nav-link"
            [routerLink]="[item.routerLink]"
            routerLinkActive="active-subLevel"
@@ -42,20 +43,7 @@ import {Router} from "@angular/router";
     </ul>
   `,
   styleUrls: ['./sidenav.component.scss'],
-  animations: [
-    fadeInOut,
-    trigger('submenu', [
-      state('hidden', style({height: '0', overflow: 'hidden'})),
-      state('visible', style({height: '*'})),
-      transition('visible <=> hidden', [
-        style({overflow: 'hidden'}),
-        animate('{{transitionParams}}'),
-      ]),
-      transition('void => *', [
-        animate(0),
-      ]),
-    ])
-  ]
+  animations: [fadeInOut, subMenu]
 })
 export class SubLevelMenuComponent implements OnInit {
 
@@ -64,6 +52,10 @@ export class SubLevelMenuComponent implements OnInit {
   @Input() animating: boolean | undefined
   @Input() expanded: boolean | undefined
   @Input() multiple: boolean = false
+
+  @Output() selectedMenu: EventEmitter<INavbarData> = new EventEmitter<INavbarData>()
+
+  @ViewChild('subMenu') subMenu: ElementRef
 
   constructor(
     private router: Router
@@ -90,4 +82,12 @@ export class SubLevelMenuComponent implements OnInit {
     return item.expanded && this.router.url.includes(item.routerLink) ? 'active-subLevel' : ''
   }
 
+  handleSelectMenu(item: INavbarData) {
+    this.selectedMenu.emit(item)
+    const sideNavItems = document.getElementsByClassName('sidenav-nav-item')
+    for (let i = 0; i < sideNavItems.length; i++) {
+      sideNavItems[i].children[0].classList.remove('active')
+    }
+    this.subMenu.nativeElement.closest('.sidenav-nav-item').children[0].classList.add('active')
+  }
 }
