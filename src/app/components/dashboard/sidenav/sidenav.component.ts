@@ -6,6 +6,7 @@ import {BaseInfoFacade} from "../../../data-core/base-info/base-info.facade";
 import {AutoUnsubscribe} from "../../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {IMenuRes} from "../../../models/interface/menu-res.interface";
+import {AppConfigService} from "../../../utils/app-config.service";
 
 export interface SidenavToggle {
   screenWidth: number;
@@ -31,7 +32,8 @@ export class SidenavComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private baseInfoFacade: BaseInfoFacade
+    private baseInfoFacade: BaseInfoFacade,
+    private appConfigService: AppConfigService
   ) {
   }
 
@@ -83,6 +85,7 @@ export class SidenavComponent implements OnInit {
   }
 
   shrinkItems(item: INavbarData): void {
+    if (item.items.length === 0) this.appConfigService.setTabMenu(item)
     const sideNavLinks = document.getElementsByClassName('sidenav-nav-link')
     for (let i = 0; i < sideNavLinks.length; i++) {
       sideNavLinks[i].classList.remove('active')

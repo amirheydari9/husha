@@ -1,7 +1,8 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {INavbarData} from "../navbar-data.interface";
 import {fadeInOut, subMenu} from "../animations";
 import {Router} from "@angular/router";
+import {AppConfigService} from "../../../utils/app-config.service";
 
 @Component({
   selector: 'app-sub-level-menu',
@@ -53,12 +54,11 @@ export class SubLevelMenuComponent implements OnInit {
   @Input() expanded: boolean | undefined
   @Input() multiple: boolean = false
 
-  @Output() selectedMenu: EventEmitter<INavbarData> = new EventEmitter<INavbarData>()
-
   @ViewChild('subMenu') subMenu: ElementRef
 
   constructor(
-    private router: Router
+    private router: Router,
+    private appConfigService: AppConfigService
   ) {
   }
 
@@ -83,7 +83,7 @@ export class SubLevelMenuComponent implements OnInit {
   }
 
   handleSelectMenu(item: INavbarData) {
-    this.selectedMenu.emit(item)
+    if (item.items.length === 0) this.appConfigService.setTabMenu(item)
     const sideNavItems = document.getElementsByClassName('sidenav-nav-item')
     for (let i = 0; i < sideNavItems.length; i++) {
       sideNavItems[i].children[0].classList.remove('active')

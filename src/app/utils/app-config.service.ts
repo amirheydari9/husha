@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject} from "rxjs";
+import {INavbarData} from "../components/dashboard/navbar-data.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -20,5 +21,13 @@ export class AppConfigService {
   }
   public loading(): Observable<boolean> {
     return this._loading$.asObservable();
+  }
+
+  private _tabMenu$: Subject<INavbarData> = new Subject<INavbarData>();
+  public setTabMenu(tabMenu: INavbarData): void {
+    this._tabMenu$.next(tabMenu);
+  }
+  public tabMenu(): Observable<INavbarData> {
+    return this._tabMenu$.asObservable();
   }
 }

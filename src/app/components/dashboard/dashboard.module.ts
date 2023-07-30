@@ -9,6 +9,7 @@ import {HeaderComponent} from './header/header.component';
 import {UserAvatarModule} from "../user-avatar/user-avatar.component";
 import {MyCustomersNodule} from "../my-customers/my-customers.component";
 import {BaseInfoStore} from "../../data-core/base-info/base-info.store";
+import {TabMenuModule} from "../tab-menu/tab-menu.component";
 
 
 @NgModule({
@@ -22,13 +23,14 @@ import {BaseInfoStore} from "../../data-core/base-info/base-info.store";
   exports: [
     DashboardComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule,
-    UserAvatarModule,
-    MyCustomersNodule,
-    BaseInfoStore
-  ]
+    imports: [
+        CommonModule,
+        RouterModule,
+        UserAvatarModule,
+        MyCustomersNodule,
+        BaseInfoStore,
+        TabMenuModule
+    ]
 })
 export class DashboardModule {
 }
