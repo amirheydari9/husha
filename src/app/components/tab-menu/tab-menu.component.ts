@@ -1,4 +1,4 @@
-import {Component, NgModule, OnInit} from '@angular/core';
+import {Component, ElementRef, NgModule, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {AppConfigService} from "../../utils/app-config.service";
 import {INavbarData} from "../dashboard/navbar-data.interface";
 import {CommonModule} from "@angular/common";
@@ -11,26 +11,28 @@ import {Subscription} from "rxjs";
 @Component({
   selector: 'app-tab-menu',
   template: `
-    <div cdkDropListGroup class="tab-menu-wrapper" oncontextmenu="return false" *ngIf="tabMenus.length">
-      <div cdkDropList (cdkDropListDropped)="drop($event)" class="d-flex" cdkDropListOrientation="horizontal">
-        <div class="tab-menu-item" *ngFor="let menu of tabMenus;let i = index" cdkDrag (click)="handleNavigate(menu)"
-             (mouseup)="detectRightClick($event,menu)">
-          <span class="text-1 font-sm-regular me-2">{{ menu.label }}</span>
-          <i class="pi pi-times cursor-pointer" (click)="handleCloseTab($event,menu,i)"></i>
+    <div class="position-relative">
+      <div cdkDropListGroup class="tab-menu-wrapper" oncontextmenu="return false" *ngIf="tabMenus.length">
+        <div cdkDropList (cdkDropListDropped)="drop($event)" class="d-flex" cdkDropListOrientation="horizontal">
+          <div class="tab-menu-item" *ngFor="let menu of tabMenus;let i = index" cdkDrag (click)="handleNavigate(menu)"
+               (mouseup)="detectRightClick($event,menu)">
+            <span class="text-1 font-sm-regular me-2">{{ menu.label }}</span>
+            <i class="pi pi-times cursor-pointer" (click)="handleCloseTab($event,menu,i)"></i>
+          </div>
         </div>
       </div>
-    </div>
-    <div id="contextMenu" class="contextMenu" [ngStyle]="rightPanelStyle" (mouseleave)="closeContextMenu()">
-      <ul class="menu">
-        <li (click)="closeOtherTabs()" class="d-flex align-items-center">
-          <i class="pi pi-times me-1"></i>
-          <a class="text-1 font-xs-regular">بستن تب های دیگر</a>
-        </li>
-        <li (click)="closeAllTabs()" class="d-flex align-items-center">
-          <i class="pi pi-times me-1"></i>
-          <a class="text-1 font-xs-regular">بستن همه تب ها</a>
-        </li>
-      </ul>
+      <div #contextMenu class="contextMenu" [ngStyle]="rightPanelStyle">
+        <ul class="menu">
+          <li (click)="closeOtherTabs()" class="d-flex align-items-center">
+            <i class="pi pi-times me-1"></i>
+            <a class="text-1 font-xs-regular">بستن تب های دیگر</a>
+          </li>
+          <li (click)="closeAllTabs()" class="d-flex align-items-center">
+            <i class="pi pi-times me-1"></i>
+            <a class="text-1 font-xs-regular">بستن همه تب ها</a>
+          </li>
+        </ul>
+      </div>
     </div>
   `,
   styleUrls: ['./tab-menu.component.scss']
@@ -42,19 +44,23 @@ export class TabMenuComponent implements OnInit {
   rightPanelStyle: any = {}
   contextTabManu: INavbarData
 
+  @ViewChild('contextMenu') contextMenu: ElementRef;
+
   constructor(
     private appConfigService: AppConfigService,
-    private router: Router
+    private router: Router,
+    private renderer: Renderer2
   ) {
   }
 
   ngOnInit(): void {
     this.subscription = this.appConfigService.tabMenu().subscribe((data) => {
-      if (!this.tabMenus.length || (this.tabMenus.length && !this.tabMenus.includes(data))) {
-        this.tabMenus.push(data)
-      }
+      if (!this.tabMenus.length || (this.tabMenus.length && !this.tabMenus.includes(data))) this.tabMenus.push(data)
     })
     this.closeContextMenu()
+    this.renderer.listen('window', 'click', (e: Event) => {
+      if (e.target !== this.contextMenu.nativeElement) this.closeContextMenu()
+    });
   }
 
   drop(event: CdkDragDrop<INavbarData[]>): void {
@@ -80,8 +86,8 @@ export class TabMenuComponent implements OnInit {
       this.rightPanelStyle = {
         'display': 'block',
         'position': 'absolute',
-        'left.px': $event.clientX - 75,
-        'top.px': $event.clientY - 62,
+        'left.px': $event.clientX - 200,
+        'top.px': 61,
       }
       this.contextTabManu = menu
     }
