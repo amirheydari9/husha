@@ -81,16 +81,16 @@ ul{
   -o-transition: 0.5s linear;
 }
 
-//.menu > li > a:hover {
-//  background-color: #b1b3b6;
-//  color: $primary;
-//}
-//
-//.menu > li > a > i {
-//  //padding-right: 10px;
-//}
-//
-//.menu > li.trash > a:hover {
-//  color: red;
-//}
+.menu > li > a:hover {
+  //background-color: #b1b3b6;
+  color: $primary;
+}
+
+.menu > li > a > i {
+  //padding-right: 10px;
+}
+
+.menu > li.trash > a:hover {
+  color: red;
+}
 
