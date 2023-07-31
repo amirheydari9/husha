@@ -3,7 +3,7 @@ import {AppConfigService} from "../../utils/app-config.service";
 import {INavbarData} from "../dashboard/navbar-data.interface";
 import {CommonModule} from "@angular/common";
 import {CdkDragDrop, DragDropModule, moveItemInArray,} from '@angular/cdk/drag-drop';
-import {Router} from "@angular/router";
+import {Router, RouterModule} from "@angular/router";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 
@@ -14,9 +14,11 @@ import {Subscription} from "rxjs";
     <div class="position-relative">
       <div cdkDropListGroup class="tab-menu-wrapper" oncontextmenu="return false" *ngIf="tabMenus.length">
         <div cdkDropList (cdkDropListDropped)="drop($event)" class="d-flex" cdkDropListOrientation="horizontal">
-          <div class="tab-menu-item" *ngFor="let menu of tabMenus;let i = index" cdkDrag (click)="handleNavigate(menu)"
+          <div class="tab-menu-item" *ngFor="let menu of tabMenus;let i = index" cdkDrag
                (mouseup)="detectRightClick($event,menu)">
-            <span class="text-1 font-sm-regular me-2">{{ menu.label }}</span>
+            <a class="text-1 me-2" [ngClass]="[router.url === menu.routerLink ? 'font-sm-bold' :'font-sm-regular']"
+               routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+               [routerLink]="menu.routerLink">{{ menu.label }}</a>
             <i class="pi pi-times cursor-pointer" (click)="handleCloseTab($event,menu,i)"></i>
           </div>
         </div>
@@ -48,7 +50,7 @@ export class TabMenuComponent implements OnInit {
 
   constructor(
     private appConfigService: AppConfigService,
-    private router: Router,
+    public router: Router,
     private renderer: Renderer2
   ) {
   }
@@ -70,15 +72,11 @@ export class TabMenuComponent implements OnInit {
   handleCloseTab($event: MouseEvent, menu: INavbarData, i: number) {
     $event.preventDefault()
     this.tabMenus = this.tabMenus.filter(item => item.id !== menu.id)
-    if (this.router.url.includes(menu.routerLink)) {
+    if (this.router.url === menu.routerLink) {
       this.tabMenus.length
         ? this.router.navigate([this.tabMenus[i - 1].routerLink])
         : this.router.navigate(['/'])
     }
-  }
-
-  handleNavigate(menu: INavbarData) {
-    this.router.navigate([menu.routerLink])
   }
 
   detectRightClick($event, menu) {
@@ -121,6 +119,7 @@ export class TabMenuComponent implements OnInit {
   imports: [
     CommonModule,
     DragDropModule,
+    RouterModule,
   ],
   exports: [TabMenuComponent]
 })
