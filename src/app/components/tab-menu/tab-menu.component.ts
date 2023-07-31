@@ -11,16 +11,15 @@ import {Subscription} from "rxjs";
 @Component({
   selector: 'app-tab-menu',
   template: `
-    <div cdkDropListGroup class="tabMenu-wrapper" *ngIf="tabMenus.length">
+    <div cdkDropListGroup class="tab-menu-wrapper" *ngIf="tabMenus.length">
       <div cdkDropList (cdkDropListDropped)="drop($event)" class="d-flex" cdkDropListOrientation="horizontal">
-        <div class="example-box" *ngFor="let menu of tabMenus;let i = index" cdkDrag (click)="handleNavigate(menu)">
+        <div class="tab-menu-item" *ngFor="let menu of tabMenus;let i = index" cdkDrag (click)="handleNavigate(menu)">
           <span class="text-1 font-sm-regular me-2">{{ menu.label }}</span>
-          <i class="pi pi-times cursor-pointer" style="font-size: 0.5rem;color: #404040"
+          <i class="pi pi-times cursor-pointer"
              (click)="handleCloseTab($event,menu,i)"></i>
         </div>
       </div>
-    </div>
-  `,
+    </div>`,
   styleUrls: ['./tab-menu.component.scss']
 })
 export class TabMenuComponent implements OnInit {
