@@ -50,3 +50,47 @@
 .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+ul{
+  list-style: none;
+}
+
+.contextMenu{
+  position: absolute;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 10px 20px rgba(64 64 64 / 5%);
+  border: 1px solid $color-2;
+  width: 200px;
+}
+
+.menu > li > a {
+  border: 0;
+  padding: 10px;
+  width: 100%;
+  cursor: pointer;
+  text-decoration: unset;
+  transition: 0.5s linear;
+  -webkit-transition: 0.5s linear;
+  -moz-transition: 0.5s linear;
+  -o-transition: 0.5s linear;
+}
+
+//.menu > li > a:hover {
+//  background-color: #b1b3b6;
+//  color: $primary;
+//}
+//
+//.menu > li > a > i {
+//  //padding-right: 10px;
+//}
+//
+//.menu > li.trash > a:hover {
+//  color: red;
+//}
+
