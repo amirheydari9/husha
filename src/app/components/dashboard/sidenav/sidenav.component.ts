@@ -81,7 +81,7 @@ export class SidenavComponent implements OnInit {
   }
 
   getActiveClass(data: INavbarData) {
-    return this.router.url.includes(data.routerLink) ? 'active' : ''
+    return this.router.url === data.routerLink ? 'active' : ''
   }
 
   shrinkItems(item: INavbarData): void {

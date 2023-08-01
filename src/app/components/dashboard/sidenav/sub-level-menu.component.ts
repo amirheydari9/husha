@@ -79,7 +79,7 @@ export class SubLevelMenuComponent implements OnInit {
   }
 
   getActiveClass(item: INavbarData) {
-    return item.expanded && this.router.url.includes(item.routerLink) ? 'active-subLevel' : ''
+    return item.expanded && this.router.url === item.routerLink ? 'active-subLevel' : ''
   }
 
   handleSelectMenu(item: INavbarData) {
