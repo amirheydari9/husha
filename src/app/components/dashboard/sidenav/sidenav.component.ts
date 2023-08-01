@@ -46,12 +46,11 @@ export class SidenavComponent implements OnInit {
     }
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     this.screenWidth = window.innerWidth
     this.subscription = this.baseInfoFacade.menu$.subscribe(data => {
       this.navData = data.map(menu => this.transformMenu(menu))
     })
-    await this.baseInfoFacade.fetchMenu()
   }
 
   transformMenu(menu: IMenuRes): INavbarData {

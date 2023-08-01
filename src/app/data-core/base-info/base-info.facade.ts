@@ -5,6 +5,7 @@ import {Observable} from "rxjs";
 import {Dispatch} from "@ngxs-labs/dispatch-decorator";
 import {BaseInfoService} from "../../api/base-info.service";
 import {IMenuRes} from "../../models/interface/menu-res.interface";
+import {FetchMenuReqDTO} from "../../models/DTOs/fetch-menu-req.DTO";
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,8 @@ export class BaseInfoFacade {
   @Select(BaseInfoState.menu) menu$: Observable<IMenuRes[]>
 
   @Dispatch()
-  async fetchMenu() {
-    const data = await this.baseInfoService.fetchMenu()
+  async fetchMenu(payload?:FetchMenuReqDTO) {
+    const data = await this.baseInfoService.fetchMenu(payload)
     return new FetchMenuAction(data)
   }
 

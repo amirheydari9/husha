@@ -71,7 +71,7 @@ export class InterceptorService implements HttpInterceptor {
     } else if (error.status === 404) {
       this.router.navigate(['/error/not-found'])
     } else if (error.status === 500 || error.status === 502 || error.status === 504) {
-      this.router.navigate(['/error/server-error'])
+      // this.router.navigate(['/error/server-error'])
     }
   }
 }

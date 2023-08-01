@@ -1,7 +1,7 @@
-<form [formGroup]="mCustomersForm" class="d-flex align-items-center justify-content-between">
+<form [formGroup]="myCustomersForm" class="d-flex align-items-center justify-content-between">
 
   <app-husha-dropdown
-    [ngStyle]="{'width':'300px'}"
+    [ngStyle]="{'width':'170px'}"
     class="me-2"
     label="مشتریان من"
     formControlName="parentCustomers"
@@ -10,7 +10,7 @@
 
   <app-husha-dropdown
     *ngIf="childCustomers.length"
-    [ngStyle]="{'width':'300px'}"
+    [ngStyle]="{'width':'170px'}"
     class="me-2"
     label="مشتریان من"
     formControlName="childCustomers"
@@ -18,17 +18,29 @@
   ></app-husha-dropdown>
 
   <app-husha-dropdown
-    [ngStyle]="{'width':'300px'}"
+    [ngStyle]="{'width':'170px'}"
     class="me-2"
-    label="سرویس های من"
+    label="انتخاب سرویس"
     formControlName="services"
+    [options]="customerServices"
   ></app-husha-dropdown>
 
+  <ng-container *ngIf="showUnitsCtrl">
+    <app-husha-dropdown
+      [ngStyle]="{'width':'170px'}"
+      class="me-2"
+      label="انتخاب مرکز"
+      formControlName="units"
+      [options]="customerUnits"
+    ></app-husha-dropdown>
+  </ng-container>
+
   <app-husha-dropdown
-    [ngStyle]="{'width':'300px'}"
+    [ngStyle]="{'width':'170px'}"
     class="me-2"
-    label="سال مالی"
-    formControlName="units"
+    label="انتخاب دوره"
+    formControlName="periods"
+    [options]="customerPeriods"
   ></app-husha-dropdown>
 
 </form>
