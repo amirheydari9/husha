@@ -1,7 +1,7 @@
 import {Component, NgModule, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
-import {first, Subscription, takeLast} from "rxjs";
+import {Subscription} from "rxjs";
 import {HushaDropdownModule} from "../../ui-kits/husha-dropdown/husha-dropdown.component";
 import {CustomerFacade} from "../../data-core/customer/customer.facade";
 import {CustomerStore} from "../../data-core/customer/customer.store";
@@ -68,16 +68,7 @@ export class MyCustomersComponent implements OnInit {
         if (hasChild) {
           this.childCustomers = this.totalChildCustomers.filter(item => item.parentId === data)
         } else {
-          await Promise.all([
-            this.customerFacade.getCustomerServices(new GetServicesReqDTO(data)),
-            this.customerFacade.getCustomerPeriods(new GetPeriodReqDTO(data))
-          ])
-          this.subscription.push(
-            this.customerFacade.customerServices$.subscribe(data => this.customerServices = data)
-          )
-          this.subscription.push(
-            this.customerFacade.customerPeriods$.subscribe(data => this.customerPeriods = data)
-          )
+          await this.handleFetchServicesAndPeriods(data)
         }
       })
     )
@@ -86,16 +77,7 @@ export class MyCustomersComponent implements OnInit {
       this.childCustomersCtrl.valueChanges.subscribe(async data => {
         this.servicesCtrl.setValue(null)
         this.periodsCtrl.setValue(null)
-        await Promise.all([
-          this.customerFacade.getCustomerServices(new GetServicesReqDTO(data)),
-          this.customerFacade.getCustomerPeriods(new GetPeriodReqDTO(data))
-        ])
-        this.subscription.push(
-          this.customerFacade.customerServices$.subscribe(data => this.customerServices = data)
-        )
-        this.subscription.push(
-          this.customerFacade.customerPeriods$.subscribe(data => this.customerPeriods = data)
-        )
+        await this.handleFetchServicesAndPeriods(data)
       })
     )
 
@@ -142,6 +124,19 @@ export class MyCustomersComponent implements OnInit {
         await this.baseInfoFacade.fetchMenu(payload)
       }
     })
+  }
+
+  async handleFetchServicesAndPeriods(customerId: number) {
+    await Promise.all([
+      this.customerFacade.getCustomerServices(new GetServicesReqDTO(customerId)),
+      this.customerFacade.getCustomerPeriods(new GetPeriodReqDTO(customerId))
+    ])
+    this.subscription.push(
+      this.customerFacade.customerServices$.subscribe(data => this.customerServices = data)
+    )
+    this.subscription.push(
+      this.customerFacade.customerPeriods$.subscribe(data => this.customerPeriods = data)
+    )
   }
 
 
