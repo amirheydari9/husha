@@ -15,6 +15,9 @@ import {IGetUnitsRes} from "../../models/interface/get-units-res.interface";
 import {IGetPeriodRes} from "../../models/interface/get-period-res.interface";
 import {GetUnitsReqDTO} from "../../models/DTOs/get-units-req.DTO";
 import {FetchMenuReqDTO} from "../../models/DTOs/fetch-menu-req.DTO";
+import {MenuItem} from "primeng/api";
+import {ButtonModule} from "primeng/button";
+import {TieredMenuModule} from "primeng/tieredmenu";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -33,6 +36,7 @@ export class MyCustomersComponent implements OnInit {
   customerUnits: IGetUnitsRes[] = []
   customerPeriods: IGetPeriodRes[] = []
   showUnitsCtrl: boolean = false
+  items: MenuItem[] = []
 
   constructor(
     private fb: FormBuilder,
@@ -57,8 +61,24 @@ export class MyCustomersComponent implements OnInit {
           item.parentId ? this.totalChildCustomers.push(item) : this.parentCustomers.push(item)
         })
         this.parentCustomersCtrl.setValue(this.parentCustomers)
+        // const x = []
+        // const y = []
+        // const t = []
+        // data.forEach(item => item.parentId === null ? x.push(item) : y.push(item))
+        // x.forEach(item => {
+        //   let q = []
+        //   y.forEach(value => {
+        //     if (item.id === value.parentId) q.push(value)
+        //   })
+        //   item = {...item, items: q}
+        //   t.push(item)
+        //   q = []
+        // })
+        // this.items = t.map(item => this.transformMenu(item))
+        // this.injectCommand(this.items)
       })
     )
+
     this.subscription.push(
       this.parentCustomersCtrl.valueChanges.subscribe(async data => {
         this.customerServices = []
@@ -160,6 +180,34 @@ export class MyCustomersComponent implements OnInit {
     return this.myCustomersForm.controls['periods'] as FormControl
   }
 
+  // transformMenu(menu) {
+  //     const {title, items, id, name, ...rest} = menu;
+  //     return {
+  //       id: id,
+  //       label: title,
+  //       items: items && items.length > 0 ? items.map(this.transformMenu.bind(this)) :null,
+  //     };
+  //   }
+  //
+  // injectCommand(menu: MenuItem[]) {
+  //   var i = 0;
+  //   var j = 0;
+  //   for (i = 0; i < menu.length; i++) {
+  //     if (menu[i].id !== null) {
+  //       menu[i] = {...menu[i], command: (event) => this.handleSelectMenu(event.item)}
+  //     }
+  //     if (menu[i].items !== null && menu[i].items?.length > 0) {
+  //       for (j = 0; j < menu[i].items.length; j++) {
+  //         this.injectCommand(menu[i].items)
+  //       }
+  //     }
+  //   }
+  // }
+  //
+  // handleSelectMenu(item) {
+  //   console.log(item)
+  // }
+
 }
 
 @NgModule({
@@ -168,7 +216,9 @@ export class MyCustomersComponent implements OnInit {
     ReactiveFormsModule,
     HushaDropdownModule,
     CustomerStore,
-    CommonModule
+    CommonModule,
+    ButtonModule,
+    TieredMenuModule,
   ],
   exports: [
     MyCustomersComponent
