@@ -16,8 +16,6 @@ import {IGetPeriodRes} from "../../models/interface/get-period-res.interface";
 import {GetUnitsReqDTO} from "../../models/DTOs/get-units-req.DTO";
 import {FetchMenuReqDTO} from "../../models/DTOs/fetch-menu-req.DTO";
 import {MenuItem} from "primeng/api";
-import {ButtonModule} from "primeng/button";
-import {TieredMenuModule} from "primeng/tieredmenu";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -189,25 +187,6 @@ export class MyCustomersComponent implements OnInit {
   //     };
   //   }
   //
-  // injectCommand(menu: MenuItem[]) {
-  //   var i = 0;
-  //   var j = 0;
-  //   for (i = 0; i < menu.length; i++) {
-  //     if (menu[i].id !== null) {
-  //       menu[i] = {...menu[i], command: (event) => this.handleSelectMenu(event.item)}
-  //     }
-  //     if (menu[i].items !== null && menu[i].items?.length > 0) {
-  //       for (j = 0; j < menu[i].items.length; j++) {
-  //         this.injectCommand(menu[i].items)
-  //       }
-  //     }
-  //   }
-  // }
-  //
-  // handleSelectMenu(item) {
-  //   console.log(item)
-  // }
-
 }
 
 @NgModule({
@@ -217,8 +196,6 @@ export class MyCustomersComponent implements OnInit {
     HushaDropdownModule,
     CustomerStore,
     CommonModule,
-    ButtonModule,
-    TieredMenuModule,
   ],
   exports: [
     MyCustomersComponent
