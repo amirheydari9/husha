@@ -1,4 +1,13 @@
-<form [formGroup]="myCustomersForm" class="d-flex align-items-center justify-content-between">
+<form dir="rtl" [formGroup]="myCustomersForm" class="d-flex align-items-center justify-content-between">
+  <app-husha-dropdown
+    *ngIf="childCustomers.length"
+    [ngStyle]="{'width':'170px'}"
+    class="me-2"
+    label="مشتریان من"
+    formControlName="childCustomers"
+    [options]="childCustomers"
+  ></app-husha-dropdown>
+
 
   <app-husha-dropdown
     [ngStyle]="{'width':'170px'}"

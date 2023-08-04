@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  // baseUrl: 'http://86.109.33.172:8080/api/',
-  baseUrl:'http://192.168.0.116:8080/api/',
+  baseUrl: 'http://86.109.33.172:8080/api/',
+  // baseUrl:'http://192.168.0.116:8080/api/',
   basicAuthUsername:'HushaMicroService',
   basicAuthPassword:'Jfbg&z3dHM:m_Vcb',
 
