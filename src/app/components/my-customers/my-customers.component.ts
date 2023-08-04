@@ -73,7 +73,6 @@ export class MyCustomersComponent implements OnInit {
         //   q = []
         // })
         // this.items = t.map(item => this.transformMenu(item))
-        // this.injectCommand(this.items)
       })
     )
 

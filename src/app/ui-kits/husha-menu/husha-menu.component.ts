@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, NgModule, Output, ViewChild} from '@angular/core';
 import {TieredMenu, TieredMenuModule} from "primeng/tieredmenu";
 import {ButtonModule} from "primeng/button";
 import {MenuItem} from "primeng/api";
@@ -6,26 +6,22 @@ import {MenuItem} from "primeng/api";
 @Component({
   selector: 'app-husha-menu',
   template: `
-      <ng-content></ng-content>
-      <p-tieredMenu #hushaMenu [model]="items" [popup]="true" [autoZIndex]="true"></p-tieredMenu>
+    <ng-content></ng-content>
+    <p-tieredMenu #hushaMenu [model]="items" [popup]="true" [autoZIndex]="true"></p-tieredMenu>
   `,
   styles: [`
-    //:host ::ng-deep {
-    //  .app-husha-menu .p-tieredmenu .p-menuitem-link .p-submenu-icon {
-    //    margin-left: unset;
-    //    margin-right: auto;
-    //    transform: rotate(180deg);
-    //  }
-    //
-    //  .app-husha-menu .p-tieredmenu .p-menuitem-active > p-tieredmenusub > .p-submenu-list.p-submenu-list-flipped {
-    //    left: -150%;
-    //  }
-    //
-    //  .app-husha-menu .p-tieredmenu.p-tieredmenu-overlay {
-    //    right: 25px;
-    //    left: unset;
-    //  }
-    //}
+    :host ::ng-deep {
+      .p-tieredmenu .p-menuitem-link .p-submenu-icon {
+        margin-left: unset;
+        margin-right: auto;
+        transform: rotate(180deg);
+      }
+
+      .p-tieredmenu .p-menuitem-active > p-tieredmenusub > .p-submenu-list {
+        left: unset;
+        right: 100%;
+      }
+    }
   `
   ]
 })
@@ -45,7 +41,8 @@ export class HushaMenuComponent {
 
   @Output() selectedMenu: EventEmitter<MenuItem> = new EventEmitter<MenuItem>()
 
-  constructor() {
+  constructor(
+  ) {
   }
 
   private injectCommand(menu: MenuItem[]) {
@@ -64,7 +61,6 @@ export class HushaMenuComponent {
   private emitValue(item: MenuItem) {
     if (!item.items) this.selectedMenu.emit(item)
   }
-
 }
 
 @NgModule({
