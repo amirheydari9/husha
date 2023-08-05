@@ -75,6 +75,10 @@ export class MyCustomersComponent implements OnInit {
     this.selectedService = null
     this.selectedUnit = null
     this.selectedPeriod = null
+    this.showUnit = false
+    this.customerServices = []
+    this.customerUnits = []
+    this.customerPeriods = []
     try {
       await Promise.allSettled([
         this.customerFacade.getCustomerServices(new GetServicesReqDTO(customerId)),
@@ -118,7 +122,7 @@ export class MyCustomersComponent implements OnInit {
         const payload = new FetchMenuReqDTO(
           +this.selectedCustomer.id,
           +this.selectedService.id,
-         null,
+          null,
           +this.selectedPeriod.id,
         )
         await this.baseInfoFacade.fetchMenu(payload)
