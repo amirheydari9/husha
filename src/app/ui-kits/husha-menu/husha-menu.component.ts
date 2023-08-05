@@ -41,8 +41,7 @@ export class HushaMenuComponent {
 
   @Output() selectedMenu: EventEmitter<MenuItem> = new EventEmitter<MenuItem>()
 
-  constructor(
-  ) {
+  constructor() {
   }
 
   private injectCommand(menu: MenuItem[]) {

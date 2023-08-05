@@ -9,7 +9,7 @@ import {Subscription} from "rxjs";
 @Component({
   selector: 'app-user-avatar',
   template: `
-    <p-avatar image="assets/user3.jpg" size="xlarge" [shape]="'circle'" (click)="menu.toggle($event)"></p-avatar>
+    <p-avatar image="assets/user3.jpg" [shape]="'circle'" (click)="menu.toggle($event)"></p-avatar>
     <p-menu #menu [model]="items" [popup]="true"></p-menu>
   `,
   styles: []

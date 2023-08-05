@@ -1,47 +1,46 @@
-<form [formGroup]="myCustomersForm" class="d-flex align-items-center justify-content-between">
+<div class="d-flex justify-content-start">
 
-  <app-husha-dropdown
-    [ngStyle]="{'width':'170px'}"
-    class="me-2"
-    label="مشتریان من"
-    formControlName="parentCustomers"
-    [options]="parentCustomers"
-  ></app-husha-dropdown>
+  <app-husha-menu
+    [items]="customers"
+    (selectedMenu)="handleSelectCustomer($event)">
+    <div class="d-flex align-items-center justify-content-start me-3" (click)="customerMenu.menu.toggle($event)">
+      <i class="pi pi-user me-2"></i>
+      <span class="text-1 font-sm-bold">{{selectedCustomer ? selectedCustomer.label : 'انتخاب مشتری'}}</span>
+    </div>
+  </app-husha-menu>
 
-  <app-husha-dropdown
-    *ngIf="childCustomers.length"
-    [ngStyle]="{'width':'170px'}"
-    class="me-2"
-    label="مشتریان من"
-    formControlName="childCustomers"
-    [options]="childCustomers"
-  ></app-husha-dropdown>
+  <app-husha-menu
+    *ngIf="selectedCustomer"
+    #serviceMenu
+    [items]="customerServices"
+    (selectedMenu)="handleSelectService($event)">
+    <div class="d-flex align-items-center justify-content-start me-3" (click)="serviceMenu.menu.toggle($event)">
+      <i class="pi pi-cog me-2"></i>
+      <span class="text-1 font-sm-bold ">{{selectedService ? selectedService.label : 'انتخاب سرویس'}}</span>
+    </div>
+  </app-husha-menu>
 
-  <app-husha-dropdown
-    [ngStyle]="{'width':'170px'}"
-    class="me-2"
-    label="انتخاب سرویس"
-    formControlName="services"
-    [options]="customerServices"
-  ></app-husha-dropdown>
 
-  <ng-container *ngIf="showUnitsCtrl">
-    <app-husha-dropdown
-      [ngStyle]="{'width':'170px'}"
-      class="me-2"
-      label="انتخاب مرکز"
-      formControlName="units"
-      [options]="customerUnits"
-    ></app-husha-dropdown>
-  </ng-container>
+  <app-husha-menu
+    *ngIf="showUnit"
+    #unitMenu
+    [items]="customerUnits"
+    (selectedMenu)="handleSelectUnit($event)">
+    <div class="d-flex align-items-center justify-content-start me-3" (click)="unitMenu.menu.toggle($event)">
+      <i class="pi pi-building me-2"></i>
+      <span class="text-1 font-sm-bold ">{{selectedUnit ? selectedUnit.label : 'انتخاب مرکز'}}</span>
+    </div>
+  </app-husha-menu>
 
-  <app-husha-dropdown
-    [ngStyle]="{'width':'170px'}"
-    class="me-2"
-    label="انتخاب دوره"
-    formControlName="periods"
-    [options]="customerPeriods"
-  ></app-husha-dropdown>
+  <app-husha-menu
+    *ngIf="selectedCustomer"
+    #periodMenu
+    [items]="customerPeriods"
+    (selectedMenu)="handleSelectPeriod($event)">
+    <div class="d-flex align-items-center justify-content-start" (click)="periodMenu.menu.toggle($event)">
+      <i class="pi pi-calendar me-2"></i>
+      <span class="text-1 font-sm-bold ">{{selectedPeriod ? selectedPeriod.label : 'انتخاب دوره'}}</span>
+    </div>
+  </app-husha-menu>
 
-</form>
-
+</div>

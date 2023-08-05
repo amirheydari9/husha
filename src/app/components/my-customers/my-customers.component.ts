@@ -1,21 +1,17 @@
-import {Component, NgModule, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {Component, NgModule, OnInit, ViewChild} from '@angular/core';
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
-import {HushaDropdownModule} from "../../ui-kits/husha-dropdown/husha-dropdown.component";
 import {CustomerFacade} from "../../data-core/customer/customer.facade";
 import {CustomerStore} from "../../data-core/customer/customer.store";
-import {IMyCustomerRes} from "../../models/interface/my-customer-res.interface";
 import {CommonModule} from "@angular/common";
 import {BaseInfoFacade} from "../../data-core/base-info/base-info.facade";
 import {GetServicesReqDTO} from "../../models/DTOs/get-services-req.DTO";
 import {GetPeriodReqDTO} from "../../models/DTOs/get-period-req.DTO";
-import {IGetServicesRes} from "../../models/interface/get-services-res.interface";
-import {IGetUnitsRes} from "../../models/interface/get-units-res.interface";
-import {IGetPeriodRes} from "../../models/interface/get-period-res.interface";
-import {GetUnitsReqDTO} from "../../models/DTOs/get-units-req.DTO";
-import {FetchMenuReqDTO} from "../../models/DTOs/fetch-menu-req.DTO";
 import {MenuItem} from "primeng/api";
+import {HushaMenuComponent, HushaMenuModule} from "../../ui-kits/husha-menu/husha-menu.component";
+import {FetchMenuReqDTO} from "../../models/DTOs/fetch-menu-req.DTO";
+import {GetUnitsReqDTO} from "../../models/DTOs/get-units-req.DTO";
+import {IGetServicesRes} from "../../models/interface/get-services-res.interface";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -25,176 +21,151 @@ import {MenuItem} from "primeng/api";
 })
 export class MyCustomersComponent implements OnInit {
 
-  myCustomersForm: FormGroup
   subscription: Subscription[] = []
-  totalChildCustomers: IMyCustomerRes[] = []
-  parentCustomers: IMyCustomerRes[] = []
-  childCustomers: IMyCustomerRes[] = []
-  customerServices: IGetServicesRes[] = []
-  customerUnits: IGetUnitsRes[] = []
-  customerPeriods: IGetPeriodRes[] = []
-  showUnitsCtrl: boolean = false
-  items: MenuItem[] = []
+
+  customers: MenuItem[] = []
+  customerServices: MenuItem[] = []
+  customerUnits: MenuItem[] = []
+  customerPeriods: MenuItem[] = []
+
+  originalCustomerServices: IGetServicesRes[] = []
+  showUnit: boolean = false
+
+
+  selectedCustomer: MenuItem;
+  selectedService: MenuItem;
+  selectedUnit: MenuItem;
+  selectedPeriod: MenuItem;
+
+  @ViewChild(HushaMenuComponent) customerMenu: HushaMenuComponent
+  @ViewChild(HushaMenuComponent) serviceMenu: HushaMenuComponent
+  @ViewChild(HushaMenuComponent) unitMenu: HushaMenuComponent
+  @ViewChild(HushaMenuComponent) periodMenu: HushaMenuComponent
 
   constructor(
-    private fb: FormBuilder,
     private customerFacade: CustomerFacade,
     private baseInfoFacade: BaseInfoFacade,
   ) {
   }
 
   async ngOnInit(): Promise<void> {
-    this.myCustomersForm = this.fb.group({
-      parentCustomers: this.fb.control(null, [Validators.required]),
-      childCustomers: this.fb.control(null, [Validators.required]),
-      services: this.fb.control(null, [Validators.required]),
-      units: this.fb.control(null),
-      periods: this.fb.control(null, [Validators.required]),
-    })
     await this.baseInfoFacade.fetchMenu()
     await this.customerFacade.fetchMyCustomers()
     this.subscription.push(
       this.customerFacade.myCustomers$.subscribe(data => {
-        data.forEach(item => {
-          item.parentId ? this.totalChildCustomers.push(item) : this.parentCustomers.push(item)
+        const x = []
+        const y = []
+        const t = []
+        data.forEach(item => item.parentId === null ? x.push(item) : y.push(item))
+        x.forEach(item => {
+          let q = []
+          y.forEach(value => {
+            if (item.id === value.parentId) q.push(value)
+          })
+          item = {...item, items: q}
+          t.push(item)
+          q = []
         })
-        this.parentCustomersCtrl.setValue(this.parentCustomers)
-        // const x = []
-        // const y = []
-        // const t = []
-        // data.forEach(item => item.parentId === null ? x.push(item) : y.push(item))
-        // x.forEach(item => {
-        //   let q = []
-        //   y.forEach(value => {
-        //     if (item.id === value.parentId) q.push(value)
-        //   })
-        //   item = {...item, items: q}
-        //   t.push(item)
-        //   q = []
-        // })
-        // this.items = t.map(item => this.transformMenu(item))
+        this.customers = t.map(item => this.transformMenu(item))
       })
     )
-
-    this.subscription.push(
-      this.parentCustomersCtrl.valueChanges.subscribe(async data => {
-        this.customerServices = []
-        this.customerUnits = []
-        this.customerPeriods = []
-        const hasChild = this.totalChildCustomers.find(item => item.parentId === data)
-        if (hasChild) {
-          this.childCustomers = this.totalChildCustomers.filter(item => item.parentId === data)
-        } else {
-          await this.handleFetchServicesAndPeriods(data)
-        }
-      })
-    )
-
-    this.subscription.push(
-      this.childCustomersCtrl.valueChanges.subscribe(async data => {
-        this.servicesCtrl.setValue(null)
-        this.periodsCtrl.setValue(null)
-        await this.handleFetchServicesAndPeriods(data)
-      })
-    )
-
-    this.subscription.push(
-      this.servicesCtrl.valueChanges.subscribe(async data => {
-        this.showUnitsCtrl = false
-        this.customerUnits = []
-        this.unitsCtrl.setValue(null)
-        this.unitsCtrl.removeValidators([Validators.required])
-        const service = this.customerServices.find(item => item.id === data)
-        if (service && service.haveUnit) {
-          this.unitsCtrl.setValidators([Validators.required])
-          await this.customerFacade.getCustomerUnits(new GetUnitsReqDTO(115, data))
-          this.subscription.push(
-            this.customerFacade.customerUnits$.subscribe(data => this.customerUnits = data)
-          )
-          this.showUnitsCtrl = true
-        }
-        this.unitsCtrl.updateValueAndValidity()
-        this.handleFetchMenu()
-      })
-    )
-
-    this.subscription.push(
-      this.unitsCtrl.valueChanges.subscribe(async data => {
-        if (data) this.handleFetchMenu()
-      })
-    )
-
-    this.subscription.push(
-      this.periodsCtrl.valueChanges.subscribe(data => this.handleFetchMenu())
-    )
-  }
-
-  handleFetchMenu() {
-    setTimeout(async () => {
-      if (this.myCustomersForm.valid) {
-        const payload = new FetchMenuReqDTO(
-          115,
-          this.servicesCtrl.value,
-          this.unitsCtrl.value,
-          this.periodsCtrl.value,
-        )
-        await this.baseInfoFacade.fetchMenu(payload)
-      }
-    })
   }
 
   async handleFetchServicesAndPeriods(customerId: number) {
-    await Promise.all([
-      this.customerFacade.getCustomerServices(new GetServicesReqDTO(customerId)),
-      this.customerFacade.getCustomerPeriods(new GetPeriodReqDTO(customerId))
-    ])
-    this.subscription.push(
-      this.customerFacade.customerServices$.subscribe(data => this.customerServices = data)
-    )
-    this.subscription.push(
-      this.customerFacade.customerPeriods$.subscribe(data => this.customerPeriods = data)
-    )
+    this.selectedService = null
+    this.selectedUnit = null
+    this.selectedPeriod = null
+    try {
+      await Promise.allSettled([
+        this.customerFacade.getCustomerServices(new GetServicesReqDTO(customerId)),
+        this.customerFacade.getCustomerPeriods(new GetPeriodReqDTO(customerId))
+      ])
+      this.subscription.push(
+        this.customerFacade.customerServices$.subscribe(data => {
+          this.originalCustomerServices = data
+          this.customerServices = data.map(item => this.transformMenu(item))
+        })
+      )
+      this.subscription.push(
+        this.customerFacade.customerPeriods$.subscribe(data => this.customerPeriods = data.map(item => this.transformMenu(item)))
+      )
+    } catch (e) {
+      console.log(e)
+    }
   }
 
-
-  get parentCustomersCtrl(): FormControl {
-    return this.myCustomersForm.controls['parentCustomers'] as FormControl
+  transformMenu(menu) {
+    const {title, items, id, name, ...rest} = menu;
+    return {
+      id: id,
+      label: title,
+      items: items && items.length > 0 ? items.map(this.transformMenu.bind(this)) : null,
+    };
   }
 
-  get childCustomersCtrl(): FormControl {
-    return this.myCustomersForm.controls['childCustomers'] as FormControl
+  async handleFetchMenu(): Promise<boolean | void> {
+    if (this.customerServices && this.customerServices && this.selectedPeriod) {
+      if (this.showUnit && this.selectedUnit) {
+        const payload = new FetchMenuReqDTO(
+          +this.selectedCustomer.id,
+          +this.selectedService.id,
+          +this.selectedUnit.id,
+          +this.selectedPeriod.id,
+        )
+        await this.baseInfoFacade.fetchMenu(payload)
+      }
+      if (!this.showUnit) {
+        const payload = new FetchMenuReqDTO(
+          +this.selectedCustomer.id,
+          +this.selectedService.id,
+         null,
+          +this.selectedPeriod.id,
+        )
+        await this.baseInfoFacade.fetchMenu(payload)
+      }
+    }
   }
 
-  get servicesCtrl(): FormControl {
-    return this.myCustomersForm.controls['services'] as FormControl
+  async handleSelectCustomer($event: MenuItem) {
+    this.selectedCustomer = $event
+    await this.handleFetchServicesAndPeriods(+$event.id)
   }
 
-  get unitsCtrl(): FormControl {
-    return this.myCustomersForm.controls['units'] as FormControl
+  async handleSelectService($event: MenuItem) {
+    this.selectedService = $event
+    this.showUnit = false
+    this.selectedUnit = null
+    this.customerUnits = []
+    const service = this.originalCustomerServices.find(item => item.id === +$event.id)
+    if (service.haveUnit) {
+      this.showUnit = true
+      await this.customerFacade.getCustomerUnits(new GetUnitsReqDTO(+this.selectedCustomer.id, +$event.id))
+      this.subscription.push(
+        this.customerFacade.customerUnits$.subscribe(data => this.customerUnits = data.map(item => this.transformMenu(item)))
+      )
+    } else {
+      await this.handleFetchMenu()
+    }
+
   }
 
-  get periodsCtrl(): FormControl {
-    return this.myCustomersForm.controls['periods'] as FormControl
+  async handleSelectUnit($event: MenuItem) {
+    this.selectedUnit = $event
+    await this.handleFetchMenu()
   }
 
-  // transformMenu(menu) {
-  //     const {title, items, id, name, ...rest} = menu;
-  //     return {
-  //       id: id,
-  //       label: title,
-  //       items: items && items.length > 0 ? items.map(this.transformMenu.bind(this)) :null,
-  //     };
-  //   }
-  //
+  async handleSelectPeriod($event: MenuItem) {
+    this.selectedPeriod = $event
+    await this.handleFetchMenu()
+  }
 }
 
 @NgModule({
   declarations: [MyCustomersComponent],
   imports: [
-    ReactiveFormsModule,
-    HushaDropdownModule,
     CustomerStore,
     CommonModule,
+    HushaMenuModule,
   ],
   exports: [
     MyCustomersComponent

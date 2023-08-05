@@ -15,13 +15,11 @@ export class BaseInfoService {
   }
 
   fetchMenu(payload?: FetchMenuReqDTO): Promise<IMenuRes[]> {
-    let params: HttpParams;
-    if (payload) {
-      params = new HttpParams().set('cid', payload.cid).set('sid', payload.sid).set('pid', payload.pid)
-      if (payload.uid) {
-        params = new HttpParams().set('cid', payload.cid).set('sid', payload.sid).set('pid', payload.pid).set('uid', payload.uid)
-      }
-    }
+    const params = new HttpParams()
+      .set('cid', payload?.cid || '')
+      .set('sid', payload?.sid || '')
+      .set('pid', payload?.pid || '')
+      .set('uid', payload?.uid || '');
     return this.httpService.get<IMenuRes[]>('baseinfo/menu/access-menu', params).toPromise()
   }
 
