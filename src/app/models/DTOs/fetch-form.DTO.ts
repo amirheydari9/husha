@@ -1,6 +1,6 @@
 export class FetchFormDTO {
   constructor(
-    public formId: Number
+    public formId: string
   ) {
   }
 }

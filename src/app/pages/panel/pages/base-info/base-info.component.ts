@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
+import {BaseInfoFacade} from "../../../../data-core/base-info/base-info.facade";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -14,14 +14,15 @@ export class BaseInfoComponent implements OnInit {
   subscription: Subscription[] = []
 
   constructor(
-    private route: ActivatedRoute
+    private baseInfoFacade: BaseInfoFacade
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+
     this.subscription.push(
-      this.route.params.subscribe(data => {
-        console.log(data)
+      this.baseInfoFacade.form$.subscribe(data => {
+
       })
     )
   }
