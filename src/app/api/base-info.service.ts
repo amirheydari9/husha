@@ -3,6 +3,8 @@ import {HttpService} from "../utils/http.service";
 import {IMenuRes} from "../models/interface/menu-res.interface";
 import {FetchMenuReqDTO} from "../models/DTOs/fetch-menu-req.DTO";
 import {HttpParams} from "@angular/common/http";
+import {FetchFormDTO} from "../models/DTOs/fetch-form.DTO";
+import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +23,10 @@ export class BaseInfoService {
       .set('pid', payload?.pid || '')
       .set('uid', payload?.uid || '');
     return this.httpService.get<IMenuRes[]>('baseinfo/menu/access-menu', params).toPromise()
+  }
+
+  fetchForm(payload: FetchFormDTO): Promise<IFetchFormRes> {
+    return this.httpService.get<IFetchFormRes>(`baseinfo/form/getById/${payload.formId}`).toPromise()
   }
 
 }

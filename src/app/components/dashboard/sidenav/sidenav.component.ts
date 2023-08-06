@@ -58,7 +58,7 @@ export class SidenavComponent implements OnInit {
     return {
       id: id,
       label: title,
-      routerLink: '/base-form/' + id,
+      routerLink: '/base-info/' + id,
       items: subMenus && subMenus.length > 0 ? subMenus.map(this.transformMenu.bind(this)) : [],
       expanded: false,
       name: name,
