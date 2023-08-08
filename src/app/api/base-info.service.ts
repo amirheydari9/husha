@@ -5,6 +5,8 @@ import {FetchMenuReqDTO} from "../models/DTOs/fetch-menu-req.DTO";
 import {HttpParams} from "@angular/common/http";
 import {FetchFormDTO} from "../models/DTOs/fetch-form.DTO";
 import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
+import {FetchFormDataDTO} from "../models/DTOs/fetch-form-data.DTO";
+import {IFetchFormDataRes} from "../models/interface/fetch-form-data-res.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +19,12 @@ export class BaseInfoService {
   }
 
   fetchMenu(payload?: FetchMenuReqDTO): Promise<IMenuRes[]> {
-    const params = new HttpParams()
-      .set('cid', payload?.cid || '')
-      .set('sid', payload?.sid || '')
-      .set('pid', payload?.pid || '')
-      .set('uid', payload?.uid || '');
+    let params = new HttpParams()
+    for (const key in payload) {
+      if (payload.hasOwnProperty(key)) {
+        params = params.set(key, payload[key] || '');
+      }
+    }
     return this.httpService.get<IMenuRes[]>('baseinfo/menu/access-menu', params).toPromise()
   }
 
@@ -29,4 +32,13 @@ export class BaseInfoService {
     return this.httpService.get<IFetchFormRes>(`baseinfo/form/getById/${payload.formId}`).toPromise()
   }
 
+  fetchFormData(payload: FetchFormDataDTO): Promise<IFetchFormDataRes> {
+    let params = new HttpParams()
+    for (const key in payload) {
+      if (payload.hasOwnProperty(key)) {
+        params = params.set(key, payload[key] || '');
+      }
+    }
+    return this.httpService.get<IFetchFormDataRes>(`baseinfo/data`, params).toPromise()
+  }
 }

@@ -28,7 +28,7 @@ export class InterceptorService implements HttpInterceptor {
     private oauthFacade: OauthFacade
   ) {
     router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) this.appConfigService.cancelPendingRequests();
+      // if (event instanceof NavigationEnd) this.appConfigService.cancelPendingRequests();
     });
   }
 

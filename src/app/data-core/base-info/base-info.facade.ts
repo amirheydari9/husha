@@ -8,6 +8,7 @@ import {IMenuRes} from "../../models/interface/menu-res.interface";
 import {FetchMenuReqDTO} from "../../models/DTOs/fetch-menu-req.DTO";
 import {FetchFormDTO} from "../../models/DTOs/fetch-form.DTO";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
+import {FetchFormDataDTO} from "../../models/DTOs/fetch-form-data.DTO";
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,13 @@ export class BaseInfoFacade {
   async fetchForm(payload: FetchFormDTO) {
     const data = await this.baseInfoService.fetchForm(payload)
     return new FetchFormAction(data)
+  }
+
+  // @Dispatch()
+  async fetchFormData(payload: FetchFormDataDTO) {
+    const data = await this.baseInfoService.fetchFormData(payload)
+    console.log(data)
+    // return new FetchFormAction(data)
   }
 
 
