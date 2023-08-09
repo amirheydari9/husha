@@ -1,4 +1,4 @@
-export const selectedCustomerIdKey = 'selectedCustomerIdKey';
+export const selectedCustomerKey = 'selectedCustomerKey';
 export const selectedServiceKey = 'selectedServiceKey';
-export const selectedUnitIdKey = 'selectedUnitIdKey';
-export const selectedPeriodIdKey = 'selectedPeriodIdKey';
+export const selectedUnitKey = 'selectedUnitKey';
+export const selectedPeriodKey = 'selectedPeriodKey';

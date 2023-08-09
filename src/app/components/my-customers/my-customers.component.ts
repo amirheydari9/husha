@@ -13,7 +13,7 @@ import {FetchMenuReqDTO} from "../../models/DTOs/fetch-menu-req.DTO";
 import {GetUnitsReqDTO} from "../../models/DTOs/get-units-req.DTO";
 import {IGetServicesRes} from "../../models/interface/get-services-res.interface";
 import {StorageService} from "../../utils/storage.service";
-import {selectedCustomerIdKey, selectedPeriodIdKey, selectedServiceKey, selectedUnitIdKey} from "../../constants/keys";
+import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../constants/keys";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -25,19 +25,19 @@ export class MyCustomersComponent implements OnInit {
 
   subscription: Subscription[] = []
 
-  customers: MenuItem[] = []
-  customerServices: MenuItem[] = []
-  customerUnits: MenuItem[] = []
-  customerPeriods: MenuItem[] = []
+  services: IGetServicesRes[] = []
 
-  originalCustomerServices: IGetServicesRes[] = []
-  showUnit: boolean = false
-
+  customerMenuItems: MenuItem[] = []
+  serviceMenuItems: MenuItem[] = []
+  unitMenuItems: MenuItem[] = []
+  periodMenuItems: MenuItem[] = []
 
   selectedCustomer: MenuItem;
   selectedService: MenuItem;
   selectedUnit: MenuItem;
   selectedPeriod: MenuItem;
+
+  showUnitMenu: boolean = false
 
   @ViewChild(HushaMenuComponent) customerMenu: HushaMenuComponent
   @ViewChild(HushaMenuComponent) serviceMenu: HushaMenuComponent
@@ -52,58 +52,71 @@ export class MyCustomersComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.storageService.removeSessionStorage(selectedCustomerIdKey)
-    this.storageService.removeSessionStorage(selectedServiceKey)
-    this.storageService.removeSessionStorage(selectedUnitIdKey)
-    this.storageService.removeSessionStorage(selectedPeriodIdKey)
-    await this.baseInfoFacade.fetchMenu()
-    await this.customerFacade.fetchMyCustomers()
-    this.subscription.push(
-      this.customerFacade.myCustomers$.subscribe(data => {
-        const x = []
-        const y = []
-        const t = []
-        data.forEach(item => item.parentId === null ? x.push(item) : y.push(item))
-        x.forEach(item => {
-          let q = []
-          y.forEach(value => {
-            if (item.id === value.parentId) q.push(value)
+    this.selectedCustomer = this.storageService.getSessionStorage(selectedCustomerKey);
+    this.selectedService = this.storageService.getSessionStorage(selectedServiceKey);
+    this.selectedUnit = this.storageService.getSessionStorage(selectedUnitKey);
+    this.selectedPeriod = this.storageService.getSessionStorage(selectedPeriodKey);
+    try {
+      const payload = new FetchMenuReqDTO(
+        +this.selectedCustomer?.id,
+        +this.selectedService?.id,
+        +this.selectedUnit?.id,
+        +this.selectedPeriod?.id,
+      )
+      await this.baseInfoFacade.fetchMenu(payload)
+    } catch (e) {
+      console.log(e)
+    }
+    try {
+      await this.customerFacade.fetchMyCustomers()
+      this.subscription.push(
+        this.customerFacade.myCustomers$.subscribe(data => {
+          const x = []
+          const y = []
+          const t = []
+          data.forEach(item => item.parentId === null ? x.push(item) : y.push(item))
+          x.forEach(item => {
+            let q = []
+            y.forEach(value => {
+              if (item.id === value.parentId) q.push(value)
+            })
+            item = {...item, items: q}
+            t.push(item)
+            q = []
           })
-          item = {...item, items: q}
-          t.push(item)
-          q = []
+          this.customerMenuItems = t.map(item => this.createMenu(item))
         })
-        this.customers = t.map(item => this.transformMenu(item))
-      })
-    )
+      )
+    } catch (e) {
+      console.log(e)
+    }
+    if (this.selectedCustomer) {
+      await this.handleFetchServicesAndPeriods(+this.selectedCustomer.id)
+    }
+    if (this.selectedUnit) {
+      await this.handleFetchUnits()
+    }
   }
 
-  transformMenu(menu) {
-    const {title, items, id, name, ...rest} = menu;
+  createMenu(menu) {
+    const {title, items, id} = menu;
     return {
       id: id,
       label: title,
-      items: items && items.length > 0 ? items.map(this.transformMenu.bind(this)) : null,
+      items: items && items.length > 0 ? items.map(this.createMenu.bind(this)) : null,
     };
   }
 
   async handleSelectCustomer($event: MenuItem) {
     this.selectedCustomer = $event
-    this.storageService.setSessionStorage(selectedCustomerIdKey, +$event.id)
+    this.storageService.setSessionStorage(selectedCustomerKey, $event)
+    this.resetService()
+    this.resetUnit()
+    this.resetPeriod()
     await this.handleFetchServicesAndPeriods(+$event.id)
   }
 
   async handleFetchServicesAndPeriods(customerId: number) {
-    this.selectedService = null
-    this.selectedUnit = null
-    this.selectedPeriod = null
-    this.showUnit = false
-    this.customerServices = []
-    this.customerUnits = []
-    this.customerPeriods = []
-    this.storageService.removeSessionStorage(selectedServiceKey)
-    this.storageService.removeSessionStorage(selectedUnitIdKey)
-    this.storageService.removeSessionStorage(selectedPeriodIdKey)
     try {
       await Promise.allSettled([
         this.customerFacade.getCustomerServices(new GetServicesReqDTO(customerId)),
@@ -111,12 +124,12 @@ export class MyCustomersComponent implements OnInit {
       ])
       this.subscription.push(
         this.customerFacade.customerServices$.subscribe(data => {
-          this.originalCustomerServices = data
-          this.customerServices = data.map(item => this.transformMenu(item))
+          this.services = data
+          this.serviceMenuItems = data.map(item => this.createMenu(item))
         })
       )
       this.subscription.push(
-        this.customerFacade.customerPeriods$.subscribe(data => this.customerPeriods = data.map(item => this.transformMenu(item)))
+        this.customerFacade.customerPeriods$.subscribe(data => this.periodMenuItems = data.map(item => this.createMenu(item)))
       )
     } catch (e) {
       console.log(e)
@@ -125,39 +138,54 @@ export class MyCustomersComponent implements OnInit {
 
   async handleSelectService($event: MenuItem) {
     this.selectedService = $event
-    this.showUnit = false
-    this.selectedUnit = null
-    this.customerUnits = []
-    this.storageService.removeSessionStorage(selectedUnitIdKey)
-    const service = this.originalCustomerServices.find(item => item.id === +$event.id)
+    this.resetUnit()
+    const service = this.services.find(item => item.id === +$event.id)
     this.storageService.setSessionStorage(selectedServiceKey, service)
-    if (service.haveUnit) {
-      this.showUnit = true
-      await this.customerFacade.getCustomerUnits(new GetUnitsReqDTO(+this.selectedCustomer.id, +$event.id))
-      this.subscription.push(
-        this.customerFacade.customerUnits$.subscribe(data => this.customerUnits = data.map(item => this.transformMenu(item)))
-      )
-    } else {
-      await this.handleFetchMenu()
-    }
+    service.haveUnit ? await this.handleFetchUnits() : await this.handleFetchMenu()
+  }
 
+  async handleFetchUnits() {
+    this.showUnitMenu = true
+    await this.customerFacade.getCustomerUnits(new GetUnitsReqDTO(+this.selectedCustomer.id, +this.selectedService.id))
+    this.subscription.push(
+      this.customerFacade.customerUnits$.subscribe(data => this.unitMenuItems = data.map(item => this.createMenu(item)))
+    )
   }
 
   async handleSelectUnit($event: MenuItem) {
     this.selectedUnit = $event
-    this.storageService.setSessionStorage(selectedUnitIdKey, +$event.id)
+    this.storageService.setSessionStorage(selectedUnitKey, $event)
     await this.handleFetchMenu()
   }
 
   async handleSelectPeriod($event: MenuItem) {
     this.selectedPeriod = $event
-    this.storageService.setSessionStorage(selectedPeriodIdKey, +$event.id)
+    this.storageService.setSessionStorage(selectedPeriodKey, $event)
     await this.handleFetchMenu()
   }
 
-  async handleFetchMenu(): Promise<boolean | void> {
-    if (this.customerServices && this.customerServices && this.selectedPeriod) {
-      if (this.showUnit && this.selectedUnit) {
+  resetService() {
+    this.selectedService = null
+    this.serviceMenuItems = []
+    this.storageService.removeSessionStorage(selectedServiceKey)
+  }
+
+  resetUnit() {
+    this.showUnitMenu = false
+    this.selectedUnit = null
+    this.unitMenuItems = []
+    this.storageService.removeSessionStorage(selectedUnitKey)
+  }
+
+  resetPeriod() {
+    this.selectedPeriod = null
+    this.periodMenuItems = []
+    this.storageService.removeSessionStorage(selectedPeriodKey)
+  }
+
+  async handleFetchMenu(): Promise<void> {
+    if (this.selectedService && this.selectedPeriod) {
+      if (this.showUnitMenu && this.selectedUnit) {
         const payload = new FetchMenuReqDTO(
           +this.selectedCustomer.id,
           +this.selectedService.id,
@@ -166,7 +194,7 @@ export class MyCustomersComponent implements OnInit {
         )
         await this.baseInfoFacade.fetchMenu(payload)
       }
-      if (!this.showUnit) {
+      if (!this.showUnitMenu) {
         const payload = new FetchMenuReqDTO(
           +this.selectedCustomer.id,
           +this.selectedService.id,

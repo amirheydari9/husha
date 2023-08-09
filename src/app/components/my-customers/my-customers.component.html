@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-start">
 
   <app-husha-menu
-    [items]="customers"
+    [items]="customerMenuItems"
     (selectedMenu)="handleSelectCustomer($event)">
     <div class="d-flex align-items-center justify-content-start me-3" (click)="customerMenu.menu.toggle($event)">
       <i class="pi pi-user me-2"></i>
@@ -12,7 +12,7 @@
   <app-husha-menu
     *ngIf="selectedCustomer"
     #serviceMenu
-    [items]="customerServices"
+    [items]="serviceMenuItems"
     (selectedMenu)="handleSelectService($event)">
     <div class="d-flex align-items-center justify-content-start me-3" (click)="serviceMenu.menu.toggle($event)">
       <i class="pi pi-cog me-2"></i>
@@ -22,9 +22,9 @@
 
 
   <app-husha-menu
-    *ngIf="showUnit"
+    *ngIf="showUnitMenu"
     #unitMenu
-    [items]="customerUnits"
+    [items]="unitMenuItems"
     (selectedMenu)="handleSelectUnit($event)">
     <div class="d-flex align-items-center justify-content-start me-3" (click)="unitMenu.menu.toggle($event)">
       <i class="pi pi-building me-2"></i>
@@ -35,7 +35,7 @@
   <app-husha-menu
     *ngIf="selectedCustomer"
     #periodMenu
-    [items]="customerPeriods"
+    [items]="periodMenuItems"
     (selectedMenu)="handleSelectPeriod($event)">
     <div class="d-flex align-items-center justify-content-start" (click)="periodMenu.menu.toggle($event)">
       <i class="pi pi-calendar me-2"></i>

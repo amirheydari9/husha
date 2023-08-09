@@ -2,16 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {BaseInfoFacade} from "../../../../data-core/base-info/base-info.facade";
-import {FetchFormDataDTO} from "../../../../models/DTOs/fetch-form-data.DTO";
 import {StorageService} from "../../../../utils/storage.service";
-import {
-  selectedCustomerIdKey,
-  selectedPeriodIdKey,
-  selectedServiceKey,
-  selectedUnitIdKey
-} from "../../../../constants/keys";
-import {IGetServicesRes} from "../../../../models/interface/get-services-res.interface";
 import {ActivatedRoute} from "@angular/router";
+import {FetchFormDataDTO} from "../../../../models/DTOs/fetch-form-data.DTO";
+import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../../../constants/keys";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -23,10 +17,10 @@ export class BaseInfoComponent implements OnInit {
 
   subscription: Subscription[] = []
 
-  selectedCustomerId: number = this.storageService.getSessionStorage(selectedCustomerIdKey)
-  selectedService: IGetServicesRes = this.storageService.getSessionStorage(selectedServiceKey)
-  selectedUnitId: number = this.storageService.getSessionStorage(selectedUnitIdKey)
-  selectedPeriodId: number = this.storageService.getSessionStorage(selectedPeriodIdKey)
+  selectedCustomer = this.storageService.getSessionStorage(selectedCustomerKey);
+  selectedService = this.storageService.getSessionStorage(selectedServiceKey);
+  selectedUnit = this.storageService.getSessionStorage(selectedUnitKey);
+  selectedPeriod = this.storageService.getSessionStorage(selectedPeriodKey);
 
   constructor(
     private baseInfoFacade: BaseInfoFacade,
@@ -41,7 +35,7 @@ export class BaseInfoComponent implements OnInit {
       this.baseInfoFacade.form$.subscribe(async data => {
 
         const payload = new FetchFormDataDTO(
-          this.selectedCustomerId,
+          this.selectedCustomer.id,
           // this.selectedService?.serviceType.id,
           24,
           data.id,
@@ -49,7 +43,7 @@ export class BaseInfoComponent implements OnInit {
           this.selectedService.id,
           // selectedUnitId,
           71,
-          this.selectedPeriodId
+          this.selectedPeriod.id
         )
         await this.baseInfoFacade.fetchFormData(payload)
       })

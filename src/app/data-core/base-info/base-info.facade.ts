@@ -24,7 +24,7 @@ export class BaseInfoFacade {
   @Select(BaseInfoState.form) form$: Observable<IFetchFormRes>
 
   @Dispatch()
-  async fetchMenu(payload?: FetchMenuReqDTO) {
+  async fetchMenu(payload: FetchMenuReqDTO) {
     const data = await this.baseInfoService.fetchMenu(payload)
     return new FetchMenuAction(data)
   }
