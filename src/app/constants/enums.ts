@@ -10,3 +10,12 @@ export enum FORM_KIND {
   DETAIL = 3,
   FLAT = 7,
 }
+
+export enum INPUT_DATA_TYPE {
+  TEXT = 'text',
+  NUMBER = 'number'
+}
+
+export enum INSERT_TYPE {
+
+}

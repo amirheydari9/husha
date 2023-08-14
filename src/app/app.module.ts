@@ -26,7 +26,7 @@ import {HushaToastModule} from "./ui-kits/husha-toast/husha-toast.component";
     }),
     NgxsDispatchPluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),
-    HushaToastModule,
+    HushaToastModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true}

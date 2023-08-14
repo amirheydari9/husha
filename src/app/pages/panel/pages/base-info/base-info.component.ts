@@ -6,6 +6,7 @@ import {StorageService} from "../../../../utils/storage.service";
 import {ActivatedRoute} from "@angular/router";
 import {FetchFormDataDTO} from "../../../../models/DTOs/fetch-form-data.DTO";
 import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../../../constants/keys";
+import {ColDef} from "ag-grid-community";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -22,30 +23,42 @@ export class BaseInfoComponent implements OnInit {
   selectedUnit = this.storageService.getSessionStorage(selectedUnitKey);
   selectedPeriod = this.storageService.getSessionStorage(selectedPeriodKey);
 
+  columnDefs: ColDef[] = []
+  data: any[] = []
+
   constructor(
     private baseInfoFacade: BaseInfoFacade,
     private storageService: StorageService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
   ) {
   }
 
   async ngOnInit(): Promise<void> {
+    this.baseInfoFacade.form$.subscribe(async form => {
 
-    this.subscription.push(
-      this.baseInfoFacade.form$.subscribe(async data => {
+      const payload = new FetchFormDataDTO(
+        this.selectedCustomer.id,
+        // this.selectedService?.serviceType.id,
+        24,
+        form.id,
+        form.formKind.id,
+        this.selectedService.id,
+        // selectedUnitId,
+        71,
+        this.selectedPeriod.id
+      )
+      await this.baseInfoFacade.fetchFormData(payload)
+      this.baseInfoFacade.formData$.subscribe(formData => {
+        form.fields.forEach(item => {
+          const col: ColDef = {field: item.name}
+          this.columnDefs.push(col)
+        })
+        // this.data = formData as any[]
+        console.log(this.columnDefs)
+        console.log(this.data)
+        // console.log(form)
+        // console.log(formData)
 
-        const payload = new FetchFormDataDTO(
-          this.selectedCustomer.id,
-          // this.selectedService?.serviceType.id,
-          24,
-          data.id,
-          data.formKind.id,
-          this.selectedService.id,
-          // selectedUnitId,
-          71,
-          this.selectedPeriod.id
-        )
-        await this.baseInfoFacade.fetchFormData(payload)
       })
     )
   }
