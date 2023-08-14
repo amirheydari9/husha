@@ -12,6 +12,7 @@ import {
 } from "../../../../constants/keys";
 import {IGetServicesRes} from "../../../../models/interface/get-services-res.interface";
 import {ActivatedRoute} from "@angular/router";
+import {ColDef} from "ag-grid-community";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -28,32 +29,44 @@ export class BaseInfoComponent implements OnInit {
   selectedUnitId: number = this.storageService.getSessionStorage(selectedUnitIdKey)
   selectedPeriodId: number = this.storageService.getSessionStorage(selectedPeriodIdKey)
 
+  columnDefs: ColDef[] = []
+  data: any[] = []
+
   constructor(
     private baseInfoFacade: BaseInfoFacade,
     private storageService: StorageService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
   ) {
   }
 
   async ngOnInit(): Promise<void> {
+    this.baseInfoFacade.form$.subscribe(async form => {
 
-    this.subscription.push(
-      this.baseInfoFacade.form$.subscribe(async data => {
+      const payload = new FetchFormDataDTO(
+        this.selectedCustomerId,
+        // this.selectedService?.serviceType.id,
+        24,
+        form.id,
+        form.formKind.id,
+        this.selectedService.id,
+        // selectedUnitId,
+        71,
+        this.selectedPeriodId
+      )
+      await this.baseInfoFacade.fetchFormData(payload)
+      this.baseInfoFacade.formData$.subscribe(formData => {
+        form.fields.forEach(item => {
+          const col: ColDef = {field: item.name}
+          this.columnDefs.push(col)
+        })
+        // this.data = formData as any[]
+        console.log(this.columnDefs)
+        console.log(this.data)
+        // console.log(form)
+        // console.log(formData)
 
-        const payload = new FetchFormDataDTO(
-          this.selectedCustomerId,
-          // this.selectedService?.serviceType.id,
-          24,
-          data.id,
-          data.formKind.id,
-          this.selectedService.id,
-          // selectedUnitId,
-          71,
-          this.selectedPeriodId
-        )
-        await this.baseInfoFacade.fetchFormData(payload)
       })
-    )
+    })
   }
 
 }

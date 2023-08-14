@@ -11,8 +11,6 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {InterceptorService} from "./utils/interceptor.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HushaToastModule} from "./ui-kits/husha-toast/husha-toast.component";
-import {AgGridModule} from "ag-grid-angular";
-import 'ag-grid-enterprise';
 
 @NgModule({
   declarations: [
@@ -28,8 +26,7 @@ import 'ag-grid-enterprise';
     }),
     NgxsDispatchPluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),
-    HushaToastModule,
-    AgGridModule
+    HushaToastModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true}

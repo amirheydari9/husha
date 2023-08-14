@@ -2,10 +2,12 @@ import {Injectable, NgModule} from '@angular/core';
 import {Action, NgxsModule, Selector, State, StateContext} from '@ngxs/store';
 import {IMenuRes} from "../../models/interface/menu-res.interface";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
+import {IFetchFormDataRes} from "../../models/interface/fetch-form-data-res.interface";
 
 export interface BaseInfoStateModel {
   menu: IMenuRes[],
-  form: IFetchFormRes
+  form: IFetchFormRes,
+  formData: IFetchFormDataRes
 }
 
 export class FetchMenuAction {
@@ -26,11 +28,21 @@ export class FetchFormAction {
   }
 }
 
+export class FetchFormDataAction {
+  static readonly type = '[BASE_INFO] fetch form data';
+
+  constructor(
+    public payload: IFetchFormDataRes
+  ) {
+  }
+}
+
 @State<BaseInfoStateModel>({
   name: 'baseInfo',
   defaults: {
     menu: [],
-    form: null
+    form: null,
+    formData: null
   }
 })
 
@@ -47,6 +59,11 @@ export class BaseInfoState {
     return state.form
   }
 
+  @Selector()
+  public static formData(state: BaseInfoStateModel): IFetchFormDataRes {
+    return state.formData
+  }
+
   @Action(FetchMenuAction)
   fetchMenu(ctx: StateContext<BaseInfoStateModel>, action: FetchMenuAction) {
     ctx.setState({...ctx.getState(), menu: action.payload})
@@ -55,6 +72,11 @@ export class BaseInfoState {
   @Action(FetchFormAction)
   fetchForm(ctx: StateContext<BaseInfoStateModel>, action: FetchFormAction) {
     ctx.setState({...ctx.getState(), form: action.payload})
+  }
+
+  @Action(FetchFormDataAction)
+  fetchFormData(ctx: StateContext<BaseInfoStateModel>, action: FetchFormDataAction) {
+    ctx.setState({...ctx.getState(), formData: action.payload})
   }
 }
 
