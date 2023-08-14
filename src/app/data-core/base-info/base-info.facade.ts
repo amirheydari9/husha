@@ -22,8 +22,8 @@ export class BaseInfoFacade {
   }
 
   @Select(BaseInfoState.menu) menu$: Observable<IMenuRes[]>
-  @Select(BaseInfoState.form) form$: Observable<IFetchFormRes>
-  @Select(BaseInfoState.formData) formData$: Observable<IFetchFormDataRes>
+  // @Select(BaseInfoState.form) form$: Observable<IFetchFormRes>
+  // @Select(BaseInfoState.formData) formData$: Observable<IFetchFormDataRes>
 
   @Dispatch()
   async fetchMenu(payload?: FetchMenuReqDTO) {
@@ -34,13 +34,13 @@ export class BaseInfoFacade {
   @Dispatch()
   async fetchForm(payload: FetchFormDTO) {
     const data = await this.baseInfoService.fetchForm(payload)
-    return new FetchFormAction(data)
+    // return new FetchFormAction(data)
   }
 
   @Dispatch()
   async fetchFormData(payload: FetchFormDataDTO) {
     const data = await this.baseInfoService.fetchFormData(payload)
-    return new FetchFormDataAction(data)
+    // return new FetchFormDataAction(data)
   }
 
 

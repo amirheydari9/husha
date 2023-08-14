@@ -11,8 +11,10 @@ import {
   selectedUnitIdKey
 } from "../../../../constants/keys";
 import {IGetServicesRes} from "../../../../models/interface/get-services-res.interface";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {ColDef} from "ag-grid-community";
+import {BaseInfoService} from "../../../../api/base-info.service";
+import {FetchFormDTO} from "../../../../models/DTOs/fetch-form.DTO";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -36,37 +38,40 @@ export class BaseInfoComponent implements OnInit {
     private baseInfoFacade: BaseInfoFacade,
     private storageService: StorageService,
     private activatedRoute: ActivatedRoute,
+    private baseInfoService: BaseInfoService,
+    private router: Router
   ) {
   }
 
   async ngOnInit(): Promise<void> {
-    this.baseInfoFacade.form$.subscribe(async form => {
 
-      const payload = new FetchFormDataDTO(
-        this.selectedCustomerId,
-        // this.selectedService?.serviceType.id,
-        24,
-        form.id,
-        form.formKind.id,
-        this.selectedService.id,
-        // selectedUnitId,
-        71,
-        this.selectedPeriodId
-      )
-      await this.baseInfoFacade.fetchFormData(payload)
-      this.baseInfoFacade.formData$.subscribe(formData => {
-        form.fields.forEach(item => {
-          const col: ColDef = {field: item.name}
-          this.columnDefs.push(col)
+    this.activatedRoute.params.subscribe(params => {
+      this.columnDefs = [];
+      this.data = []
+
+      this.baseInfoService.fetchForm(new FetchFormDTO(params['id'])).subscribe(form => {
+        const payload = new FetchFormDataDTO(
+          this.selectedCustomerId,
+          // this.selectedService?.serviceType.id,
+          24,
+          form.id,
+          form.formKind.id,
+          // this.selectedService.id,
+          101,
+          // selectedUnitId,
+          71,
+          this.selectedPeriodId
+        )
+        this.baseInfoService.fetchFormData(payload).subscribe(formData => {
+          form.fields.forEach(item => {
+            const col: ColDef = {field: item.name}
+            this.columnDefs.push(col)
+          })
+          this.data = formData as any[]
         })
-        // this.data = formData as any[]
-        console.log(this.columnDefs)
-        console.log(this.data)
-        // console.log(form)
-        // console.log(formData)
-
       })
     })
+
   }
 
 }

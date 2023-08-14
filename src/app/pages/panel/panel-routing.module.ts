@@ -1,14 +1,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {PanelComponent} from "./panel.component";
-import {PanelResolver} from "../../resolvers/panel.resolver";
-import {FormResolver} from "../../resolvers/form.resolver";
 
 const routes: Routes = [
   {
     path: '',
     component: PanelComponent,
-    resolve: {routeResolver: PanelResolver},
     children: [
       {
         path: '',
@@ -22,7 +19,7 @@ const routes: Routes = [
       {
         path: 'base-info/:id',
         loadChildren: () => import('./pages/base-info/base-info.module').then(m => m.BaseInfoModule),
-        resolve: {data: FormResolver}
+        // resolve: {data: FormResolver}
       }
     ]
   },
@@ -31,7 +28,7 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [PanelResolver, FormResolver]
+  providers: []
 })
 export class PanelRoutingModule {
 }
