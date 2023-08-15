@@ -93,7 +93,7 @@ export class MyCustomersComponent implements OnInit {
     if (this.selectedCustomer) {
       await this.handleFetchServicesAndPeriods(+this.selectedCustomer.id)
     }
-    if (this.selectedUnit) {
+    if ((this.selectedService && this.selectedService.haveUnit) || this.selectedUnit) {
       await this.handleFetchUnits()
     }
   }
