@@ -18,6 +18,7 @@ export class HushaGridComponent implements OnInit {
   defaultColDef: ColDef = {
     sortable: true,
     filter: true,
+    flex: 1,
   };
 
   constructor() {
