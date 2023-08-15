@@ -4,14 +4,9 @@ import {Subscription} from "rxjs";
 import {BaseInfoFacade} from "../../../../data-core/base-info/base-info.facade";
 import {FetchFormDataDTO} from "../../../../models/DTOs/fetch-form-data.DTO";
 import {StorageService} from "../../../../utils/storage.service";
-import {
-  selectedCustomerIdKey,
-  selectedPeriodIdKey,
-  selectedServiceKey,
-  selectedUnitIdKey
-} from "../../../../constants/keys";
+import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey,} from "../../../../constants/keys";
 import {IGetServicesRes} from "../../../../models/interface/get-services-res.interface";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {ColDef} from "ag-grid-community";
 import {BaseInfoService} from "../../../../api/base-info.service";
 import {FetchFormDTO} from "../../../../models/DTOs/fetch-form.DTO";
@@ -26,10 +21,10 @@ export class BaseInfoComponent implements OnInit {
 
   subscription: Subscription[] = []
 
-  selectedCustomerId: number = this.storageService.getSessionStorage(selectedCustomerIdKey)
+  selectedCustomer = this.storageService.getSessionStorage(selectedCustomerKey)
   selectedService: IGetServicesRes = this.storageService.getSessionStorage(selectedServiceKey)
-  selectedUnitId: number = this.storageService.getSessionStorage(selectedUnitIdKey)
-  selectedPeriodId: number = this.storageService.getSessionStorage(selectedPeriodIdKey)
+  selectedUnit = this.storageService.getSessionStorage(selectedUnitKey)
+  selectedPeriod = this.storageService.getSessionStorage(selectedPeriodKey)
 
   columnDefs: ColDef[] = []
   data: any[] = []
@@ -39,7 +34,6 @@ export class BaseInfoComponent implements OnInit {
     private storageService: StorageService,
     private activatedRoute: ActivatedRoute,
     private baseInfoService: BaseInfoService,
-    private router: Router
   ) {
   }
 
@@ -51,16 +45,16 @@ export class BaseInfoComponent implements OnInit {
 
       this.baseInfoService.fetchForm(new FetchFormDTO(params['id'])).subscribe(form => {
         const payload = new FetchFormDataDTO(
-          this.selectedCustomerId,
+          this.selectedCustomer.id,
           // this.selectedService?.serviceType.id,
           24,
           form.id,
           form.formKind.id,
           // this.selectedService.id,
           101,
-          // selectedUnitId,
+          // this.selectedUnit.id,
           71,
-          this.selectedPeriodId
+          this.selectedPeriod.id
         )
         this.baseInfoService.fetchFormData(payload).subscribe(formData => {
           form.fields.forEach(item => {
