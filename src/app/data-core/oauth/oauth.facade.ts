@@ -42,6 +42,7 @@ export class OauthFacade {
 
   logout() {
     this.storageService.signOut()
+    sessionStorage.clear()
     window.location.reload()
   }
 
