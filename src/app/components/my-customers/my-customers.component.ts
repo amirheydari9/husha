@@ -33,7 +33,7 @@ export class MyCustomersComponent implements OnInit {
   periodMenuItems: MenuItem[] = []
 
   selectedCustomer: MenuItem;
-  selectedService: MenuItem;
+  selectedService: IGetServicesRes;
   selectedUnit: MenuItem;
   selectedPeriod: MenuItem;
 
@@ -137,9 +137,9 @@ export class MyCustomersComponent implements OnInit {
   }
 
   async handleSelectService($event: MenuItem) {
-    this.selectedService = $event
-    this.resetUnit()
     const service = this.services.find(item => item.id === +$event.id)
+    this.selectedService = service
+    this.resetUnit()
     this.storageService.setSessionStorage(selectedServiceKey, service)
     service.haveUnit ? await this.handleFetchUnits() : await this.handleFetchMenu()
   }
