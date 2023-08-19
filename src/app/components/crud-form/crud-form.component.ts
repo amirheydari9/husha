@@ -27,7 +27,7 @@ export class CrudFormComponent implements OnInit {
   selectedPeriod = this.storageService.getSessionStorage(selectedPeriodKey)
 
   columnDefs: ColDef[] = []
-  data: any[] = []
+  rowData: any[] = []
 
   constructor(
     private storageService: StorageService,
@@ -40,7 +40,7 @@ export class CrudFormComponent implements OnInit {
 
     this.activatedRoute.params.subscribe(params => {
       this.columnDefs = [];
-      this.data = []
+      this.rowData = []
 
       this.subscription.push(
         this.baseInfoService.fetchForm(new FetchFormDTO(params['id'])).subscribe(form => {
@@ -58,11 +58,13 @@ export class CrudFormComponent implements OnInit {
           )
           this.subscription.push(
             this.baseInfoService.fetchFormData(payload).subscribe(formData => {
+              const colDefs: ColDef[] = []
               form.fields.forEach(item => {
                 const col: ColDef = {field: item.name}
-                this.columnDefs.push(col)
+                colDefs.push(col)
               })
-              this.data = formData as any[]
+              this.columnDefs = colDefs
+              this.rowData = formData as any[]
             })
           )
         })
