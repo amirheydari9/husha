@@ -1,7 +1,7 @@
-import {Component, Input, NgModule, OnInit, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild} from '@angular/core';
 import {AgGridAngular, AgGridModule} from "ag-grid-angular";
 // import 'ag-grid-enterprise';
-import {ColDef} from "ag-grid-community";
+import {ColDef, RowClickedEvent} from "ag-grid-community";
 
 @Component({
   selector: 'app-husha-grid',
@@ -15,6 +15,8 @@ export class HushaGridComponent implements OnInit {
 
   @ViewChild(AgGridAngular) agGrid!: AgGridAngular;
 
+  @Output() rowClicked: EventEmitter<any> = new EventEmitter<any>()
+
   defaultColDef: ColDef = {
     sortable: true,
     filter: true,
@@ -27,6 +29,9 @@ export class HushaGridComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  handleRowClick($event: RowClickedEvent<any>) {
+    this.rowClicked.emit($event)
+  }
 }
 
 @NgModule({
