@@ -7,7 +7,7 @@ import {Router, RouterModule} from "@angular/router";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 
-@AutoUnsubscribe()
+@AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
   selector: 'app-tab-menu',
   template: `
@@ -42,7 +42,7 @@ import {Subscription} from "rxjs";
 export class TabMenuComponent implements OnInit {
 
   tabMenus: INavbarData[] = []
-  subscription: Subscription
+  subscription: Subscription[] = []
   rightPanelStyle: any = {}
   contextTabManu: INavbarData
 
@@ -56,9 +56,16 @@ export class TabMenuComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.subscription = this.appConfigService.tabMenu().subscribe((data) => {
-      if (!this.tabMenus.length || (this.tabMenus.length && !this.tabMenus.includes(data))) this.tabMenus.push(data)
-    })
+    this.subscription.push(
+      this.appConfigService.tabMenu().subscribe((data) => {
+        if (!this.tabMenus.length || (this.tabMenus.length && !this.tabMenus.includes(data))) this.tabMenus.push(data)
+      })
+    )
+    this.subscription.push(
+      this.appConfigService.onResetTabMenu().subscribe(() => {
+        this.tabMenus = []
+      })
+    )
     this.closeContextMenu()
     this.renderer.listen('window', 'click', (e: Event) => {
       if (e.target !== this.contextMenu.nativeElement) this.closeContextMenu()

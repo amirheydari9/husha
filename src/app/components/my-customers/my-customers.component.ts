@@ -14,6 +14,8 @@ import {GetUnitsReqDTO} from "../../models/DTOs/get-units-req.DTO";
 import {IGetServicesRes} from "../../models/interface/get-services-res.interface";
 import {StorageService} from "../../utils/storage.service";
 import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../constants/keys";
+import {Router} from "@angular/router";
+import {AppConfigService} from "../../utils/app-config.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -47,7 +49,9 @@ export class MyCustomersComponent implements OnInit {
   constructor(
     private customerFacade: CustomerFacade,
     private baseInfoFacade: BaseInfoFacade,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private router: Router,
+    private appConfigService: AppConfigService,
   ) {
   }
 
@@ -114,6 +118,8 @@ export class MyCustomersComponent implements OnInit {
     this.resetUnit()
     this.resetPeriod()
     await this.handleFetchServicesAndPeriods(+$event.id)
+    this.appConfigService.resetTabMenu()
+    this.router.navigate(['/'])
   }
 
   async handleFetchServicesAndPeriods(customerId: number) {
