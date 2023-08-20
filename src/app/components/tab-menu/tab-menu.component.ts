@@ -11,7 +11,7 @@ import {Subscription} from "rxjs";
 @Component({
   selector: 'app-tab-menu',
   template: `
-    <div class="position-relative">
+    <div class="position-relative mb-3">
       <div cdkDropListGroup class="tab-menu-wrapper" oncontextmenu="return false" *ngIf="tabMenus.length">
         <div cdkDropList (cdkDropListDropped)="drop($event)" class="d-flex" cdkDropListOrientation="horizontal">
           <div class="tab-menu-item" *ngFor="let menu of tabMenus;let i = index" cdkDrag
