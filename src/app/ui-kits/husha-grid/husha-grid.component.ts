@@ -1,7 +1,8 @@
 import {Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild} from '@angular/core';
 import {AgGridAngular, AgGridModule} from "ag-grid-angular";
 // import 'ag-grid-enterprise';
-import {ColDef, RowClickedEvent} from "ag-grid-community";
+import {ColDef, PaginationChangedEvent, RowClickedEvent} from "ag-grid-community";
+import {FORM_KIND} from "../../constants/enums";
 
 @Component({
   selector: 'app-husha-grid',
@@ -12,6 +13,14 @@ export class HushaGridComponent implements OnInit {
 
   @Input() columnDefs: ColDef[]
   @Input() rowData: any[]
+
+  @Input() set formKind(data: FORM_KIND) {
+    if (data === FORM_KIND.MASTER || data === FORM_KIND.DETAIL) {
+      this.height = '40vh'
+    }
+  }
+
+  height: string = '300px'
 
   @ViewChild(AgGridAngular) agGrid!: AgGridAngular;
 
@@ -29,9 +38,13 @@ export class HushaGridComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  handleRowClick($event: RowClickedEvent<any>) {
-    this.rowClicked.emit($event)
+  handleRowClicked($event: RowClickedEvent<any>) {
+    this.rowClicked.emit($event.data)
   }
+
+  handlePaginationChanged($event: PaginationChangedEvent<any>) {
+  }
+
 }
 
 @NgModule({

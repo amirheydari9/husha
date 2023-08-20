@@ -1,9 +1,13 @@
 <ag-grid-angular
-  style="width: 100%; height: 300px;"
+  style="width: 100%;"
+  [style.height]="height"
   class="ag-theme-alpine"
+  [pagination]="true"
+  rowSelection="single"
   [enableRtl]="true"
   [rowData]="rowData"
   [columnDefs]="columnDefs"
   [defaultColDef]="defaultColDef"
-  (rowClicked)="handleRowClick($event)"
+  (rowClicked)="handleRowClicked($event)"
+  (paginationChanged)="handlePaginationChanged($event)"
 ></ag-grid-angular>
