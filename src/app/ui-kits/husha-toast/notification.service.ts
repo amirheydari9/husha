@@ -6,7 +6,8 @@ import {Observable, Subject} from 'rxjs';
 })
 export class NotificationService {
 
-  constructor() {}
+  constructor() {
+  }
 
   private subject = new Subject<any>();
 
@@ -26,7 +27,7 @@ export class NotificationService {
     this.subject.next({severity: 'warn', summary, detail});
   }
 
-  error(summary: string, detail: string): void {
-    this.subject.next({severity: 'error', summary, detail});
+  error(detail: string): void {
+    this.subject.next({severity: 'error', summary: 'خطایی رخ داده است', detail});
   }
 }

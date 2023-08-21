@@ -44,7 +44,13 @@ export class InterceptorService implements HttpInterceptor {
       return next.handle(request).pipe(
         takeUntil(this.appConfigService.onCancelPendingRequests()),
         filter(res => res instanceof HttpResponse),
-        map((res: HttpResponse<any>) => res.clone({body: res.body.response})),
+        // map((res: HttpResponse<any>) => res.clone({body: res.body.response})),
+        map((res: HttpResponse<any>) => {
+          if (res.body && res.body.error) {
+            this.notificationService.error(res.body.error['message'] ?? res.body.error['errors'][0].summary)
+          }
+          return res.clone({body: res.body.response});
+        }),
         catchError(error => {
           if (error instanceof HttpErrorResponse) this.errorHandler(error)
           return throwError(error);
