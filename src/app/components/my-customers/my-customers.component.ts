@@ -111,7 +111,8 @@ export class MyCustomersComponent implements OnInit {
     };
   }
 
-  async handleSelectCustomer($event: MenuItem) {
+  async handleSelectCustomer($event: MenuItem): Promise<boolean | void> {
+    if (this.selectedCustomer && this.selectedCustomer.id === $event.id) return false
     this.selectedCustomer = $event
     this.storageService.setSessionStorage(selectedCustomerKey, $event)
     this.resetService()
@@ -142,7 +143,8 @@ export class MyCustomersComponent implements OnInit {
     }
   }
 
-  async handleSelectService($event: MenuItem) {
+  async handleSelectService($event: MenuItem): Promise<boolean | void> {
+    if (this.selectedService && this.selectedService.id === +$event.id) return false
     const service = this.services.find(item => item.id === +$event.id)
     this.selectedService = service
     this.resetUnit()
@@ -158,13 +160,15 @@ export class MyCustomersComponent implements OnInit {
     )
   }
 
-  async handleSelectUnit($event: MenuItem) {
+  async handleSelectUnit($event: MenuItem): Promise<boolean | void> {
+    if (this.selectedUnit && this.selectedUnit.id === $event.id) return false
     this.selectedUnit = $event
     this.storageService.setSessionStorage(selectedUnitKey, $event)
     await this.handleFetchMenu()
   }
 
-  async handleSelectPeriod($event: MenuItem) {
+  async handleSelectPeriod($event: MenuItem): Promise<boolean | void> {
+    if (this.selectedPeriod && this.selectedPeriod.id === $event.id) return false
     this.selectedPeriod = $event
     this.storageService.setSessionStorage(selectedPeriodKey, $event)
     await this.handleFetchMenu()
