@@ -11,11 +11,23 @@ export enum FORM_KIND {
   FLAT = 7,
 }
 
+export enum SERIAL_TYPE {
+
+}
+
 export enum INPUT_DATA_TYPE {
   TEXT = 'text',
   NUMBER = 'number'
 }
 
 export enum INSERT_TYPE {
+
+}
+
+export enum VIEW_TYPE {
+
+}
+
+export enum LOOKUP_VIEW_TYPE {
 
 }
