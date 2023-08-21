@@ -30,7 +30,7 @@ import {AppConfigService} from "../../../utils/app-config.service";
            routerLinkActive="active-subLevel"
            [routerLinkActiveOptions]="{exact:true}">
           <i class="subLevel-link-icon fa fa-circle"></i>
-          <span class="subLevel-link-text" @fadeInOut *ngIf="collapsed">{{item.label}}</span>
+          <span class="subLevel-link-text font-xs-regular" @fadeInOut *ngIf="collapsed">{{item.label}}</span>
         </a>
         <ng-container *ngIf="item.items && item.items.length > 0">
           <app-sub-level-menu
