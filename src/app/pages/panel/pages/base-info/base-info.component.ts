@@ -45,26 +45,15 @@ export class BaseInfoComponent implements OnInit {
   ngOnInit(): void {
 
     this.activatedRoute.params.subscribe(params => {
-
-      this.columnDefs = [];
-      this.rowData = [];
-      this.formKind = null
-      this.showDetailGrid = false
-      this.detailColumnDefs = []
-      this.detailRowData = []
-
+      this.resetForm()
+      const form = this.activatedRoute.snapshot.data['data'];
+      this.formKind = form.formKind.id
       this.subscription.push(
-        this.baseInfoService.fetchForm(new FetchFormDTO(params['id'])).subscribe(form => {
-          this.formKind = form.formKind.id
-          this.subscription.push(
-            this.baseInfoService.fetchFormData(this.handleCreatePayload(form)).subscribe(formData => {
-              this.columnDefs = this.createGrid(form)
-              this.rowData = formData as any[]
-            })
-          )
+        this.baseInfoService.fetchFormData(this.handleCreatePayload(form)).subscribe(formData => {
+          this.columnDefs = this.createGrid(form)
+          this.rowData = formData as any[]
         })
       )
-
     })
 
   }
@@ -126,6 +115,15 @@ export class BaseInfoComponent implements OnInit {
       }
     })
     return colDefs
+  }
+
+  resetForm() {
+    this.columnDefs = [];
+    this.rowData = [];
+    this.formKind = null
+    this.showDetailGrid = false
+    this.detailColumnDefs = []
+    this.detailRowData = []
   }
 
 }
