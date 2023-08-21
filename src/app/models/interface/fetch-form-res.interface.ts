@@ -1,9 +1,9 @@
-import {INPUT_DATA_TYPE, INSERT_TYPE} from "../../constants/enums";
+import {FORM_KIND, INPUT_DATA_TYPE, INSERT_TYPE} from "../../constants/enums";
 
 export interface IFetchFormRes {
   id: number,
   formKind: {
-    id: number,
+    id: FORM_KIND,
     isActive: boolean,
     title: string
   },
