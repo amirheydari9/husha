@@ -66,6 +66,7 @@ ul {
 
 .contextMenu {
   position: absolute;
+  z-index: 10000;
 
   .menu {
     display: flex;
