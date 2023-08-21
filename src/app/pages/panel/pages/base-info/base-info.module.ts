@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {BaseInfoComponent} from './base-info.component';
 import {RouterModule} from "@angular/router";
-import {CrudFormModule} from "../../../../components/crud-form/crud-form.component";
+import {HushaGridModule} from "../../../../ui-kits/husha-grid/husha-grid.component";
 
 
 @NgModule({
@@ -12,7 +12,7 @@ import {CrudFormModule} from "../../../../components/crud-form/crud-form.compone
   imports: [
     CommonModule,
     RouterModule.forChild([{path: '', component: BaseInfoComponent}]),
-    CrudFormModule
+    HushaGridModule
   ]
 })
 export class BaseInfoModule {
