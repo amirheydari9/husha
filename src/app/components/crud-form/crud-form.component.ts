@@ -95,41 +95,42 @@ export class CrudFormComponent implements OnInit {
   }
 
   handleRowClicked($event: any) {
+    if (this.showDetailGrid) {
+      this.showDetailGrid = false
+      this.detailColumnDefs = []
+      this.detailRowData = []
+    }
+    if (this.formKind === FORM_KIND.MULTI_LEVEL || this.formKind === FORM_KIND.MASTER) {
+      this.subscription.push(
+        this.baseInfoService.fetchForm(new FetchFormDTO(this.activatedRoute.snapshot.params['id'])).subscribe(form => {
+          this.subscription.push(
+            this.baseInfoService.fetchFormData(this.handleCreatePayload(form, $event.id)).subscribe(formData => {
+              // تا چه سطحی مالتی لوب داریم ممکننه یک دیتیل وقتی روی سطرش کلیک می کنیم یک دفعه مالتی لول بشه
+              // یعنی اگه مالتی لوله تا تهش مالتی لوله ؟
+              if (this.formKind === FORM_KIND.MULTI_LEVEL) {
+                const colDefs: ColDef[] = []
+                form.fields.forEach(item => {
+                  const col: ColDef = {field: item.name}
+                  colDefs.push(col)
+                })
+                this.columnDefs = colDefs
+                this.rowData = formData as any[]
 
-    this.showDetailGrid = false
-    this.detailColumnDefs = []
-    this.detailRowData = []
-
-    this.subscription.push(
-      this.baseInfoService.fetchForm(new FetchFormDTO(this.activatedRoute.snapshot.params['id'])).subscribe(form => {
-        this.subscription.push(
-          this.baseInfoService.fetchFormData(this.handleCreatePayload(form, $event.id)).subscribe(formData => {
-            // تا چه سطحی مالتی لوب داریم ممکننه یک دیتیل وقتی روی سطرش کلیک می کنیم یک دفعه مالتی لول بشه
-            // یعنی اگه مالتی لوله تا تهش مالتی لوله ؟
-            if (this.formKind === FORM_KIND.MULTI_LEVEL) {
-              const colDefs: ColDef[] = []
-              form.fields.forEach(item => {
-                const col: ColDef = {field: item.name}
-                colDefs.push(col)
-              })
-              this.columnDefs = colDefs
-              this.rowData = formData as any[]
-
-            } else if (this.formKind === FORM_KIND.MASTER) {
-              const colDefs: ColDef[] = []
-              form.fields.forEach(item => {
-                const col: ColDef = {field: item.name}
-                colDefs.push(col)
-              })
-              this.detailColumnDefs = colDefs
-              this.detailRowData = formData as any[]
-              this.showDetailGrid = true
-            }
-          })
-        )
-      })
-    )
-
+              } else if (this.formKind === FORM_KIND.MASTER) {
+                const colDefs: ColDef[] = []
+                form.fields.forEach(item => {
+                  const col: ColDef = {field: item.name}
+                  colDefs.push(col)
+                })
+                this.detailColumnDefs = colDefs
+                this.detailRowData = formData as any[]
+                this.showDetailGrid = true
+              }
+            })
+          )
+        })
+      )
+    }
   }
 
 }
