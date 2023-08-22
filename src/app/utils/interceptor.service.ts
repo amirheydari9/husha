@@ -47,7 +47,11 @@ export class InterceptorService implements HttpInterceptor {
         // map((res: HttpResponse<any>) => res.clone({body: res.body.response})),
         map((res: HttpResponse<any>) => {
           if (res.body && res.body.error) {
-            this.notificationService.error(res.body.error['message'] ?? res.body.error['errors'][0].summary)
+            if (res.body.error['message']) {
+              this.notificationService.error(res.body.error['message'])
+            } else if (res.body.error['errors'].length) {
+              res.body.error['errors'].forEach(item => this.notificationService.error(item.summary))
+            }
           }
           return res.clone({body: res.body.response});
         }),
