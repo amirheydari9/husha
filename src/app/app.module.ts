@@ -11,6 +11,17 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {InterceptorService} from "./utils/interceptor.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HushaToastModule} from "./ui-kits/husha-toast/husha-toast.component";
+import {NgxUiLoaderConfig, NgxUiLoaderHttpModule, NgxUiLoaderModule, SPINNER,} from "ngx-ui-loader";
+
+const ngxUiLoaderConfig: NgxUiLoaderConfig = {
+  fgsType: SPINNER.ballSpinClockwise,
+  fgsColor: 'blue',
+  fgsSize: 60,
+  bgsColor: 'rgba(0, 0, 0, 0.1)',
+  text: 'صبر کنید',
+  pbColor: 'blue',
+  pbThickness: 2,
+};
 
 @NgModule({
   declarations: [
@@ -26,7 +37,11 @@ import {HushaToastModule} from "./ui-kits/husha-toast/husha-toast.component";
     }),
     NgxsDispatchPluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),
-    HushaToastModule
+    HushaToastModule,
+    NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
+    NgxUiLoaderHttpModule.forRoot({
+      showForeground: true
+    })
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true}
