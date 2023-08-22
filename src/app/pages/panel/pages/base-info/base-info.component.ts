@@ -110,7 +110,7 @@ export class BaseInfoComponent implements OnInit {
     }
   }
 
-  createGrid(form: IFetchFormRes, data: IFetchFormDataRes[]) {
+  createGrid(form: IFetchFormRes, rowData: IFetchFormDataRes[]) {
     const colDefs: ColDef[] = []
     form.fields.forEach(item => {
       if (item.isActive) {
@@ -118,14 +118,14 @@ export class BaseInfoComponent implements OnInit {
         colDefs.push(col)
       }
     })
-    for (var i = 0; i < data.length; i++) {
-      for (var prop in data[i]) {
-        if (typeof data[i][prop] === 'object') {
-          data[i][prop] = data[i][prop]?.id;
+    for (var i = 0; i < rowData.length; i++) {
+      for (var prop in rowData[i]) {
+        if (typeof rowData[i][prop] === 'object') {
+          rowData[i][prop] = rowData[i][prop]?.id;
         }
       }
     }
-    return {colDefs, rowData: data}
+    return {colDefs, rowData}
   }
 
   resetForm() {
