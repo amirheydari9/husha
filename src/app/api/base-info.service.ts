@@ -33,13 +33,13 @@ export class BaseInfoService {
     return this.httpService.get<IFetchFormRes>(`baseinfo/form/getById/${payload.formId}`)
   }
 
-  fetchFormData(payload: FetchFormDataDTO): Observable<IFetchFormDataRes> {
+  fetchFormData(payload: FetchFormDataDTO): Observable<IFetchFormDataRes[]> {
     let params = new HttpParams()
     for (const key in payload) {
       if (payload.hasOwnProperty(key)) {
         params = params.set(key, payload[key] || '');
       }
     }
-    return this.httpService.get<IFetchFormDataRes>(`baseinfo/data`, params)
+    return this.httpService.get<IFetchFormDataRes[]>(`baseinfo/data`, params)
   }
 }

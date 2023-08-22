@@ -11,6 +11,7 @@ import {FetchFormDTO} from "../../../../models/DTOs/fetch-form.DTO";
 import {FetchFormDataDTO} from "../../../../models/DTOs/fetch-form-data.DTO";
 import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
+import {IFetchFormDataRes} from "../../../../models/interface/fetch-form-data-res.interface";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -50,8 +51,9 @@ export class BaseInfoComponent implements OnInit {
       this.formKind = form.formKind.id
       this.subscription.push(
         this.baseInfoService.fetchFormData(this.handleCreatePayload(form)).subscribe(formData => {
-          this.columnDefs = this.createGrid(form)
-          this.rowData = formData as any[]
+          const {colDefs, rowData} = this.createGrid(form, formData)
+          this.columnDefs = colDefs
+          this.rowData = rowData
         })
       )
     })
@@ -86,8 +88,9 @@ export class BaseInfoComponent implements OnInit {
               if (this.formKind === FORM_KIND.MULTI_LEVEL) {
                 this.columnDefs = []
                 this.rowData = []
-                this.columnDefs = this.createGrid(form)
-                this.rowData = formData as any[]
+                const {colDefs, rowData} = this.createGrid(form, formData)
+                this.columnDefs = colDefs
+                this.rowData = rowData
 
               } else if (this.formKind === FORM_KIND.MASTER) {
                 if (this.showDetailGrid) {
@@ -95,8 +98,9 @@ export class BaseInfoComponent implements OnInit {
                   this.detailColumnDefs = []
                   this.detailRowData = []
                 }
-                this.detailColumnDefs = this.createGrid(form)
-                this.detailRowData = formData as any[]
+                const {colDefs, rowData} = this.createGrid(form, formData)
+                this.detailColumnDefs = colDefs
+                this.detailRowData = rowData
                 this.showDetailGrid = true
               }
             })
@@ -106,7 +110,7 @@ export class BaseInfoComponent implements OnInit {
     }
   }
 
-  createGrid(form: IFetchFormRes): ColDef[] {
+  createGrid(form: IFetchFormRes, data: IFetchFormDataRes[]) {
     const colDefs: ColDef[] = []
     form.fields.forEach(item => {
       if (item.isActive) {
@@ -114,7 +118,14 @@ export class BaseInfoComponent implements OnInit {
         colDefs.push(col)
       }
     })
-    return colDefs
+    for (var i = 0; i < data.length; i++) {
+      for (var prop in data[i]) {
+        if (typeof data[i][prop] === 'object') {
+          data[i][prop] = data[i][prop]?.id;
+        }
+      }
+    }
+    return {colDefs, rowData: data}
   }
 
   resetForm() {
