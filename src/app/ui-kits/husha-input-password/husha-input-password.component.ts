@@ -4,7 +4,6 @@ import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
 import {PasswordModule} from "primeng/password";
 import {HushaFieldErrorModule} from "../husha-field-error/husha-field-error.component";
 import {CommonModule} from "@angular/common";
-import {InputTextModule} from "primeng/inputtext";
 import {CustomValidators} from "../../utils/Custom-Validators";
 
 @Component({
@@ -72,7 +71,6 @@ export class HushaInputPasswordComponent extends BaseControlValueAccessor<string
     HushaFieldErrorModule,
     FormsModule,
     CommonModule,
-    InputTextModule
   ],
   exports: [
     HushaInputPasswordComponent
