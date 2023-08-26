@@ -168,10 +168,14 @@ export class MyCustomersComponent implements OnInit {
   }
 
   async handleSelectPeriod($event: MenuItem): Promise<boolean | void> {
-    if (this.selectedPeriod && this.selectedPeriod.id === $event.id) return false
-    this.selectedPeriod = $event
-    this.storageService.setSessionStorage(selectedPeriodKey, $event)
-    await this.handleFetchMenu()
+    if (!this.selectedPeriod) {
+      this.selectedPeriod = $event
+      this.storageService.setSessionStorage(selectedPeriodKey, $event)
+      await this.handleFetchMenu()
+    } else {
+      this.selectedPeriod = $event
+      this.storageService.setSessionStorage(selectedPeriodKey, $event)
+    }
   }
 
   resetService() {
