@@ -1,13 +1,44 @@
-<app-husha-grid
-  [columnDefs]="columnDefs"
+<!--<app-husha-grid-->
+<!--  [columnDefs]="columnDefs"-->
+<!--  [rowData]="rowData"-->
+<!--  (rowClicked)="handleRowClicked($event)"-->
+<!--&gt;</app-husha-grid>-->
+
+<!--<div class="mt-3" *ngIf="showDetailGrid">-->
+<!--  <app-husha-grid-->
+<!--    [columnDefs]="detailColumnDefs"-->
+<!--    [rowData]="detailRowData"-->
+<!--  ></app-husha-grid>-->
+<!--</div>-->
+
+<ag-grid-angular
+  #grid
+  style="width:100%;height: 300px"
+  class="ag-theme-alpine"
+  [enableRtl]="true"
   [rowData]="rowData"
+  [columnDefs]="columnDefs"
+  [pagination]="true"
+  [paginationPageSize]="defaultPageSize"
+  [cacheBlockSize]="defaultPageSize"
+  [enableRangeSelection]="true"
+  [gridOptions]="gridOptions"
   (rowClicked)="handleRowClicked($event)"
-></app-husha-grid>
+></ag-grid-angular>
+
 
 <div class="mt-3" *ngIf="showDetailGrid">
-  <app-husha-grid
-    [columnDefs]="detailColumnDefs"
-    [rowData]="detailRowData"
-  ></app-husha-grid>
+  <ag-grid-angular
+    #detailGrid
+    style="width:100%;height: 300px"
+    class="ag-theme-alpine"
+    [enableRtl]="true"
+    [rowData]="rowData"
+    [columnDefs]="columnDefs"
+    [pagination]="true"
+    [paginationPageSize]="defaultPageSize"
+    [cacheBlockSize]="defaultPageSize"
+    [enableRangeSelection]="true"
+    [gridOptions]="gridOptions"
+  ></ag-grid-angular>
 </div>
-

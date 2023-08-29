@@ -37,7 +37,7 @@ export class BaseInfoService {
     let params = new HttpParams()
     for (const key in payload) {
       if (payload.hasOwnProperty(key)) {
-        params = params.set(key, payload[key] || '');
+        params = params.set(key, payload[key] !== null ? payload[key] : '');
       }
     }
     return this.httpService.get<IFetchFormDataRes[]>(`baseinfo/data`, params)
