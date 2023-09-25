@@ -5,7 +5,7 @@ import {RouterModule} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgOtpInputModule} from "ng-otp-input";
 import {CountdownModule} from "ngx-countdown";
-import {HushaButtonModule} from "../../../../ui-kits/husha-button/husha-button.component";
+import {CustomButtonModule} from "../../../../ui-kits/custom-button/custom-button.component";
 
 
 @NgModule({
@@ -18,7 +18,8 @@ import {HushaButtonModule} from "../../../../ui-kits/husha-button/husha-button.c
     ReactiveFormsModule,
     NgOtpInputModule,
     CountdownModule,
-    HushaButtonModule
+    CustomButtonModule
   ]
 })
-export class OtpModule { }
+export class OtpModule {
+}

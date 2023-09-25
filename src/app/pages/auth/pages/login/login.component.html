@@ -1,21 +1,21 @@
 <form [formGroup]="loginForm" (ngSubmit)="handLogin()">
-  <app-husha-input-text
+  <app-custom-input-text
     label="نام کاربری"
     formControlName="username"
-  ></app-husha-input-text>
-  <app-husha-input-password
+  ></app-custom-input-text>
+  <app-custom-input-password
     class="mb-2"
     label="رمز عبور"
     formControlName="password"
-  ></app-husha-input-password>
+  ></app-custom-input-password>
 
   <app-captcha></app-captcha>
 
-  <app-husha-button
+  <app-custom-button
     class="mb-3"
     [disabled]="loginForm.invalid"
     label="ورود"
-  ></app-husha-button>
+  ></app-custom-button>
 
   <span routerLink="/auth/phone" class="cursor-pointer text-primary font-sm-regular">رمز عبور خود را فراموش کرده اید ؟</span>
 

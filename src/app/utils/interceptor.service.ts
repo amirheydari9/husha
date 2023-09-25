@@ -9,11 +9,11 @@ import {
 } from "@angular/common/http";
 import {catchError, filter, finalize, map, Observable, takeUntil, throwError} from "rxjs";
 import {TokenStorageService} from "./token-storage.service";
-import {NavigationEnd, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {AppConfigService} from "./app-config.service";
 import {environment} from "../../environments/environment";
-import {NotificationService} from "../ui-kits/husha-toast/notification.service";
 import {OauthFacade} from "../data-core/oauth/oauth.facade";
+import {NotificationService} from "../ui-kits/custom-toast/notification.service";
 
 @Injectable()
 export class InterceptorService implements HttpInterceptor {

@@ -3,11 +3,11 @@ import {OauthFacade} from "../../data-core/oauth/oauth.facade";
 import {FormBuilder, FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
 
 import {CommonModule} from "@angular/common";
-import {HushaFieldErrorModule} from "../../ui-kits/husha-field-error/husha-field-error.component";
 import {ICaptchaRes} from "../../models/interface/captcha-res.interface";
 import {Subscription} from "rxjs";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Base64PipeModule} from "../../pipes/base64.pipe";
+import {FieldErrorModule} from "../../ui-kits/field-error/field-error.component";
 
 @AutoUnsubscribe()
 @Component({
@@ -25,7 +25,7 @@ import {Base64PipeModule} from "../../pipes/base64.pipe";
           <i class="pi pi-refresh" (click)="handleFetchCaptcha()"></i>
         </div>
       </div>
-      <app-husha-field-error [formField]="control"></app-husha-field-error>
+      <app-field-error [formField]="control"></app-field-error>
     </div>`,
   styles: [`
     @import "../../../scss/variabels";
@@ -99,8 +99,8 @@ export class CaptchaComponent implements OnInit {
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    HushaFieldErrorModule,
-    Base64PipeModule
+    Base64PipeModule,
+    FieldErrorModule
   ],
   exports: [CaptchaComponent]
 })

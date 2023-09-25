@@ -162,4 +162,15 @@ export class CustomValidators {
     const isValid = !isWhitespace;
     return isValid ? null : {noWhitespace: {message: 'مقدار ورودی نامعتبر است '}}
   }
+
+  static datePickerFormat(control: AbstractControl): ValidationErrors | null {
+    const datePicker = control.value;
+    if (!datePicker) {
+      return null;
+    }
+    const dateRegex = new RegExp(/^\d{4}\/\d{2}\/\d{2}$/);
+    return dateRegex.test(datePicker) ? null : {
+      mobile: {message: 'فرمت تاریخ نامعتبر است'}
+    };
+  }
 }

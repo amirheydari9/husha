@@ -1,15 +1,15 @@
 <div class="d-flex justify-content-start">
 
-  <app-husha-menu
+  <app-custom-menu
     [items]="customerMenuItems"
     (selectedMenu)="handleSelectCustomer($event)">
     <div class="d-flex align-items-center justify-content-start me-3" (click)="customerMenu.menu.toggle($event)">
       <i class="pi pi-user me-2"></i>
       <span class="text-1 font-sm-bold">{{selectedCustomer ? selectedCustomer.label : 'انتخاب مشتری'}}</span>
     </div>
-  </app-husha-menu>
+  </app-custom-menu>
 
-  <app-husha-menu
+  <app-custom-menu
     *ngIf="selectedCustomer"
     #serviceMenu
     [items]="serviceMenuItems"
@@ -18,10 +18,10 @@
       <i class="pi pi-cog me-2"></i>
       <span class="text-1 font-sm-bold ">{{selectedService ? selectedService.title : 'انتخاب سرویس'}}</span>
     </div>
-  </app-husha-menu>
+  </app-custom-menu>
 
 
-  <app-husha-menu
+  <app-custom-menu
     *ngIf="showUnitMenu"
     #unitMenu
     [items]="unitMenuItems"
@@ -30,9 +30,9 @@
       <i class="pi pi-building me-2"></i>
       <span class="text-1 font-sm-bold ">{{selectedUnit ? selectedUnit.label : 'انتخاب مرکز'}}</span>
     </div>
-  </app-husha-menu>
+  </app-custom-menu>
 
-  <app-husha-menu
+  <app-custom-menu
     *ngIf="selectedCustomer"
     #periodMenu
     [items]="periodMenuItems"
@@ -41,6 +41,6 @@
       <i class="pi pi-calendar me-2"></i>
       <span class="text-1 font-sm-bold ">{{selectedPeriod ? selectedPeriod.label : 'انتخاب دوره'}}</span>
     </div>
-  </app-husha-menu>
+  </app-custom-menu>
 
 </div>

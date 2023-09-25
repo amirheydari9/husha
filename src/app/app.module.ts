@@ -10,8 +10,8 @@ import {NgxsModule} from "@ngxs/store";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {InterceptorService} from "./utils/interceptor.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {HushaToastModule} from "./ui-kits/husha-toast/husha-toast.component";
 import {NgxUiLoaderConfig, NgxUiLoaderHttpModule, NgxUiLoaderModule, SPINNER,} from "ngx-ui-loader";
+import {CustomToastModule} from "./ui-kits/custom-toast/custom-toast.component";
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   fgsType: SPINNER.ballSpinClockwise,
@@ -37,11 +37,11 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     }),
     NgxsDispatchPluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),
-    HushaToastModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
     NgxUiLoaderHttpModule.forRoot({
       showForeground: true
-    })
+    }),
+    CustomToastModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true}

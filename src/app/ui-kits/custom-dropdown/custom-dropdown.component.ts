@@ -1,0 +1,104 @@
+import {Component, Input, NgModule, OnInit, Self} from '@angular/core';
+import {DropdownModule} from "primeng/dropdown";
+import {NgClass} from "@angular/common";
+import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
+import {FormControl, FormsModule, NgControl} from "@angular/forms";
+import {FieldErrorModule} from "../field-error/field-error.component";
+
+@Component({
+  selector: 'app-custom-dropdown',
+  template: `
+    <div class="w-full uikit-wrapper-height" [class]="class">
+      <span class="p-float-label">
+        <p-dropdown
+          [appendTo]="appendTo??''"
+          [(ngModel)]="value"
+          [showClear]="showClear"
+          [autoDisplayFirst]="false"
+          [options]="options"
+          [optionLabel]="optionLabel"
+          [optionValue]="optionValue"
+          emptyMessage="دیتایی موجود نیست"
+          emptyFilterMessage="نتیجه ای یافت نشد"
+          [filter]="filter"
+          [filterBy]="optionLabel"
+          [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
+          [style]="{'width':'100%'}"
+          (onChange)="onChanged($event)"
+          (onBlur)="touched()">
+      </p-dropdown>
+      <label class="text-1 font-sm-regular">{{label}}</label>
+      </span>
+      <app-field-error [formField]="control"></app-field-error>
+    </div>`,
+  styles: [`
+    :host ::ng-deep .p-dropdown {
+
+      & .p-dropdown-clear-icon {
+        left: 2.357rem;
+        right: unset
+      }
+
+      &.p-dropdown-clearable .p-dropdown-label {
+        padding-right: 0.5rem;
+      }
+
+      & .p-dropdown-panel .p-dropdown-header .p-dropdown-filter {
+        margin-right: unset;
+      }
+    }
+  `]
+})
+export class CustomDropdownComponent extends BaseControlValueAccessor<string> implements OnInit {
+
+  control: FormControl;
+
+  @Input() label: string;
+
+  @Input() showClear = true;
+
+  @Input() options: any[];
+
+  @Input() required = false;
+
+  @Input() optionLabel = 'name';
+
+  @Input() optionValue = 'id';
+
+  @Input() filter = true;
+
+  @Input() class: string;
+
+  @Input() appendTo: string;
+
+  constructor(
+    @Self() public controlDir: NgControl
+  ) {
+    super()
+    this.controlDir.valueAccessor = this;
+  }
+
+  ngOnInit(): void {
+    this.control = this.controlDir.control as FormControl
+  }
+
+  public onChanged(event: any): void {
+    const value: string = event.value;
+    this.changed(value);
+  }
+
+}
+
+@NgModule({
+  declarations: [CustomDropdownComponent],
+  imports: [
+    DropdownModule,
+    FormsModule,
+    NgClass,
+    FieldErrorModule
+  ],
+  exports: [CustomDropdownComponent]
+})
+export class CustomDropdownModule {
+
+}

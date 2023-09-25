@@ -3,8 +3,8 @@ import {CommonModule} from '@angular/common';
 import {ForgetPasswordComponent} from './forget-password.component';
 import {RouterModule} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
-import {HushaInputPasswordModule} from "../../../../ui-kits/husha-input-password/husha-input-password.component";
-import {HushaButtonModule} from "../../../../ui-kits/husha-button/husha-button.component";
+import {CustomInputPasswordModule} from "../../../../ui-kits/custom-input-password/custom-input-password.component";
+import {CustomButtonModule} from "../../../../ui-kits/custom-button/custom-button.component";
 
 
 @NgModule({
@@ -15,8 +15,8 @@ import {HushaButtonModule} from "../../../../ui-kits/husha-button/husha-button.c
     CommonModule,
     RouterModule.forChild([{path: '', component: ForgetPasswordComponent}]),
     ReactiveFormsModule,
-    HushaInputPasswordModule,
-    HushaButtonModule
+    CustomInputPasswordModule,
+    CustomButtonModule
   ]
 })
 export class ForgetPasswordModule {

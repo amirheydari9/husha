@@ -4,8 +4,8 @@ import {PhoneComponent} from './phone.component';
 import {RouterModule} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
 import {CaptchaModule} from "../../../../components/captcha/captcha.component";
-import {HushaButtonModule} from "../../../../ui-kits/husha-button/husha-button.component";
-import {HushaInputTextModule} from "../../../../ui-kits/husha-input-text/husha-input-text.component";
+import {CustomInputTextModule} from "../../../../ui-kits/custom-input-text/custom-input-text.component";
+import {CustomButtonModule} from "../../../../ui-kits/custom-button/custom-button.component";
 
 
 @NgModule({
@@ -17,8 +17,8 @@ import {HushaInputTextModule} from "../../../../ui-kits/husha-input-text/husha-i
     RouterModule.forChild([{path: '', component: PhoneComponent}]),
     ReactiveFormsModule,
     CaptchaModule,
-    HushaButtonModule,
-    HushaInputTextModule
+    CustomInputTextModule,
+    CustomButtonModule
   ]
 })
 export class PhoneModule {

@@ -8,7 +8,6 @@ import {BaseInfoFacade} from "../../data-core/base-info/base-info.facade";
 import {GetServicesReqDTO} from "../../models/DTOs/get-services-req.DTO";
 import {GetPeriodReqDTO} from "../../models/DTOs/get-period-req.DTO";
 import {MenuItem} from "primeng/api";
-import {HushaMenuComponent, HushaMenuModule} from "../../ui-kits/husha-menu/husha-menu.component";
 import {FetchMenuReqDTO} from "../../models/DTOs/fetch-menu-req.DTO";
 import {GetUnitsReqDTO} from "../../models/DTOs/get-units-req.DTO";
 import {IGetServicesRes} from "../../models/interface/get-services-res.interface";
@@ -16,6 +15,7 @@ import {StorageService} from "../../utils/storage.service";
 import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../constants/keys";
 import {Router} from "@angular/router";
 import {AppConfigService} from "../../utils/app-config.service";
+import {CustomMenuComponent, CustomMenuModule} from "../../ui-kits/custom-menu/custom-menu.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -41,10 +41,10 @@ export class MyCustomersComponent implements OnInit {
 
   showUnitMenu: boolean = false
 
-  @ViewChild(HushaMenuComponent) customerMenu: HushaMenuComponent
-  @ViewChild(HushaMenuComponent) serviceMenu: HushaMenuComponent
-  @ViewChild(HushaMenuComponent) unitMenu: HushaMenuComponent
-  @ViewChild(HushaMenuComponent) periodMenu: HushaMenuComponent
+  @ViewChild(CustomMenuComponent) customerMenu: CustomMenuComponent
+  @ViewChild(CustomMenuComponent) serviceMenu: CustomMenuComponent
+  @ViewChild(CustomMenuComponent) unitMenu: CustomMenuComponent
+  @ViewChild(CustomMenuComponent) periodMenu: CustomMenuComponent
 
   constructor(
     private customerFacade: CustomerFacade,
@@ -226,7 +226,7 @@ export class MyCustomersComponent implements OnInit {
   imports: [
     CustomerStore,
     CommonModule,
-    HushaMenuModule,
+    CustomMenuModule,
   ],
   exports: [
     MyCustomersComponent

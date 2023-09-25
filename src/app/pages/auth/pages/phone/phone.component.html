@@ -1,13 +1,13 @@
 <form [formGroup]="phoneForm" (ngSubmit)="handleSubmit()">
-  <app-husha-input-text
+  <app-custom-input-text
     label="شماره موبایل"
     formControlName="mobileNumber"
-  ></app-husha-input-text>
+  ></app-custom-input-text>
 
   <app-captcha></app-captcha>
 
-  <app-husha-button
+  <app-custom-button
     label="دریافت کد یکبار مصرف"
     [disabled]="phoneForm.invalid"
-  ></app-husha-button>
+  ></app-custom-button>
 </form>

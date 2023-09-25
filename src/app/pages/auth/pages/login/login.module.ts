@@ -3,10 +3,10 @@ import {CommonModule} from '@angular/common';
 import {LoginComponent} from './login.component';
 import {RouterModule} from "@angular/router";
 import {ReactiveFormsModule} from "@angular/forms";
-import {HushaInputTextModule} from "../../../../ui-kits/husha-input-text/husha-input-text.component";
-import {HushaInputPasswordModule} from "../../../../ui-kits/husha-input-password/husha-input-password.component";
-import {HushaButtonModule} from "../../../../ui-kits/husha-button/husha-button.component";
 import {CaptchaModule} from "../../../../components/captcha/captcha.component";
+import {CustomInputTextModule} from "../../../../ui-kits/custom-input-text/custom-input-text.component";
+import {CustomInputPasswordModule} from "../../../../ui-kits/custom-input-password/custom-input-password.component";
+import {CustomButtonModule} from "../../../../ui-kits/custom-button/custom-button.component";
 
 
 @NgModule({
@@ -17,10 +17,10 @@ import {CaptchaModule} from "../../../../components/captcha/captcha.component";
     CommonModule,
     RouterModule.forChild([{path: '', component: LoginComponent}]),
     ReactiveFormsModule,
-    HushaInputTextModule,
-    HushaInputPasswordModule,
-    HushaButtonModule,
     CaptchaModule,
+    CustomInputTextModule,
+    CustomInputPasswordModule,
+    CustomButtonModule,
   ]
 })
 export class LoginModule {
