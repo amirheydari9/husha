@@ -3,34 +3,30 @@ import {DropdownModule} from "primeng/dropdown";
 import {NgClass} from "@angular/common";
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
 import {FormControl, FormsModule, NgControl} from "@angular/forms";
-import {FieldErrorModule} from "../field-error/field-error.component";
+import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
 
 @Component({
   selector: 'app-custom-dropdown',
   template: `
-    <div class="w-full uikit-wrapper-height" [class]="class">
-      <span class="p-float-label">
-        <p-dropdown
-          [appendTo]="appendTo??''"
-          [(ngModel)]="value"
-          [showClear]="showClear"
-          [autoDisplayFirst]="false"
-          [options]="options"
-          [optionLabel]="optionLabel"
-          [optionValue]="optionValue"
-          emptyMessage="دیتایی موجود نیست"
-          emptyFilterMessage="نتیجه ای یافت نشد"
-          [filter]="filter"
-          [filterBy]="optionLabel"
-          [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
-          [style]="{'width':'100%'}"
-          (onChange)="onChanged($event)"
-          (onBlur)="touched()">
+    <app-input-wrapper [label]="label" [control]="control" [ngClass]="class">
+      <p-dropdown
+        [appendTo]="appendTo??''"
+        [(ngModel)]="value"
+        [showClear]="showClear"
+        [autoDisplayFirst]="false"
+        [options]="options"
+        [optionLabel]="optionLabel"
+        [optionValue]="optionValue"
+        emptyMessage="دیتایی موجود نیست"
+        emptyFilterMessage="نتیجه ای یافت نشد"
+        [filter]="filter"
+        [filterBy]="optionLabel"
+        [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
+        [style]="{'width':'100%'}"
+        (onChange)="onChanged($event)"
+        (onBlur)="touched()">
       </p-dropdown>
-      <label class="text-1 font-sm-regular">{{label}}</label>
-      </span>
-      <app-field-error [formField]="control"></app-field-error>
-    </div>`,
+    </app-input-wrapper>`,
   styles: [`
     :host ::ng-deep .p-dropdown {
 
@@ -95,7 +91,7 @@ export class CustomDropdownComponent extends BaseControlValueAccessor<string> im
     DropdownModule,
     FormsModule,
     NgClass,
-    FieldErrorModule
+    InputWrapperModule
   ],
   exports: [CustomDropdownComponent]
 })

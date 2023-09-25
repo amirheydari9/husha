@@ -3,13 +3,12 @@ import {FormControl, FormsModule, NgControl} from "@angular/forms";
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
 import {PasswordModule} from "primeng/password";
 import {NgClass, NgStyle} from "@angular/common";
-import {FieldErrorModule} from "../field-error/field-error.component";
+import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
 
 @Component({
   selector: 'app-custom-input-password',
   template: `
-    <div class="w-full uikit-wrapper-height" [ngClass]="class">
-     <span class="p-float-label">
+    <app-input-wrapper [label]="label" [control]="control" [ngClass]="class">
       <p-password
         [toggleMask]="true"
         [feedback]="false"
@@ -22,11 +21,8 @@ import {FieldErrorModule} from "../field-error/field-error.component";
         (input)="onChanged($event)"
         (onBlur)="touched()"
       ></p-password>
-      <label class="text-1 font-sm-regular">{{label}}</label>
-     </span>
-      <app-field-error [formField]="control"></app-field-error>
-      <ng-content></ng-content>
-    </div>
+    </app-input-wrapper>
+    <ng-content></ng-content>
   `,
   styles: [`
     :host ::ng-deep .p-input-icon-right {
@@ -72,10 +68,10 @@ export class CustomInputPasswordComponent extends BaseControlValueAccessor<strin
   declarations: [CustomInputPasswordComponent],
   imports: [
     PasswordModule,
-    FieldErrorModule,
     FormsModule,
     NgClass,
-    NgStyle
+    NgStyle,
+    InputWrapperModule
   ],
   exports: [
     CustomInputPasswordComponent

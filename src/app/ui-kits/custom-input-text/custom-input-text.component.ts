@@ -4,29 +4,25 @@ import {FormControl, NgControl, Validators} from "@angular/forms";
 import {CustomValidators} from "../../utils/Custom-Validators";
 import {ConvertNumberToEnglishDirectiveModule} from "../../directives/convert-number-to-english.directive";
 import {InputTextModule} from "primeng/inputtext";
-import {FieldErrorModule} from "../field-error/field-error.component";
 import {NgClass} from "@angular/common";
+import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
 
 @Component({
   selector: 'app-custom-input-text',
   template: `
-    <div class="uikit-wrapper-height" [ngClass]="class">
-      <span class="p-float-label">
-        <input
-          type="text"
-          [convertNumberToEnglish]="true"
-          #input
-          pInputText
-          [value]="value"
-          [disabled]="disabled"
-          [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
-          [style]="{'width':'100%'}"
-          (input)="onChanged($event)"
-          (blur)="touched()">
-        <label class="text-1 font-sm-regular">{{label}}</label>
-      </span>
-      <app-field-error [formField]="control"></app-field-error>
-    </div>
+    <app-input-wrapper [label]="label" [control]="control" [ngClass]="class">
+      <input
+        type="text"
+        [convertNumberToEnglish]="true"
+        #input
+        pInputText
+        [value]="value"
+        [disabled]="disabled"
+        [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
+        [style]="{'width':'100%'}"
+        (input)="onChanged($event)"
+        (blur)="touched()">
+    </app-input-wrapper>
   `,
   styles: []
 })
@@ -65,10 +61,10 @@ export class CustomInputTextComponent extends BaseControlValueAccessor<string> i
 @NgModule({
   declarations: [CustomInputTextComponent],
   imports: [
-    FieldErrorModule,
     InputTextModule,
     ConvertNumberToEnglishDirectiveModule,
-    NgClass
+    NgClass,
+    InputWrapperModule,
   ],
   exports: [
     CustomInputTextComponent

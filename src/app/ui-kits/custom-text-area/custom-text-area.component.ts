@@ -6,12 +6,12 @@ import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
 import {FormControl, NgControl, Validators} from "@angular/forms";
 import {CustomValidators} from "../../utils/Custom-Validators";
 import {NgClass, NgStyle} from "@angular/common";
+import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
 
 @Component({
   selector: 'app-custom-text-area',
   template: `
-    <div class="flex flex-column" [class]="class">
-      <span class="p-float-label">
+    <app-input-wrapper [label]="label" [control]="control" [ngClass]="class" [isTextArea]="true">
       <textarea
         [convertNumberToEnglish]="true"
         pInputTextarea
@@ -25,10 +25,7 @@ import {NgClass, NgStyle} from "@angular/common";
         (input)="onChanged($event)"
         (blur)="touched()"
       ></textarea>
-       <label class="text-1 font-sm-regular">{{label}}</label>
-      </span>
-      <app-field-error [formField]="control"></app-field-error>
-    </div>
+    </app-input-wrapper>
   `
 })
 export class CustomTextAreaComponent extends BaseControlValueAccessor<string> implements OnInit {
@@ -64,7 +61,8 @@ export class CustomTextAreaComponent extends BaseControlValueAccessor<string> im
     FieldErrorModule,
     ConvertNumberToEnglishDirectiveModule,
     NgClass,
-    NgStyle
+    NgStyle,
+    InputWrapperModule
   ],
   exports: [CustomTextAreaComponent]
 })
