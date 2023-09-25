@@ -7,8 +7,8 @@ import {SidenavToggle} from "./sidenav/sidenav.component";
 })
 export class DashboardComponent {
 
-  isSideNavCollapsed: boolean = false;
-  screenWidth: number = 0
+  isSideNavCollapsed: boolean = true;
+  screenWidth: number = window.innerWidth
 
   onToggleSidenav($event: SidenavToggle) {
     this.isSideNavCollapsed = $event.collapsed;

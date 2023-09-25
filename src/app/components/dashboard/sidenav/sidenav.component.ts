@@ -1,4 +1,13 @@
-import {Component, EventEmitter, HostListener, OnInit, Output} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  OnInit,
+  Output,
+  QueryList,
+  ViewChildren
+} from '@angular/core';
 import {INavbarData} from "../navbar-data.interface";
 import {fadeInOut, rotate} from "../animations";
 import {Router} from "@angular/router";
@@ -22,11 +31,13 @@ export interface SidenavToggle {
 })
 export class SidenavComponent implements OnInit {
 
-  collapsed: boolean = false;
-  screenWidth = 0;
+  collapsed: boolean = true;
+  screenWidth = window.innerWidth;
   navData = []
   multiple: boolean = false
   subscription: Subscription
+
+  @ViewChildren('sideNavItem') sideNavItem: QueryList<ElementRef>
 
   @Output() onToggleSidenav: EventEmitter<SidenavToggle> = new EventEmitter<SidenavToggle>()
 
@@ -75,8 +86,8 @@ export class SidenavComponent implements OnInit {
     this.onToggleSidenav.emit({collapsed: this.collapsed, screenWidth: this.screenWidth})
   }
 
-  handleClick(item: INavbarData): void {
-    this.shrinkItems(item)
+  handleClick(item: INavbarData, i: number): void {
+    this.shrinkItems(item, i)
     item.expanded = !item.expanded
   }
 
@@ -84,12 +95,10 @@ export class SidenavComponent implements OnInit {
     return this.router.url === data.routerLink ? 'active' : ''
   }
 
-  shrinkItems(item: INavbarData): void {
+  shrinkItems(item: INavbarData, i: number): void {
     if (item.items.length === 0) this.appConfigService.setTabMenu(item)
-    const sideNavLinks = document.getElementsByClassName('sidenav-nav-link')
-    for (let i = 0; i < sideNavLinks.length; i++) {
-      sideNavLinks[i].classList.remove('active')
-    }
+    this.sideNavItem.map(item => item.nativeElement.children[0].classList.remove('active'))
+    this.sideNavItem.get(i).nativeElement.children[0].classList.add('active')
     if (!this.multiple) {
       for (let modelItem of this.navData) {
         if (item !== modelItem && modelItem.expanded) {

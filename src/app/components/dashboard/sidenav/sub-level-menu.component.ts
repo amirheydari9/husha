@@ -84,10 +84,5 @@ export class SubLevelMenuComponent implements OnInit {
 
   handleSelectMenu(item: INavbarData) {
     if (item.items.length === 0) this.appConfigService.setTabMenu(item)
-    const sideNavItems = document.getElementsByClassName('sidenav-nav-item')
-    for (let i = 0; i < sideNavItems.length; i++) {
-      sideNavItems[i].children[0].classList.remove('active')
-    }
-    this.subMenu.nativeElement.closest('.sidenav-nav-item').children[0].classList.add('active')
   }
 }
