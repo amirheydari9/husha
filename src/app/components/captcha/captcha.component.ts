@@ -13,15 +13,15 @@ import {FieldErrorModule} from "../../ui-kits/field-error/field-error.component"
 @Component({
   selector: 'app-captcha',
   template: `
-    <div class="d-flex flex-column captcha-container">
-      <div class="d-flex align-items-center justify-content-between captcha"
+    <div class="flex flex-column captcha-container">
+      <div class="flex align-items-center justify-content-between captcha"
            [ngClass]="{'error-border':control.invalid && (control.dirty || control.touched)}">
         <input [formControl]="control" type="number" class="col-2 text-center"/>
-        <div class="d-flex align-items-center justify-content-center flex-grow-1 captcha-image">
+        <div class="flex align-items-center justify-content-center flex-grow-1 captcha-image">
           <img *ngIf="captcha" [src]="captcha.data|base64" height="30" alt="captcha"
                class="text-center"/>
         </div>
-        <div class="d-flex align-items-center justify-content-center px-2">
+        <div class="flex align-items-center justify-content-center px-2">
           <i class="pi pi-refresh" (click)="handleFetchCaptcha()"></i>
         </div>
       </div>
