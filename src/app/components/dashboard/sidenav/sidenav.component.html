@@ -20,7 +20,7 @@
            (click)="handleClick(data,i)"
            [ngClass]="getActiveClass(data)">
           <i class="sidenav-link-icon" [class]="data.icon"></i>
-          <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">{{data.label}}</span>
+          <span class="sidenav-link-text font-sm-regular" @fadeInOut *ngIf="collapsed">{{data.label}}</span>
           <i *ngIf="data.items && collapsed"
              [ngClass]="data.expanded ? 'fal fa-angle-down' :'fal fa-angle-left'"
              class="menu-collapsed-icon"
@@ -31,7 +31,7 @@
            (click)="shrinkItems(data,i)"
            class="sidenav-nav-link">
           <i class="sidenav-link-icon" [class]="data.icon"></i>
-          <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">{{data.label}}</span>
+          <span class="sidenav-link-text font-sm-regular" @fadeInOut *ngIf="collapsed">{{data.label}}</span>
         </a>
         <div *ngIf="data.items && data.items.length > 0">
           <app-sub-level-menu
