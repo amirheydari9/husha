@@ -23,13 +23,16 @@ export interface RadioOption {
           (onClick)="handleChanged($event)"
         ></p-radioButton>
       </ng-container>
-      <app-field-error [formField]="control"></app-field-error>
     </div>
+    <app-field-error [formField]="control"></app-field-error>
   `,
   styles:[`
     :host ::ng-deep .p-radiobutton-label {
       margin-left: 0.5rem;
       margin-right: 0.5rem;
+    }
+    :host ::ng-deep .field-checkbox, .field-radiobutton {
+      margin-bottom: 0;
     }
   `]
 })
