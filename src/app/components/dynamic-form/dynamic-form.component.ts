@@ -1,6 +1,6 @@
 import {Component, Input, NgModule, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {CommonModule, NgFor, NgSwitch, NgSwitchCase} from "@angular/common";
+import {NgFor, NgSwitch, NgSwitchCase} from "@angular/common";
 import {CustomInputTextModule} from "../../ui-kits/custom-input-text/custom-input-text.component";
 import {CustomInputNumberModule} from "../../ui-kits/custom-input-number/custom-input-number.component";
 import {CustomRadioModule} from "../../ui-kits/custom-radio/custom-radio.component";
@@ -14,12 +14,18 @@ import {CustomDatePickerModule} from "../../ui-kits/custom-date-picker/custom-da
     <form [formGroup]="dynamicFormGroup">
       <ng-container *ngFor="let field of fields">
         <ng-container [ngSwitch]="field.type">
-          <app-custom-input-text *ngSwitchCase="'text'" [formControlName]="field.name" [label]="field.label"></app-custom-input-text>
-          <app-custom-input-number *ngSwitchCase="'number'" [formControlName]="field.name" [label]="field.label"></app-custom-input-number>
-          <app-custom-dropdown *ngSwitchCase="'dropdown'" [formControlName]="field.name" [options]="field.options" [label]="field.label"></app-custom-dropdown>
-          <app-custom-radio *ngSwitchCase="'radio'" [formControlName]="field.name" [options]="field.options" [label]="field.label"></app-custom-radio>
-          <app-custom-checkbox *ngSwitchCase="'checkbox'" [formControlName]="field.name" [label]="field.label"></app-custom-checkbox>
-          <app-custom-date-picker *ngSwitchCase="'datepicker'" [formControlName]="field.name" [label]="field.label"></app-custom-date-picker>
+          <app-custom-input-text *ngSwitchCase="'text'" [formControlName]="field.name"
+                                 [label]="field.label"></app-custom-input-text>
+          <app-custom-input-number *ngSwitchCase="'number'" [formControlName]="field.name"
+                                   [label]="field.label"></app-custom-input-number>
+          <app-custom-dropdown *ngSwitchCase="'dropdown'" [formControlName]="field.name" [options]="field.options"
+                               [label]="field.label"></app-custom-dropdown>
+          <app-custom-radio *ngSwitchCase="'radio'" [formControlName]="field.name" [options]="field.options"
+                            [label]="field.label"></app-custom-radio>
+          <app-custom-checkbox *ngSwitchCase="'checkbox'" [formControlName]="field.name"
+                               [label]="field.label"></app-custom-checkbox>
+          <app-custom-date-picker *ngSwitchCase="'datepicker'" [formControlName]="field.name"
+                                  [label]="field.label"></app-custom-date-picker>
         </ng-container>
       </ng-container>
     </form>
@@ -49,7 +55,10 @@ export class DynamicFormComponent implements OnInit {
   getFormControlsFields() {
     const formGroupFields = {};
     this.model.forEach(field => {
-      formGroupFields[field.name] = this.fb.control(field.value, DynamicFormComponent.addValidators(field.rules));
+      formGroupFields[field.name] = this.fb.control({
+        value: field.value,
+        disabled: field.disabled
+      }, DynamicFormComponent.addValidators(field.rules));
       this.fields.push(field);
     })
     return formGroupFields;
@@ -73,6 +82,8 @@ export class DynamicFormComponent implements OnInit {
         validators.push(Validators.max(+value))
       } else if (key === 'min') {
         validators.push(Validators.min(+value))
+      } else if (key === 'email') {
+        validators.push(Validators.email)
       }
     }
     return validators
@@ -88,7 +99,6 @@ export class DynamicFormComponent implements OnInit {
     ReactiveFormsModule,
     CustomInputTextModule,
     CustomInputNumberModule,
-    CommonModule,
     CustomRadioModule,
     CustomCheckboxModule,
     CustomDropdownModule,
