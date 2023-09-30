@@ -13,7 +13,7 @@ import {Subscription} from "rxjs";
   template: `
     <div class="position-relative mb-3">
       <div cdkDropListGroup class="tab-menu-wrapper" oncontextmenu="return false" *ngIf="tabMenus.length">
-        <div cdkDropList (cdkDropListDropped)="drop($event)" class="d-flex" cdkDropListOrientation="horizontal">
+        <div cdkDropList (cdkDropListDropped)="drop($event)" class="flex" cdkDropListOrientation="horizontal">
           <div class="tab-menu-item" *ngFor="let menu of tabMenus;let i = index" cdkDrag
                (mouseup)="detectRightClick($event,menu)">
             <a class="text-1 me-2" [ngClass]="[router.url === menu.routerLink ? 'font-sm-bold' :'font-sm-regular']"
@@ -25,11 +25,11 @@ import {Subscription} from "rxjs";
       </div>
       <div #contextMenu class="contextMenu" [ngStyle]="rightPanelStyle">
         <ul class="menu">
-          <li (click)="closeOtherTabs()" class="d-flex align-items-center">
+          <li (click)="closeOtherTabs()" class="flex align-items-center">
             <i class="pi pi-times me-1"></i>
             <a class="text-1 font-xs-regular">بستن تب های دیگر</a>
           </li>
-          <li (click)="closeAllTabs()" class="d-flex align-items-center">
+          <li (click)="closeAllTabs()" class="flex align-items-center">
             <i class="pi pi-times me-1"></i>
             <a class="text-1 font-xs-regular">بستن همه تب ها</a>
           </li>
