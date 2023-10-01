@@ -1,4 +1,5 @@
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
+
 var passwordValidator = require('password-validator');
 
 export class CustomValidators {
@@ -134,10 +135,10 @@ export class CustomValidators {
         return null
       }
       const fileFormatArr = file.name.split('.')
-      if (!fileFormatArr.length) {
+      if (fileFormatArr.length === 1) {
         return {requiredFileType: {message: 'فرمت فایل نامعتبر است'}};
       }
-      const fileFormat = fileFormatArr[fileFormatArr.length - 1]
+      const fileFormat = fileFormatArr.pop()
       return types.indexOf(fileFormat) > -1 ? null : {
         requiredFileType: {message: 'فرمت فایل نامعتبر است'}
       };
