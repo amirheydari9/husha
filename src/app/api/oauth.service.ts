@@ -23,12 +23,7 @@ export class OauthService {
   }
 
   login(payload: LoginReqDto): Promise<ILoginRes> {
-    const formData = new FormData();
-    formData.append('username', payload.username);
-    formData.append('password', payload.password);
-    formData.append('captchaAnswer', payload.captchaAnswer.toString());
-    formData.append('captchaId', payload.captchaId);
-    formData.append('grant_type', payload.grant_type);
+    const formData = this.httpService.toFormData(payload)
     const headers = new HttpHeaders({
       'Authorization': 'Basic ' + btoa(environment.basicAuthUsername + ':' + environment.basicAuthPassword)
     });

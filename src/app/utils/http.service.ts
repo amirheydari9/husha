@@ -31,4 +31,22 @@ export class HttpService {
   delete<T>(url: string, params?: HttpParams, headers?: HttpHeaders): Observable<T> {
     return this.http.delete<T>(url, {params, headers})
   }
+
+  toFormData<T>(formValue: T): FormData {
+    const formData = new FormData()
+    for (const key of Object.keys(formValue)) {
+      const value = formValue[key]
+      formData.append(key, value)
+    }
+    return formData
+  }
+
+  toQueryParam<T>(queryParamValue: T): HttpParams {
+    let params = new HttpParams()
+    for (const key of Object.keys(queryParamValue)) {
+      const value = queryParamValue[key]
+      if (value !== null) params = params.append(key, value);
+    }
+    return params
+  }
 }
