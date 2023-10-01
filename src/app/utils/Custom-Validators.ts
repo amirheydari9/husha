@@ -127,4 +127,21 @@ export class CustomValidators {
     }
   }
 
+  static requiredFileType(types: string[]): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const file = control.value
+      if (!file) {
+        return null
+      }
+      const fileFormatArr = file.name.split('.')
+      if (!fileFormatArr.length) {
+        return {requiredFileType: {message: 'فرمت فایل نامعتبر است'}};
+      }
+      const fileFormat = fileFormatArr[fileFormatArr.length - 1]
+      return types.indexOf(fileFormat) > -1 ? null : {
+        requiredFileType: {message: 'فرمت فایل نامعتبر است'}
+      };
+    }
+  }
+
 }

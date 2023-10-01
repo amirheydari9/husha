@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {CustomValidators} from "../../utils/Custom-Validators";
 
 @Component({
   selector: 'app-ui-kit-list',
@@ -20,7 +21,7 @@ export class UiKitListComponent implements OnInit {
       text: this.fb.control(null),
       number: this.fb.control(null, [Validators.required]),
       datepicker: this.fb.control(null, [Validators.required]),
-      file: this.fb.control(null, [Validators.required]),
+      file: this.fb.control(null, [Validators.required,CustomValidators.requiredFileType(['png','jpg'])]),
     })
 
     this.form.controls['file'].valueChanges.subscribe(data => {

@@ -87,6 +87,9 @@ export class DynamicFormComponent implements OnInit {
         validators.push(Validators.email)
       } else if (key === 'url') {
         validators.push(CustomValidators.url)
+      } else if (key === 'requiredFileType') {
+        // TODO بر اساس نوع فابل آرگومان پر شود
+        validators.push(CustomValidators.requiredFileType([]))
       }
     }
     return validators

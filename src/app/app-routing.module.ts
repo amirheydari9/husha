@@ -10,6 +10,11 @@ const routes: Routes = [
     loadChildren: () => import('../app/pages/panel/panel.module').then(m => m.PanelModule),
     canActivate: [IsLoggedInGuard]
   },
+  // {
+  //   path: '',
+  //   loadChildren: () => import('../app/pages/ui-kit-list/ui-kit-list.module').then(m => m.UiKitListModule),
+  //   // canActivate: [IsLoggedInGuard]
+  // },
   {
     path: 'auth',
     loadChildren: () => import('../app/pages/auth/auth.module').then(m => m.AuthModule),

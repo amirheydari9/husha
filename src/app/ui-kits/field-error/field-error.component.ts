@@ -31,6 +31,7 @@ export class FieldErrorComponent {
     authPassword: (params) => params.message,
     noWhitespace: (params) => params.message,
     datePickerFormat: (params) => params.message,
+    requiredFileType: (params) => params.message,
   };
 
   shouldShowErrors(): boolean {
