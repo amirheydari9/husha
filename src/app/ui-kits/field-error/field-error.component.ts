@@ -23,10 +23,13 @@ export class FieldErrorComponent {
     min: (params) => `مقدار این فیلد نمی تواند کمتر از${params.min} باشد`,
     max: (params) => `مقدار این فیلد نمی تواند بیشتر از${params.max} باشد`,
     pattern: (params) => 'The required pattern is: ' + params.requiredPattern,
-    nationalCode: (params) => params.message,
-    noWhitespace: (params) => params.message,
-    authPassword: (params) => params.message,
     mobile: (params) => params.message,
+    url: (params) => params.message,
+    nationalCode: (params) => params.message,
+    passwordMatch: (params) => params.message,
+    postalCode: (params) => params.message,
+    authPassword: (params) => params.message,
+    noWhitespace: (params) => params.message,
     datePickerFormat: (params) => params.message,
   };
 

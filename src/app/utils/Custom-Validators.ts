@@ -14,6 +14,17 @@ export class CustomValidators {
     };
   }
 
+  static url(control: AbstractControl): ValidationErrors | null {
+    const url = control.value;
+    if (!url) {
+      return null;
+    }
+    const urlRegex = new RegExp(/^(http|https):\/\/([\w-]+(\.[\w-]+)+)(\/[\w-]+)*\/?$/);
+    return urlRegex.test(url) ? null : {
+      mobile: {message: 'آدرس اینترنتی معتبر نمی باشد'}
+    };
+  }
+
   static nationalCode(control: AbstractControl): ValidationErrors | null {
     const nationalCode = control.value;
     if (!nationalCode) {
@@ -56,53 +67,6 @@ export class CustomValidators {
       };
   }
 
-  static cardNumber(control: AbstractControl): ValidationErrors | null {
-    const cardNumber = control.value;
-    if (!cardNumber) {
-      return null;
-    }
-    const L = cardNumber.length;
-    if (
-      L < 16
-      || parseInt(cardNumber.substr(1, 10), 10) == 0
-      || parseInt(cardNumber.substr(10, 6), 10) == 0
-    ) {
-      return {
-        cardNumber: {
-          message: 'شماره کارت نامعتبر است'
-        }
-      };
-    }
-    const c = parseInt(cardNumber.substr(15, 1), 10);
-    let s = 0;
-    let k, d;
-    for (let i = 0; i < 16; i++) {
-      k = (i % 2 == 0) ? 2 : 1;
-      d = parseInt(cardNumber.substr(i, 1), 10) * k;
-      s += (d > 9) ? d - 9 : d;
-    }
-    return ((s % 10) == 0)
-      ? null
-      : {
-        cardNumber: {
-          message: 'شماره کارت نامعتبر است'
-        }
-      };
-  }
-
-  static cvv2(control: AbstractControl): ValidationErrors | null {
-    const cvv2 = control.value;
-    if (!cvv2) {
-      return null;
-    }
-    const cvv2Regex = new RegExp(/^\d{3,4}$/);
-    return cvv2Regex.test(cvv2) ? null : {
-      cvv2: {
-        message: 'cvv2 نامعتبراست'
-      }
-    };
-  };
-
   static passwordMatch: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
@@ -110,19 +74,6 @@ export class CustomValidators {
       return password?.value === confirmPassword?.value ? null : {passwordMatch: {message: 'تکرار رمز اشتباه است'}};
     }
     return null
-  };
-
-  static cardPassword(control: AbstractControl): ValidationErrors | null {
-    const cardPassword = control.value;
-    if (!cardPassword) {
-      return null;
-    }
-    const cardPasswordRegex = new RegExp(/^\d{4}$/);
-    return cardPasswordRegex.test(cardPassword) ? null : {
-      cardPassword: {
-        message: 'رمز کارت نامعتبر است'
-      }
-    };
   };
 
   static postalCode(control: AbstractControl): ValidationErrors | null {
@@ -173,4 +124,5 @@ export class CustomValidators {
       mobile: {message: 'فرمت تاریخ نامعتبر است'}
     };
   }
+
 }
