@@ -11,7 +11,10 @@ import {CommonModule, NgClass} from "@angular/common";
         <ng-content></ng-content>
         <label class="text-1 font-sm-regular">{{label}}</label>
       </span>
-      <app-field-error [formField]="control"></app-field-error>
+      <app-field-error *ngIf="control.invalid;else elseBack" [formField]="control"></app-field-error>
+      <ng-template #elseBack>
+        <ng-content select="[hint]"></ng-content>
+      </ng-template>
     </div>
   `,
   styles: []

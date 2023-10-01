@@ -11,7 +11,13 @@ import {CustomValidators} from "../../utils/Custom-Validators";
   selector: 'app-custom-date-picker',
   template: `
     <div class="w-full uikit-wrapper-height" [ngClass]="class">
-      <ng-persian-datepicker [dateInitValue]="!!value">
+      <ng-persian-datepicker
+        [dateInitValue]="!!value"
+        [timeEnable]="timeEnable"
+        [timeShowSecond]="timeEnable"
+        [dateFormat]="timeEnable ? 'YYYY/MM/DD HH:mm:ss' :'YYYY/MM/DD'"
+        [dateIsGregorian]="dateIsGregorian"
+        [dateGregorianFormat]="timeEnable ? 'YYYY/MM/DD HH:mm:ss' :'YYYY/MM/DD'">
         <span class="p-input-icon-left p-float-label w-full">
             <i class="pi pi-calendar cursor-pointer" (click)="input.focus()"></i>
             <input
@@ -33,7 +39,7 @@ import {CustomValidators} from "../../utils/Custom-Validators";
   `,
   styles: [`
     :host ::ng-deep .datepicker-outer-container {
-      position: sticky;
+      position: fixed;
       z-index: 10000;
     }
   `]
@@ -50,6 +56,8 @@ export class CustomDatePickerComponent extends BaseControlValueAccessor<string> 
 
   @Input() label: string;
 
+  @Input() dateIsGregorian: boolean;
+
   @ViewChild('datepickerInput', {static: false}) datepickerInput: ElementRef;
 
 
@@ -62,7 +70,7 @@ export class CustomDatePickerComponent extends BaseControlValueAccessor<string> 
 
   ngOnInit() {
     this.control = this.controlDir.control as FormControl
-    this.control.addValidators([CustomValidators.datePickerFormat])
+    this.control.addValidators([CustomValidators.datePickerFormat(this.timeEnable)])
     this.control.updateValueAndValidity()
   }
 

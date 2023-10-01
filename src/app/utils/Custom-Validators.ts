@@ -114,15 +114,17 @@ export class CustomValidators {
     return isValid ? null : {noWhitespace: {message: 'مقدار ورودی نامعتبر است '}}
   }
 
-  static datePickerFormat(control: AbstractControl): ValidationErrors | null {
-    const datePicker = control.value;
-    if (!datePicker) {
-      return null;
+  static datePickerFormat(timeEnable: boolean): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const datePicker = control.value;
+      if (!datePicker) {
+        return null;
+      }
+      const dateRegex = timeEnable ? new RegExp(/^(\d{4})\/(\d{2})\/(\d{2}) (\d{2}):(\d{2}):(\d{2})$/) : new RegExp(/^\d{4}\/\d{2}\/\d{2}$/)
+      return dateRegex.test(datePicker) ? null : {
+        mobile: {message: 'فرمت تاریخ نامعتبر است'}
+      };
     }
-    const dateRegex = new RegExp(/^\d{4}\/\d{2}\/\d{2}$/);
-    return dateRegex.test(datePicker) ? null : {
-      mobile: {message: 'فرمت تاریخ نامعتبر است'}
-    };
   }
 
 }

@@ -7,6 +7,7 @@ import {CustomRadioModule} from "../../ui-kits/custom-radio/custom-radio.compone
 import {CustomCheckboxModule} from "../../ui-kits/custom-checkbox/custom-checkbox.component";
 import {CustomDropdownModule} from "../../ui-kits/custom-dropdown/custom-dropdown.component";
 import {CustomDatePickerModule} from "../../ui-kits/custom-date-picker/custom-date-picker.component";
+import {CustomValidators} from "../../utils/Custom-Validators";
 
 @Component({
   selector: 'app-dynamic-form',
@@ -84,6 +85,8 @@ export class DynamicFormComponent implements OnInit {
         validators.push(Validators.min(+value))
       } else if (key === 'email') {
         validators.push(Validators.email)
+      } else if (key === 'url') {
+        validators.push(CustomValidators.url)
       }
     }
     return validators

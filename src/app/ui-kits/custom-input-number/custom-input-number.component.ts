@@ -1,9 +1,10 @@
 import {Component, Input, NgModule, OnInit, Self} from '@angular/core';
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
 import {FormControl, FormsModule, NgControl} from "@angular/forms";
-import {NgClass, NgStyle} from "@angular/common";
+import {CommonModule, NgClass, NgStyle} from "@angular/common";
 import {InputNumberModule} from "primeng/inputnumber";
 import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
+import {NumberToCurrencyPipeModule} from "../../pipes/number-to-currency.pipe";
 
 @Component({
   selector: 'app-custom-input-number',
@@ -25,7 +26,9 @@ import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
         (onInput)="onChanged($event)"
         (onBlur)="touched()"
         [inputStyle]="{'width':'100%'}"
+        [suffix]="suffix"
       ></p-inputNumber>
+      <span hint *ngIf="showCurrencyToNumber && !showFraction" class="text-1 font-xs-regular">{{control.value| numberToCurrency}}</span>
     </app-input-wrapper>
   `,
 })
@@ -43,11 +46,28 @@ export class CustomInputNumberComponent extends BaseControlValueAccessor<number>
 
   @Input() maxlength: number;
 
-  @Input() minFractionDigits: number;
-
-  @Input() maxFractionDigits: number;
-
   @Input() class: string;
+
+  @Input() suffix: string;
+
+  @Input() showCurrencyToNumber: boolean;
+
+  minFractionDigits: number;
+
+  maxFractionDigits: number;
+
+  private _showFraction: boolean
+  @Input() set showFraction(value: boolean) {
+    if (value) {
+      this.minFractionDigits = 1
+      this.maxFractionDigits = 5
+    }
+    this._showFraction = value
+  };
+
+  get showFraction(): boolean {
+    return this._showFraction
+  }
 
   constructor(
     @Self() public controlDir: NgControl
@@ -73,7 +93,9 @@ export class CustomInputNumberComponent extends BaseControlValueAccessor<number>
     FormsModule,
     NgClass,
     NgStyle,
-    InputWrapperModule
+    InputWrapperModule,
+    NumberToCurrencyPipeModule,
+    CommonModule
   ],
   exports: [CustomInputNumberComponent]
 })

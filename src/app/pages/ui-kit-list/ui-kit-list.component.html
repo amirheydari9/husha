@@ -1,0 +1,16 @@
+<form [formGroup]="form" class="flex flex-row align-items-center justify-content-center mt-5">
+
+  <app-custom-input-number
+    formControlName="number"
+    label="number"
+    suffix="ریال"
+  ></app-custom-input-number>
+
+  <app-custom-date-picker
+    formControlName="datepicker"
+    label="datepicker"
+    [timeEnable]="true"
+    [dateIsGregorian]="true"
+  ></app-custom-date-picker>
+
+</form>
