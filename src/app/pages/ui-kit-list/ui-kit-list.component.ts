@@ -20,9 +20,10 @@ export class UiKitListComponent implements OnInit {
       text: this.fb.control(null),
       number: this.fb.control(null, [Validators.required]),
       datepicker: this.fb.control(null, [Validators.required]),
+      file: this.fb.control(null, [Validators.required]),
     })
 
-    this.form.controls['datepicker'].valueChanges.subscribe(data => {
+    this.form.controls['file'].valueChanges.subscribe(data => {
       console.log(data)
     })
   }
