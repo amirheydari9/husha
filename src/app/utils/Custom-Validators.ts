@@ -128,7 +128,7 @@ export class CustomValidators {
     }
   }
 
-  static requiredFileType(types: string[]): ValidatorFn {
+  static acceptedFileType(types: string[]): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const file = control.value
       if (!file) {

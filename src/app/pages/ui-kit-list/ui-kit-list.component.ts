@@ -21,7 +21,7 @@ export class UiKitListComponent implements OnInit {
       text: this.fb.control(null),
       number: this.fb.control(null, [Validators.required]),
       datepicker: this.fb.control(null, [Validators.required]),
-      file: this.fb.control(null, [Validators.required,CustomValidators.requiredFileType(['png','jpg'])]),
+      file: this.fb.control(null, [Validators.required,CustomValidators.acceptedFileType(['png','jpg'])]),
     })
 
     this.form.controls['file'].valueChanges.subscribe(data => {
