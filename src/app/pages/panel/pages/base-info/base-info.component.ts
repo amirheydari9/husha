@@ -1,13 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  OnInit,
-  QueryList,
-  ViewChild,
-  ViewChildren
-} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from "rxjs";
 import {FORM_KIND, VIEW_TYPE} from "../../../../constants/enums";
 import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../../../constants/keys";
@@ -228,7 +219,8 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   }
 
   handleClickHistory(item: any) {
-    this.extraId = item.id
+    console.log(item)
+    this.extraId = item ? item.id : null
     this.gridApi.setDatasource(this.dataSource)
   }
 
