@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from "rxjs";
-import {FORM_KIND} from "../../../../constants/enums";
+import {FORM_KIND, VIEW_TYPE} from "../../../../constants/enums";
 import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../../../constants/keys";
 import {IGetServicesRes} from "../../../../models/interface/get-services-res.interface";
 import {ColDef, GridOptions, IDatasource, IGetRowsParams} from "ag-grid-community";
@@ -166,13 +166,13 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   createGrid(rowData: IFetchFormDataRes[]) {
     const colDefs: ColDef[] = []
     this.form.fields.forEach(item => {
-      if (item.isActive) {
-        const col: ColDef = {field: item.name}
+      if (item.isActive && (item.viewType == VIEW_TYPE.SHOW_IN_GRID || item.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM)) {
+        const col: ColDef = {field: item.name, headerName: item.caption}
         colDefs.push(col)
       }
     })
-    for (var i = 0; i < rowData.length; i++) {
-      for (var prop in rowData[i]) {
+    for (let i = 0; i < rowData.length; i++) {
+      for (let prop in rowData[i]) {
         if (typeof rowData[i][prop] === 'object') {
           rowData[i][prop] = rowData[i][prop]?.id;
         }

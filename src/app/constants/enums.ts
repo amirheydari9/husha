@@ -25,7 +25,10 @@ export enum INSERT_TYPE {
 }
 
 export enum VIEW_TYPE {
-
+  NOT_SHOW = 0,
+  SHOW_IN_GRID = 1,
+  SHOW_IN_GRID_AND_FORM = 2,
+  SHOW_IN_FORM = 3,
 }
 
 export enum LOOKUP_VIEW_TYPE {
