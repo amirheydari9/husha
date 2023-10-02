@@ -74,8 +74,6 @@ export class MultiLevelGridHistoryComponent implements OnInit {
       }
     }
   }
-
-
 }
 
 @NgModule({

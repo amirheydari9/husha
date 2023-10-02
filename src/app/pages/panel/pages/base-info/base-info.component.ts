@@ -219,7 +219,6 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   }
 
   handleClickHistory(item: any) {
-    console.log(item)
     this.extraId = item ? item.id : null
     this.gridApi.setDatasource(this.dataSource)
   }
