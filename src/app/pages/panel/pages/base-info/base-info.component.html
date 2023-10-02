@@ -11,7 +11,14 @@
 <!--  ></app-husha-grid>-->
 <!--</div>-->
 
-<app-grid-actions></app-grid-actions>
+
+<!--<app-grid-actions (prev)="" (next)=""></app-grid-actions>-->
+<app-multi-level-grid-history
+  #multiLevelGridHistory
+  [multiLevelHistory]="multilevelHistory"
+  (clickHistory)="handleClickHistory($event)">
+</app-multi-level-grid-history>
+
 <ag-grid-angular
   #grid
   style="width:100%;height: 300px"

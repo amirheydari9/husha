@@ -17,9 +17,12 @@ export class GridActionsComponent implements OnInit {
 
   @Input() data: any
 
-  @Output() deleted: EventEmitter<any> = new EventEmitter<any>()
+  @Output() prev: EventEmitter<any> = new EventEmitter<any>()
+  @Output() next: EventEmitter<any> = new EventEmitter<any>()
 
   actions = [
+    {icon: "pi pi-arrow-right", styleClass: "p-button-rounded", tooltip: "سطح قبلی"},
+    {icon: "pi pi-arrow-left", styleClass: "p-button-rounded", tooltip: "سطح بعدی"},
     {icon: "pi pi-plus", styleClass: "p-button-rounded", tooltip: "ایجاد رکورد جدید"},
     {icon: "pi pi-pencil", styleClass: "p-button-rounded p-button-secondary", tooltip: "ویرایش"},
     {icon: "pi pi-trash", styleClass: "p-button-rounded p-button-danger", tooltip: "حذف"},

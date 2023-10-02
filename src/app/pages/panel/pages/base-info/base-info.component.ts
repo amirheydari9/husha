@@ -1,4 +1,13 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import {Subscription} from "rxjs";
 import {FORM_KIND, VIEW_TYPE} from "../../../../constants/enums";
 import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../../../constants/keys";
@@ -12,6 +21,9 @@ import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interfa
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {IFetchFormDataRes} from "../../../../models/interface/fetch-form-data-res.interface";
 import {AgGridAngular} from "ag-grid-angular";
+import {
+  MultiLevelGridHistoryComponent
+} from "../../../../components/multi-level-grid-history/multi-level-grid-history.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -56,11 +68,15 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
   @ViewChild('grid') grid!: AgGridAngular;
   @ViewChild('detailGrid') detailGrid!: AgGridAngular;
+  @ViewChild('multiLevelGridHistory') multiLevelGridHistory: MultiLevelGridHistoryComponent
+
+  multilevelHistory = []
 
   constructor(
     private storageService: StorageService,
     private activatedRoute: ActivatedRoute,
     private baseInfoService: BaseInfoService,
+    private cdr: ChangeDetectorRef
   ) {
   }
 
@@ -136,7 +152,8 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   handleRowClicked($event: any) {
     // if (this.formKind === FORM_KIND.MULTI_LEVEL || this.formKind === FORM_KIND.MASTER) {
 
-    this.extraId = $event.data.id
+    const selectedRow = $event.data
+    this.extraId = selectedRow.id
 
     if (this.formKind === FORM_KIND.MULTI_LEVEL) {
       this.gridApi.setDatasource(this.dataSource)
@@ -145,7 +162,18 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
       // const {colDefs, rowData} = this.createGrid(formData)
       // this.columnDefs = colDefs
       // this.rowData = rowData
+      // if(this.multilevelHistory.indexOf(selectedRow) === -1)
 
+      if (!this.multilevelHistory.length) this.multilevelHistory.push(selectedRow)
+      this.cdr.detectChanges()
+      const index = this.multilevelHistory.findIndex(item => item.id === selectedRow.id)
+      if (index < 0) {
+        this.multilevelHistory.push(selectedRow)
+        this.cdr.detectChanges()
+        this.multiLevelGridHistory.activeHistory(this.multilevelHistory.length - 1)
+      } else {
+        this.multiLevelGridHistory.activeHistory(index)
+      }
     } else if (this.formKind === FORM_KIND.MASTER) {
       if (this.showDetailGrid) {
         this.showDetailGrid = false
@@ -153,11 +181,10 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
         this.detailRowData = []
       }
       this.showDetailGrid = true
-      setTimeout(() => {
-        this.detailGridApi = this.detailGrid.api
-        this.detailGridColumnApi = this.detailGrid.columnApi
-        this.detailGridApi.setDatasource(this.dataSourceDetail)
-      })
+      this.cdr.detectChanges()
+      this.detailGridApi = this.detailGrid.api
+      this.detailGridColumnApi = this.detailGrid.columnApi
+      this.detailGridApi.setDatasource(this.dataSourceDetail)
     }
 
     // }
@@ -196,6 +223,13 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     this.detailGridColumnApi = undefined
 
     this.extraId = null
+
+    this.multilevelHistory = []
+  }
+
+  handleClickHistory(item: any) {
+    this.extraId = item.id
+    this.gridApi.setDatasource(this.dataSource)
   }
 
 }
