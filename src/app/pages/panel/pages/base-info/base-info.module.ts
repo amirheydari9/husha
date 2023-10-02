@@ -4,6 +4,7 @@ import {BaseInfoComponent} from './base-info.component';
 import {RouterModule} from "@angular/router";
 import {HushaGridModule} from "../../../../ui-kits/husha-grid/husha-grid.component";
 import {AgGridModule} from "ag-grid-angular";
+import {GridActionsModule} from "../../../../components/grid-actions/grid-actions.component";
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import {AgGridModule} from "ag-grid-angular";
         CommonModule,
         RouterModule.forChild([{path: '', component: BaseInfoComponent}]),
         HushaGridModule,
-        AgGridModule
+        AgGridModule,
+        GridActionsModule
     ]
 })
 export class BaseInfoModule {
