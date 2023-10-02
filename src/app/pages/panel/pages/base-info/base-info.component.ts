@@ -147,6 +147,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     this.extraId = selectedRow.id
 
     if (this.formKind === FORM_KIND.MULTI_LEVEL) {
+      //TODO صحبت با خانم گلزاری در مورد لود مجدد form
       this.gridApi.setDatasource(this.dataSource)
       // this.columnDefs = []
       // this.rowData = []
