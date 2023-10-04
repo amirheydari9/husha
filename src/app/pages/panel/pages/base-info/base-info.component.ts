@@ -78,6 +78,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     this.activatedRoute.params.subscribe(params => {
       this.resetForm()
       this.form = this.activatedRoute.snapshot.data['data'];
+      this.cdr.detectChanges()
       this.gridApi = this.grid.api;
       // this.gridColumnApi = this.agGrid.columnApi
       this.gridApi.setDatasource(this.dataSource)

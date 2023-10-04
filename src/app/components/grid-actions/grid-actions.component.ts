@@ -12,15 +12,18 @@ import {
 import {ButtonModule} from "primeng/button";
 import {TooltipModule} from "primeng/tooltip";
 import {NgFor, NgIf} from "@angular/common";
+import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
+import {FORM_KIND} from "../../constants/enums";
 
 @Component({
   selector: 'app-grid-actions',
   template: `
     <div class="flex justify-content-end mb-2">
 
-      <ng-container *ngIf="gridHistory.length">
+      <ng-container *ngIf="showPrevNext">
         <p-button *ngFor="let action of historyActions" [icon]="action.icon" [styleClass]="action.styleClass"
-                  [pTooltip]="action.tooltip" class="mr-1" (click)="handleClickAction(action.type)"></p-button>
+                  [pTooltip]="action.tooltip" class="mr-1" (click)="handleClickAction(action.type)"
+                  [disabled]="!gridHistory.length || handleCheckDisabled(action.type)"></p-button>
       </ng-container>
 
       <p-button *ngFor="let action of actions" [icon]="action.icon" [styleClass]="action.styleClass"
@@ -35,17 +38,23 @@ import {NgFor, NgIf} from "@angular/common";
 })
 export class GridActionsComponent implements OnInit {
 
-  currentIndex: number
-
+  currentHistoryIndex: number
+  showPrevNext: boolean
   @Input() selectedRow: any
   @Input() gridHistory = []
+
+  private _form
+  @Input() set form(data: IFetchFormRes) {
+    this.showPrevNext = data?.formKind.id === FORM_KIND.MULTI_LEVEL
+    this._form = data
+  }
+  get form(): IFetchFormRes {
+    return this._form
+  }
+
   @ViewChildren('history') history: QueryList<ElementRef>
 
-  @Output() prev: EventEmitter<any> = new EventEmitter<any>()
-  @Output() next: EventEmitter<any> = new EventEmitter<any>()
   @Output() clickHistory: EventEmitter<any> = new EventEmitter<any>()
-  @Output() resetHistory: EventEmitter<any> = new EventEmitter<any>()
-
 
   historyActions = [
     {icon: "pi pi-arrow-up", styleClass: "p-button-rounded", type: 'prev', tooltip: "سطح قبلی"},
@@ -72,9 +81,13 @@ export class GridActionsComponent implements OnInit {
   }
 
   activeHistory(i: number) {
-    this.currentIndex = i
-    this.history.map(item => item.nativeElement.classList.remove('bg-primary'))
+    this.currentHistoryIndex = i
+    this.resetActiveHistory()
     this.history.get(i).nativeElement.classList.add('bg-primary')
+  }
+
+  resetActiveHistory() {
+    this.history.map(item => item.nativeElement.classList.remove('bg-primary'))
   }
 
   handleClickHistory(item, i) {
@@ -83,19 +96,18 @@ export class GridActionsComponent implements OnInit {
   }
 
   handleClickPrev() {
-    if (this.currentIndex === 0) {
-      this.resetHistory.emit()
-      this.clickHistory.emit(null)
-    } else {
-      this.activeHistory(this.currentIndex - 1)
-      this.clickHistory.emit(this.gridHistory[this.currentIndex])
+    if (this.gridHistory.length && this.currentHistoryIndex !== -1) {
+      this.currentHistoryIndex -= 1;
+      this.currentHistoryIndex === -1 ? this.resetActiveHistory() : this.activeHistory(this.currentHistoryIndex)
+      this.clickHistory.emit(this.currentHistoryIndex === -1 ? null : this.gridHistory[this.currentHistoryIndex])
     }
   }
 
   handleClickNex() {
-    if (this.currentIndex !== this.gridHistory.length - 1) {
-      this.activeHistory(this.currentIndex + 1)
-      this.clickHistory.emit(this.gridHistory[this.currentIndex])
+    if (this.gridHistory.length && (this.gridHistory.length - 1 !== this.currentHistoryIndex)) {
+      this.currentHistoryIndex += 1;
+      this.activeHistory(this.currentHistoryIndex)
+      this.clickHistory.emit(this.gridHistory[this.currentHistoryIndex])
     }
   }
 
@@ -108,6 +120,10 @@ export class GridActionsComponent implements OnInit {
         this.handleClickNex()
         break
     }
+  }
+
+  handleCheckDisabled(type) {
+    return type === 'prev' ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.gridHistory.length - 1;
   }
 }
 
