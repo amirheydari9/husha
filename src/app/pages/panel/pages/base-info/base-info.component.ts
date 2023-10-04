@@ -32,15 +32,11 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
   subscription: Subscription[] = []
   form: IFetchFormRes
-  formKind: FORM_KIND
 
   selectedCustomer = this.storageService.getSessionStorage(selectedCustomerKey)
   selectedService: IGetServicesRes = this.storageService.getSessionStorage(selectedServiceKey)
   selectedUnit = this.storageService.getSessionStorage(selectedUnitKey)
   selectedPeriod = this.storageService.getSessionStorage(selectedPeriodKey)
-
-  // columnDefs: ColDef[] = []
-  // rowData: any[] = []
 
   detailColumnDefs: ColDef[] = []
   detailRowData: any[] = []
@@ -65,10 +61,8 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   @ViewChild('grid') grid!: AgGridAngular;
   @ViewChild('detailGrid') detailGrid!: AgGridAngular;
   @ViewChild('gridActions') gridActions: GridActionsComponent
-
   @ViewChild('detailGridTemp', {read: TemplateRef}) detailGridTemp: TemplateRef<any>
   @ViewChild('detailGridContainer', {read: ViewContainerRef}) detailGridContainer: ViewContainerRef
-
 
   gridHistory = []
 
@@ -83,9 +77,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.activatedRoute.params.subscribe(params => {
       this.resetForm()
-      this.detailGridContainer.clear()
       this.form = this.activatedRoute.snapshot.data['data'];
-      this.formKind = this.form.formKind.id
       this.gridApi = this.grid.api;
       // this.gridColumnApi = this.agGrid.columnApi
       this.gridApi.setDatasource(this.dataSource)
@@ -153,9 +145,9 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   handleRowClicked($event: any) {
     const selectedRow = $event.data
     this.extraId = selectedRow.id
-    if (this.formKind === FORM_KIND.MULTI_LEVEL) {
+    if (this.form.formKind.id === FORM_KIND.MULTI_LEVEL) {
       this.handleMultiLevelGid(selectedRow)
-    } else if (this.formKind === FORM_KIND.MASTER) {
+    } else if (this.form.formKind.id === FORM_KIND.MASTER) {
       this.handleMasterGrid()
     }
   }
@@ -205,9 +197,10 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   resetForm() {
     this.columnDefs = [];
     this.rowData = [];
-    this.formKind = null
+
     this.detailColumnDefs = []
     this.detailRowData = []
+    this.detailGridContainer.clear()
 
     this.gridApi = undefined
     this.gridColumnApi = undefined
