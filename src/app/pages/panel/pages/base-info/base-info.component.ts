@@ -1,4 +1,12 @@
-import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import {Subscription} from "rxjs";
 import {FORM_KIND, VIEW_TYPE} from "../../../../constants/enums";
 import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../../../constants/keys";
@@ -34,7 +42,6 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   // columnDefs: ColDef[] = []
   // rowData: any[] = []
 
-  showDetailGrid: boolean = false
   detailColumnDefs: ColDef[] = []
   detailRowData: any[] = []
 
@@ -59,6 +66,10 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   @ViewChild('detailGrid') detailGrid!: AgGridAngular;
   @ViewChild('gridActions') gridActions: GridActionsComponent
 
+  @ViewChild('detailGridTemp', {read: TemplateRef}) detailGridTemp: TemplateRef<any>
+  @ViewChild('detailGridContainer', {read: ViewContainerRef}) detailGridContainer: ViewContainerRef
+
+
   gridHistory = []
 
   constructor(
@@ -72,6 +83,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.activatedRoute.params.subscribe(params => {
       this.resetForm()
+      this.detailGridContainer.clear()
       this.form = this.activatedRoute.snapshot.data['data'];
       this.formKind = this.form.formKind.id
       this.gridApi = this.grid.api;
@@ -101,7 +113,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     })
   }
 
-  dataSourceDetail: IDatasource = {
+  detailDataSource: IDatasource = {
     getRows: ((params: IGetRowsParams) => {
       let sort = undefined;
       let colId = undefined;
@@ -139,43 +151,13 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   }
 
   handleRowClicked($event: any) {
-    // if (this.formKind === FORM_KIND.MULTI_LEVEL || this.formKind === FORM_KIND.MASTER) {
-
     const selectedRow = $event.data
     this.extraId = selectedRow.id
-
     if (this.formKind === FORM_KIND.MULTI_LEVEL) {
-      this.gridApi.setDatasource(this.dataSource)
-      // this.columnDefs = []
-      // this.rowData = []
-      // const {colDefs, rowData} = this.createGrid(formData)
-      // this.columnDefs = colDefs
-      // this.rowData = rowData
-      // if(this.gridHistory.indexOf(selectedRow) === -1)
-      if (!this.gridHistory.length) this.gridHistory.push(selectedRow)
-      this.cdr.detectChanges()
-      const index = this.gridHistory.findIndex(item => item.id === selectedRow.id)
-      if (index < 0) {
-        this.gridHistory.push(selectedRow)
-        this.cdr.detectChanges()
-        this.gridActions.activeHistory(this.gridHistory.length - 1)
-      } else {
-        this.gridActions.activeHistory(index)
-      }
-    } else if (this.formKind === FORM_KIND.MASTER) {
-      if (this.showDetailGrid) {
-        this.showDetailGrid = false
-        this.detailColumnDefs = []
-        this.detailRowData = []
-      }
-      this.showDetailGrid = true
-      this.cdr.detectChanges()
-      this.detailGridApi = this.detailGrid.api
-      this.detailGridColumnApi = this.detailGrid.columnApi
-      this.detailGridApi.setDatasource(this.dataSourceDetail)
+      this.handleMultiLevelGid(selectedRow)
+    } else if (this.formKind === FORM_KIND.FLAT) {
+      this.handleMasterGrid()
     }
-
-    // }
   }
 
   createGrid(rowData: IFetchFormDataRes[]) {
@@ -196,11 +178,34 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     return {colDefs, rowData}
   }
 
+  handleMultiLevelGid(selectedRow: any) {
+    this.gridApi.setDatasource(this.dataSource)
+    if (!this.gridHistory.length) this.gridHistory.push(selectedRow)
+    this.cdr.detectChanges()
+    const index = this.gridHistory.findIndex(item => item.id === selectedRow.id)
+    if (index < 0) {
+      this.gridHistory.push(selectedRow)
+      this.cdr.detectChanges()
+      this.gridActions.activeHistory(this.gridHistory.length - 1)
+    } else {
+      this.gridActions.activeHistory(index)
+    }
+  }
+
+  handleMasterGrid() {
+    this.detailGridContainer.clear()
+    const template = this.detailGridTemp.createEmbeddedView(null)
+    this.detailGridContainer.insert(template)
+    this.cdr.detectChanges()
+    this.detailGridApi = this.detailGrid.api
+    this.detailGridColumnApi = this.detailGrid.columnApi
+    this.detailGridApi.setDatasource(this.detailDataSource)
+  }
+
   resetForm() {
     this.columnDefs = [];
     this.rowData = [];
     this.formKind = null
-    this.showDetailGrid = false
     this.detailColumnDefs = []
     this.detailRowData = []
 
