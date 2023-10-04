@@ -155,7 +155,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     this.extraId = selectedRow.id
     if (this.formKind === FORM_KIND.MULTI_LEVEL) {
       this.handleMultiLevelGid(selectedRow)
-    } else if (this.formKind === FORM_KIND.FLAT) {
+    } else if (this.formKind === FORM_KIND.MASTER) {
       this.handleMasterGrid()
     }
   }
