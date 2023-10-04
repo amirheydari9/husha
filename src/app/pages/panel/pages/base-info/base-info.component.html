@@ -12,14 +12,12 @@
 <!--</div>-->
 
 
-<app-grid-actions></app-grid-actions>
-<app-multi-level-grid-history
-  *ngIf="multilevelHistory.length"
-  #multiLevelGridHistory
-  [multiLevelHistory]="multilevelHistory"
-  (resetHistory)="multilevelHistory = []"
-  (clickHistory)="handleClickHistory($event)">
-</app-multi-level-grid-history>
+<app-grid-actions
+  #gridActions
+  [gridHistory]="gridHistory"
+  (resetHistory)="gridHistory = []"
+  (clickHistory)="handleClickHistory($event)"
+></app-grid-actions>
 
 <ag-grid-angular
   #grid

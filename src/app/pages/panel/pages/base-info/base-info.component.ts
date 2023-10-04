@@ -12,9 +12,7 @@ import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interfa
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {IFetchFormDataRes} from "../../../../models/interface/fetch-form-data-res.interface";
 import {AgGridAngular} from "ag-grid-angular";
-import {
-  MultiLevelGridHistoryComponent
-} from "../../../../components/multi-level-grid-history/multi-level-grid-history.component";
+import {GridActionsComponent} from "../../../../components/grid-actions/grid-actions.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -59,9 +57,9 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
   @ViewChild('grid') grid!: AgGridAngular;
   @ViewChild('detailGrid') detailGrid!: AgGridAngular;
-  @ViewChild('multiLevelGridHistory') multiLevelGridHistory: MultiLevelGridHistoryComponent
+  @ViewChild('gridActions') gridActions: GridActionsComponent
 
-  multilevelHistory = []
+  gridHistory = []
 
   constructor(
     private storageService: StorageService,
@@ -147,24 +145,22 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     this.extraId = selectedRow.id
 
     if (this.formKind === FORM_KIND.MULTI_LEVEL) {
-      //TODO صحبت با خانم گلزاری در مورد لود مجدد form
       this.gridApi.setDatasource(this.dataSource)
       // this.columnDefs = []
       // this.rowData = []
       // const {colDefs, rowData} = this.createGrid(formData)
       // this.columnDefs = colDefs
       // this.rowData = rowData
-      // if(this.multilevelHistory.indexOf(selectedRow) === -1)
-
-      if (!this.multilevelHistory.length) this.multilevelHistory.push(selectedRow)
+      // if(this.gridHistory.indexOf(selectedRow) === -1)
+      if (!this.gridHistory.length) this.gridHistory.push(selectedRow)
       this.cdr.detectChanges()
-      const index = this.multilevelHistory.findIndex(item => item.id === selectedRow.id)
+      const index = this.gridHistory.findIndex(item => item.id === selectedRow.id)
       if (index < 0) {
-        this.multilevelHistory.push(selectedRow)
+        this.gridHistory.push(selectedRow)
         this.cdr.detectChanges()
-        this.multiLevelGridHistory.activeHistory(this.multilevelHistory.length - 1)
+        this.gridActions.activeHistory(this.gridHistory.length - 1)
       } else {
-        this.multiLevelGridHistory.activeHistory(index)
+        this.gridActions.activeHistory(index)
       }
     } else if (this.formKind === FORM_KIND.MASTER) {
       if (this.showDetailGrid) {
@@ -216,7 +212,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
     this.extraId = null
 
-    this.multilevelHistory = []
+    this.gridHistory = []
   }
 
   handleClickHistory(item: any) {
