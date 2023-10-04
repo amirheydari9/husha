@@ -7,6 +7,7 @@ import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
 import {FetchFormDataDTO} from "../models/DTOs/fetch-form-data.DTO";
 import {IFetchFormDataRes} from "../models/interface/fetch-form-data-res.interface";
 import {Observable} from "rxjs";
+import {HttpHeaders} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class BaseInfoService {
   }
 
   fetchMenu(payload?: FetchMenuReqDTO): Promise<IMenuRes[]> {
-    const params = this.httpService.toQueryParam(payload)
+    const params = this.httpService.toHttpParam(payload)
     return this.httpService.get<IMenuRes[]>('baseinfo/menu/access-menu', params).toPromise()
   }
 
@@ -28,7 +29,10 @@ export class BaseInfoService {
   }
 
   fetchFormData(payload: FetchFormDataDTO): Observable<IFetchFormDataRes[]> {
-    const params = this.httpService.toQueryParam(payload)
+    const params = this.httpService.toHttpParam(payload)
+    // const headers = new HttpHeaders({
+    //   'Content-Type': 'application/x-www-form-urlencoded'
+    // });
     return this.httpService.get<IFetchFormDataRes[]>(`baseinfo/data`, params)
   }
 }

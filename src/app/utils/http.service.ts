@@ -41,7 +41,7 @@ export class HttpService {
     return formData
   }
 
-  toQueryParam<T>(queryParamValue: T): HttpParams {
+  toHttpParam<T>(queryParamValue: T): HttpParams {
     let params = new HttpParams()
     for (const key of Object.keys(queryParamValue)) {
       const value = queryParamValue[key]
