@@ -23,16 +23,16 @@ import {Router} from "@angular/router";
 
       <ng-container *ngIf="showPrevNext">
         <p-button *ngFor="let action of historyActions" [icon]="action.icon" [styleClass]="action.styleClass"
-                  [pTooltip]="action.tooltip" class="mr-1" (click)="handleClickAction(action.type)"
-                  [disabled]="!gridHistory.length || handleCheckDisabled(action.type)"></p-button>
+                  [pTooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"
+                  [disabled]="!gridHistory.length || (action.type === 'prev' ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.gridHistory.length - 1)"
+        ></p-button>
       </ng-container>
 
       <p-button *ngFor="let action of actions" [icon]="action.icon" [styleClass]="action.styleClass"
-                [pTooltip]="action.tooltip" class="mr-1" (click)="handleClickAction(action.type)"></p-button>
+                [pTooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"></p-button>
     </div>
     <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">
-      <span #history class="cursor-pointer" (click)="handleClickHistory(item,i)">
-        {{item.title}}-{{item.id}}</span>
+      <span #history class="cursor-pointer" (click)="handleClickHistory(item,i)">{{item.title}}-{{item.id}}</span>
     </div>
   `,
   styles: []
@@ -100,19 +100,16 @@ export class GridActionsComponent implements OnInit {
   }
 
   handleClickPrev() {
-    if (this.gridHistory.length && this.currentHistoryIndex !== -1) {
-      this.currentHistoryIndex -= 1;
-      this.currentHistoryIndex === -1 ? this.resetActiveHistory() : this.activeHistory(this.currentHistoryIndex)
-      this.clickHistory.emit(this.currentHistoryIndex === -1 ? null : this.gridHistory[this.currentHistoryIndex])
-    }
+    this.currentHistoryIndex -= 1;
+    this.currentHistoryIndex === -1 ? this.resetActiveHistory() : this.activeHistory(this.currentHistoryIndex)
+    this.clickHistory.emit(this.currentHistoryIndex === -1 ? null : this.gridHistory[this.currentHistoryIndex])
+
   }
 
   handleClickNex() {
-    if (this.gridHistory.length && (this.gridHistory.length - 1 !== this.currentHistoryIndex)) {
-      this.currentHistoryIndex += 1;
-      this.activeHistory(this.currentHistoryIndex)
-      this.clickHistory.emit(this.gridHistory[this.currentHistoryIndex])
-    }
+    this.currentHistoryIndex += 1;
+    this.activeHistory(this.currentHistoryIndex)
+    this.clickHistory.emit(this.gridHistory[this.currentHistoryIndex])
   }
 
   handleClickAction(type) {
@@ -127,10 +124,6 @@ export class GridActionsComponent implements OnInit {
         this.handleImport()
         break
     }
-  }
-
-  handleCheckDisabled(type) {
-    return type === 'prev' ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.gridHistory.length - 1;
   }
 
   handleImport() {
