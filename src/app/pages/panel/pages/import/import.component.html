@@ -1,0 +1,21 @@
+<form [formGroup]="form" class="flex align-items-center">
+  <input type="file" formControlName="file" (change)="handleChangeFile($event)">
+ <div class="col-3">
+   <app-custom-dropdown
+     formControlName="sheets"
+     label="شیت ها"
+     [options]="sheetOptions"
+   ></app-custom-dropdown>
+ </div>
+</form>
+
+
+<table>
+  <tbody>
+  <tr *ngFor="let i of data">
+    <td *ngFor="let cell of i">
+      {{cell}}
+    </td>
+  </tr>
+  </tbody>
+</table>

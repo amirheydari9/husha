@@ -21,6 +21,11 @@ const routes: Routes = [
         path: 'base-info/:id',
         loadChildren: () => import('./pages/base-info/base-info.module').then(m => m.BaseInfoModule),
         resolve: {data: FormResolver}
+      },
+      {
+        path: 'form/:id/import',
+        loadChildren: () => import('./pages/import/import.module').then(m => m.ImportModule),
+        resolve: {data: FormResolver}
       }
     ]
   },

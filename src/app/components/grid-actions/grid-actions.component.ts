@@ -14,6 +14,7 @@ import {TooltipModule} from "primeng/tooltip";
 import {NgFor, NgIf} from "@angular/common";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
 import {FORM_KIND} from "../../constants/enums";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-grid-actions',
@@ -48,6 +49,7 @@ export class GridActionsComponent implements OnInit {
     this.showPrevNext = data?.formKind.id === FORM_KIND.MULTI_LEVEL
     this._form = data
   }
+
   get form(): IFetchFormRes {
     return this._form
   }
@@ -74,7 +76,9 @@ export class GridActionsComponent implements OnInit {
     {icon: "pi pi-upload", styleClass: "p-button-rounded p-button-warning", type: 'import', tooltip: "آپلود فایل اکسل"},
   ]
 
-  constructor() {
+  constructor(
+    private router: Router
+  ) {
   }
 
   ngOnInit(): void {
@@ -119,11 +123,18 @@ export class GridActionsComponent implements OnInit {
       case 'next':
         this.handleClickNex()
         break
+      case 'import':
+        this.handleImport()
+        break
     }
   }
 
   handleCheckDisabled(type) {
     return type === 'prev' ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.gridHistory.length - 1;
+  }
+
+  handleImport() {
+    this.router.navigate([`/form/${this.form.id}/import`])
   }
 }
 
