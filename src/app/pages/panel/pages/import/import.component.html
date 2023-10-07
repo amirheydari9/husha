@@ -1,5 +1,7 @@
 <form [formGroup]="form" class="flex align-items-center">
-  <input type="file" formControlName="file" appReadExcel (onSheetsReady)="handleSheets($event)" #readExcel>
+  <div class="col-3">
+    <input type="file" formControlName="file" appReadExcel (onSheetsReady)="handleSheets($event)" #readExcel>
+  </div>
   <div class="col-3">
     <app-custom-dropdown
       formControlName="sheets"

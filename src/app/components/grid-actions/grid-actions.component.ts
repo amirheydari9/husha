@@ -120,14 +120,16 @@ export class GridActionsComponent implements OnInit {
       case 'next':
         this.handleClickNex()
         break
+      case 'create':
+        this.router.navigate([`/form/${this.form.id}/create`])
+        break
+      case 'update':
+        this.router.navigate([`/form/${this.form.id}/update`])
+        break
       case 'import':
-        this.handleImport()
+        this.router.navigate([`/form/${this.form.id}/import`])
         break
     }
-  }
-
-  handleImport() {
-    this.router.navigate([`/form/${this.form.id}/import`])
   }
 }
 

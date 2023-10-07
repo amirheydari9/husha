@@ -26,6 +26,16 @@ const routes: Routes = [
         path: 'form/:id/import',
         loadChildren: () => import('./pages/import/import.module').then(m => m.ImportModule),
         resolve: {data: FormResolver}
+      },
+      {
+        path: 'form/:id/create',
+        loadChildren: () => import('./pages/create/create.module').then(m => m.CreateModule),
+        resolve: {data: FormResolver}
+      },
+      {
+        path: 'form/:id/update',
+        loadChildren: () => import('./pages/update/update.component').then(m => m.UpdateComponent),
+        resolve: {data: FormResolver}
       }
     ]
   },
