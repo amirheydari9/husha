@@ -26,9 +26,8 @@ export class CreateComponent implements OnInit {
     this.subscription.push(
       this.activatedRoute.params.subscribe(() => {
         const formFields = [...this.activatedRoute.snapshot.data['data'].fields].sort((a, b) => a.priority - b.priority)
-        for (let i in formFields) {
+        formFields.map(field => {
           // if (formFields.viewType === VIEW_TYPE.SHOW_IN_FORM || formFields.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM) {
-          const field = formFields[i]
           const model: dynamicField = {
             type: this.handleType(field),
             name: field.name,
@@ -40,7 +39,7 @@ export class CreateComponent implements OnInit {
           console.log(model)
           this.model.push(model)
           // }
-        }
+        })
       })
     )
   }
