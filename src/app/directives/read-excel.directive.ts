@@ -33,15 +33,16 @@ export class ReadExcelDirective {
   }
 
   readSheet(sheetName: string) {
-    return new Observable((subscriber: Subscriber<[][]>) => {
+    return new Observable((subscriber: Subscriber<any>) => {
       const fileReader = new FileReader();
       fileReader.readAsArrayBuffer(this.file);
       fileReader.onload = (e) => {
         const bufferArray = e.target.result;
         const wb: XLSX.WorkBook = XLSX.read(bufferArray, {type: 'buffer'});
         const ws: XLSX.WorkSheet = wb.Sheets[sheetName];
-        const data: [][] = XLSX.utils.sheet_to_json(ws, {header: 1});
-        subscriber.next(data);
+        const header = XLSX.utils.sheet_to_json(ws, {header: 1})[0];
+        const rowData = XLSX.utils.sheet_to_json(ws);
+        subscriber.next({header, rowData});
         subscriber.complete();
       }
     })

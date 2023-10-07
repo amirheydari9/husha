@@ -1,4 +1,11 @@
-import {FORM_KIND, INPUT_DATA_TYPE, INSERT_TYPE, LOOKUP_VIEW_TYPE, SERIAL_TYPE, VIEW_TYPE} from "../../constants/enums";
+import {
+  FORM_KIND,
+  INPUT_FIELD_TYPE,
+  INSERT_TYPE,
+  LOOKUP_VIEW_TYPE,
+  SERIAL_TYPE,
+  VIEW_TYPE
+} from "../../constants/enums";
 
 export interface IFetchFormRes {
   id: number,
@@ -18,7 +25,7 @@ export interface IFetchFormRes {
   serialType: SERIAL_TYPE,
   fields: {
     id: number,
-    fieldType: { id: number, title: string, isActive: boolean, dataType: INPUT_DATA_TYPE },
+    fieldType: { id: number, title: string, isActive: boolean, dataType: INPUT_FIELD_TYPE },
     caption: string,
     name: string,
     editable: boolean,

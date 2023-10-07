@@ -17,6 +17,7 @@ import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
         [options]="options"
         [optionLabel]="optionLabel"
         [optionValue]="optionValue"
+        [disabled]="disabled"
         emptyMessage="دیتایی موجود نیست"
         emptyFilterMessage="نتیجه ای یافت نشد"
         [filter]="filter"

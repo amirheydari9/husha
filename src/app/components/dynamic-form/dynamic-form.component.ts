@@ -1,5 +1,5 @@
-import {Component, Input, NgModule, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {Component, Input, NgModule, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, FormGroupDirective, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgFor, NgSwitch, NgSwitchCase} from "@angular/common";
 import {CustomInputTextModule} from "../../ui-kits/custom-input-text/custom-input-text.component";
 import {CustomInputNumberModule} from "../../ui-kits/custom-input-number/custom-input-number.component";
@@ -8,25 +8,58 @@ import {CustomCheckboxModule} from "../../ui-kits/custom-checkbox/custom-checkbo
 import {CustomDropdownModule} from "../../ui-kits/custom-dropdown/custom-dropdown.component";
 import {CustomDatePickerModule} from "../../ui-kits/custom-date-picker/custom-date-picker.component";
 import {CustomValidators} from "../../utils/Custom-Validators";
+import {INPUT_FIELD_TYPE} from "../../constants/enums";
+
+export interface dynamicField {
+  type: INPUT_FIELD_TYPE;
+  name: string;
+  label: string;
+  value?: any,
+  disabled?: boolean,
+  options?: any[];
+  rules?: {}
+}
 
 @Component({
   selector: 'app-dynamic-form',
   template: `
-    <form [formGroup]="dynamicFormGroup">
+    <form [formGroup]="dynamicFormGroup" class="flex align-items-center flex-wrap justify-content-start">
       <ng-container *ngFor="let field of fields">
         <ng-container [ngSwitch]="field.type">
-          <app-custom-input-text *ngSwitchCase="'text'" [formControlName]="field.name"
-                                 [label]="field.label"></app-custom-input-text>
-          <app-custom-input-number *ngSwitchCase="'number'" [formControlName]="field.name"
-                                   [label]="field.label"></app-custom-input-number>
-          <app-custom-dropdown *ngSwitchCase="'dropdown'" [formControlName]="field.name" [options]="field.options"
-                               [label]="field.label"></app-custom-dropdown>
-          <app-custom-radio *ngSwitchCase="'radio'" [formControlName]="field.name" [options]="field.options"
-                            [label]="field.label"></app-custom-radio>
-          <app-custom-checkbox *ngSwitchCase="'checkbox'" [formControlName]="field.name"
-                               [label]="field.label"></app-custom-checkbox>
-          <app-custom-date-picker *ngSwitchCase="'datepicker'" [formControlName]="field.name"
-                                  [label]="field.label"></app-custom-date-picker>
+          <div class="col-3">
+            <app-custom-input-text
+              *ngSwitchCase="INPUT_FIELD_TYPE.TEXT"
+              [formControlName]="field.name"
+              [label]="field.label"
+            ></app-custom-input-text>
+            <app-custom-input-number
+              *ngSwitchCase="INPUT_FIELD_TYPE.NUMBER"
+              [formControlName]="field.name"
+              [label]="field.label"
+            ></app-custom-input-number>
+            <app-custom-dropdown
+              *ngSwitchCase="INPUT_FIELD_TYPE.DROP_DOWN"
+              [formControlName]="field.name"
+              [options]="field.options"
+              [label]="field.label"
+            ></app-custom-dropdown>
+            <app-custom-radio
+              *ngSwitchCase="'radio'"
+              [formControlName]="field.name"
+              [options]="field.options"
+              [label]="field.label"
+            ></app-custom-radio>
+            <app-custom-checkbox
+              *ngSwitchCase="'checkbox'"
+              [formControlName]="field.name"
+              [label]="field.label"
+            ></app-custom-checkbox>
+            <app-custom-date-picker
+              *ngSwitchCase="'datepicker'"
+              [formControlName]="field.name"
+              [label]="field.label"
+            ></app-custom-date-picker>
+          </div>
         </ng-container>
       </ng-container>
     </form>
@@ -35,7 +68,8 @@ import {CustomValidators} from "../../utils/Custom-Validators";
 })
 export class DynamicFormComponent implements OnInit {
 
-  @Input() model: any[];
+  @Input() model: dynamicField[];
+  @ViewChild(FormGroupDirective) formRef: FormGroupDirective;
 
   dynamicFormGroup: FormGroup;
   fields = [];
@@ -47,6 +81,10 @@ export class DynamicFormComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
+  }
+
+  get INPUT_FIELD_TYPE(): typeof INPUT_FIELD_TYPE {
+    return INPUT_FIELD_TYPE
   }
 
   buildForm() {
@@ -93,6 +131,10 @@ export class DynamicFormComponent implements OnInit {
       }
     }
     return validators
+  }
+
+  resetForm() {
+    this.formRef.reset()
   }
 }
 

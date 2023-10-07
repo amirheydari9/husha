@@ -15,9 +15,10 @@ export enum SERIAL_TYPE {
 
 }
 
-export enum INPUT_DATA_TYPE {
-  TEXT = 'text',
-  NUMBER = 'number'
+export enum INPUT_FIELD_TYPE {
+  TEXT = 1,
+  NUMBER = 2,
+  DROP_DOWN = 14
 }
 
 export enum INSERT_TYPE {

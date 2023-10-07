@@ -3,6 +3,10 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {ReadExcelDirective} from "../../../../directives/read-excel.directive";
+import {ActivatedRoute} from "@angular/router";
+import {dynamicField, DynamicFormComponent} from "../../../../components/dynamic-form/dynamic-form.component";
+import {ColDef, GridOptions} from "ag-grid-community";
+import {INPUT_FIELD_TYPE} from "../../../../constants/enums";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -15,37 +19,97 @@ export class ImportComponent implements OnInit {
   subscription: Subscription[] = []
   form: FormGroup
   sheetOptions = []
-  excelData: [][]
+  model: dynamicField[] = []
+  columnDefs: ColDef[] = []
+  gridOptions: GridOptions = {
+    defaultColDef: {
+      sortable: true, filter: true, flex: 1
+    },
+  }
+  rowData = []
 
   @ViewChild('readExcel', {read: ReadExcelDirective}) readExcel: ReadExcelDirective
+  @ViewChild('dynamicForm') dynamicForm: DynamicFormComponent
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private activatedRoute: ActivatedRoute
   ) {
   }
 
+
   ngOnInit(): void {
+
     this.form = this.fb.group({
       file: this.fb.control(null),
       sheets: this.fb.control(null)
     })
 
     this.subscription.push(
+      this.activatedRoute.params.subscribe(() => {
+        const formFields = this.activatedRoute.snapshot.data['data'].fields
+        for (let i in formFields) {
+          if (formFields[i].editable) {
+            const field = formFields[i]
+            const model: dynamicField = {
+              type: INPUT_FIELD_TYPE.DROP_DOWN,
+              name: field.name,
+              label: field.caption,
+              rules: {required: true}
+            }
+            this.model.push(model)
+          }
+        }
+      })
+    )
+
+    this.subscription.push(
       this.form.controls['sheets'].valueChanges.subscribe(data => {
-        this.excelData = []
+        this.columnDefs = []
+        this.rowData = []
+        this.model.map(item => {
+          item.options = []
+          return item
+        })
+        this.dynamicForm.resetForm()
         if (data) this.readSheet(data)
       })
     )
+
+    this.subscription.push(
+      this.form.controls['file'].valueChanges.subscribe(data => {
+        this.form.controls['sheets'].setValue(null)
+      })
+    )
+
   }
 
 
   readSheet(selectedSheetName: string) {
-    this.readExcel.readSheet(selectedSheetName).subscribe(data => this.excelData = data)
+    this.readExcel.readSheet(selectedSheetName).subscribe(data => {
+      const excelHeader = data.header.map(item => {
+        return {id: item, name: item}
+      })
+      this.model.map(item => {
+        item.options = excelHeader
+        return item
+      })
+      const coldDefs: ColDef[] = []
+      data.header.map(item => {
+        coldDefs.push({field: item})
+      })
+      this.columnDefs = coldDefs
+      this.rowData = data.rowData
+    })
   }
 
   handleSheets($event: string[]) {
     this.sheetOptions = $event.map(item => {
       return {id: item, name: item}
     })
+  }
+
+  handleClick() {
+    console.log(this.dynamicForm.dynamicFormGroup.getRawValue())
   }
 }
