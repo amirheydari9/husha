@@ -1,18 +1,18 @@
 <form [formGroup]="form" class="flex align-items-center">
-  <input type="file" formControlName="file" (change)="handleChangeFile($event)">
- <div class="col-3">
-   <app-custom-dropdown
-     formControlName="sheets"
-     label="شیت ها"
-     [options]="sheetOptions"
-   ></app-custom-dropdown>
- </div>
+  <input type="file" formControlName="file" appReadExcel (onSheetsReady)="handleSheets($event)" #readExcel>
+  <div class="col-3">
+    <app-custom-dropdown
+      formControlName="sheets"
+      label="شیت ها"
+      [options]="sheetOptions"
+    ></app-custom-dropdown>
+  </div>
 </form>
 
 
 <table>
   <tbody>
-  <tr *ngFor="let i of data">
+  <tr *ngFor="let i of excelData">
     <td *ngFor="let cell of i">
       {{cell}}
     </td>
