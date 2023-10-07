@@ -27,8 +27,8 @@ export class LoginComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.loginForm = this.fb.group({
-      username: this.fb.control(null, [Validators.required]),
-      password: this.fb.control(null, [Validators.required]),
+      username: this.fb.control('amirhoseni', [Validators.required]),
+      password: this.fb.control('Q12345678q!', [Validators.required]),
       captchaAnswer: this.captchaComponent.createCaptcha()
     })
   }
