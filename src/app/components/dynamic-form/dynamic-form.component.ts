@@ -9,6 +9,7 @@ import {CustomDropdownModule} from "../../ui-kits/custom-dropdown/custom-dropdow
 import {CustomDatePickerModule} from "../../ui-kits/custom-date-picker/custom-date-picker.component";
 import {CustomValidators} from "../../utils/Custom-Validators";
 import {INPUT_FIELD_TYPE} from "../../constants/enums";
+import {CustomSwitchModule} from "../../ui-kits/custom-switch/custom-switch.component";
 
 export interface dynamicField {
   type: INPUT_FIELD_TYPE;
@@ -17,7 +18,8 @@ export interface dynamicField {
   value?: any,
   disabled?: boolean,
   options?: any[];
-  rules?: {}
+  rules?: {},
+  meta?: {}
 }
 
 @Component({
@@ -26,7 +28,7 @@ export interface dynamicField {
     <form [formGroup]="dynamicFormGroup" class="flex align-items-center flex-wrap justify-content-start">
       <ng-container *ngFor="let field of fields">
         <ng-container [ngSwitch]="field.type">
-          <div class="col-3">
+          <div [class]="handleCalculateCol(field.type)">
             <app-custom-input-text
               *ngSwitchCase="INPUT_FIELD_TYPE.TEXT"
               [formControlName]="field.name"
@@ -36,6 +38,9 @@ export interface dynamicField {
               *ngSwitchCase="INPUT_FIELD_TYPE.NUMBER"
               [formControlName]="field.name"
               [label]="field.label"
+              [showFraction]="field.meta?.showFraction"
+              [showCurrencyToNumber]="field.meta?.showCurrencyToNumber"
+              [suffix]="field.meta.suffix"
             ></app-custom-input-number>
             <app-custom-dropdown
               *ngSwitchCase="INPUT_FIELD_TYPE.DROP_DOWN"
@@ -43,19 +48,19 @@ export interface dynamicField {
               [options]="field.options"
               [label]="field.label"
             ></app-custom-dropdown>
-            <app-custom-radio
-              *ngSwitchCase="'radio'"
-              [formControlName]="field.name"
-              [options]="field.options"
-              [label]="field.label"
-            ></app-custom-radio>
-            <app-custom-checkbox
-              *ngSwitchCase="'checkbox'"
+            <app-custom-switch
+              *ngSwitchCase="INPUT_FIELD_TYPE.SWITCH"
               [formControlName]="field.name"
               [label]="field.label"
-            ></app-custom-checkbox>
+            ></app-custom-switch>
             <app-custom-date-picker
-              *ngSwitchCase="'datepicker'"
+              *ngSwitchCase="INPUT_FIELD_TYPE.JALALI_DATE_PICKER"
+              [formControlName]="field.name"
+              [label]="field.label"
+              [timeEnable]="field.meta?.timeEnable"
+            ></app-custom-date-picker>
+            <app-custom-date-picker
+              *ngSwitchCase="INPUT_FIELD_TYPE.TEXT_AREA"
               [formControlName]="field.name"
               [label]="field.label"
             ></app-custom-date-picker>
@@ -95,7 +100,7 @@ export class DynamicFormComponent implements OnInit {
     const formGroupFields = {};
     this.model.forEach(field => {
       formGroupFields[field.name] = this.fb.control({
-        value: field.value,
+        value: field.value ?? null,
         disabled: field.disabled
       }, DynamicFormComponent.addValidators(field.rules));
       this.fields.push(field);
@@ -110,7 +115,7 @@ export class DynamicFormComponent implements OnInit {
     const validators = []
     for (const [key, value] of Object.entries(rules)) {
       if (key === 'required') {
-        if (value == true) validators.push(Validators.required)
+        validators.push(Validators.required)
       } else if (key === 'maxLength') {
         validators.push(Validators.maxLength(+value))
       } else if (key === 'maxLength') {
@@ -136,6 +141,17 @@ export class DynamicFormComponent implements OnInit {
   resetForm() {
     this.formRef.reset()
   }
+
+  handleCalculateCol(type) {
+    switch (type) {
+      case INPUT_FIELD_TYPE.TEXT_AREA :
+        return 'col-12'
+      case INPUT_FIELD_TYPE.IMAGE || INPUT_FIELD_TYPE.FILE :
+        return 'col-6'
+      default :
+        return 'col-3'
+    }
+  }
 }
 
 @NgModule({
@@ -150,7 +166,8 @@ export class DynamicFormComponent implements OnInit {
     CustomRadioModule,
     CustomCheckboxModule,
     CustomDropdownModule,
-    CustomDatePickerModule
+    CustomDatePickerModule,
+    CustomSwitchModule
   ],
   exports: [DynamicFormComponent]
 })
