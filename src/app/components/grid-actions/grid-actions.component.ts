@@ -29,6 +29,7 @@ import {Router} from "@angular/router";
       </ng-container>
 
       <p-button *ngFor="let action of actions" [icon]="action.icon" [styleClass]="action.styleClass"
+                [disabled]="action.type === 'edit' ? !(!!selectedRow) :false"
                 [pTooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"></p-button>
     </div>
     <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">
@@ -123,8 +124,8 @@ export class GridActionsComponent implements OnInit {
       case 'create':
         this.router.navigate([`/form/${this.form.id}/create`])
         break
-      case 'update':
-        this.router.navigate([`/form/${this.form.id}/update`])
+      case 'edit':
+        this.router.navigate([`/form/${this.form.id}/update/${this.selectedRow.id}`])
         break
       case 'import':
         this.router.navigate([`/form/${this.form.id}/import`])

@@ -15,6 +15,7 @@
   #gridActions
   [gridHistory]="gridHistory"
   [form]="form"
+  [selectedRow]="selectedRow"
   (clickHistory)="handleClickHistory($event)"
 ></app-grid-actions>
 
@@ -30,7 +31,10 @@
   [cacheBlockSize]="defaultPageSize"
   [enableRangeSelection]="true"
   [gridOptions]="gridOptions"
-  (rowClicked)="handleRowClicked($event)"
+  (rowDoubleClicked)="handleRowDbClicked($event)"
+  (rowClicked)="selectedRow = $event.data"
+  (paginationChanged)="selectedRow = null"
+  [rowSelection]="'single'"
 ></ag-grid-angular>
 
 
@@ -51,6 +55,9 @@
       [cacheBlockSize]="defaultPageSize"
       [enableRangeSelection]="true"
       [gridOptions]="gridOptions"
+      (rowClicked)="selectedRow = $event.data"
+      (paginationChanged)="selectedRow = null"
+      [rowSelection]="'single'"
     ></ag-grid-angular>
   </div>
 </ng-template>

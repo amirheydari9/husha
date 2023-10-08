@@ -11,7 +11,7 @@ import {Subscription} from "rxjs";
 import {FORM_KIND, VIEW_TYPE} from "../../../../constants/enums";
 import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../../../constants/keys";
 import {IGetServicesRes} from "../../../../models/interface/get-services-res.interface";
-import {ColDef, GridOptions, IDatasource, IGetRowsParams} from "ag-grid-community";
+import {ColDef, GridOptions, IDatasource, IGetRowsParams, RowClickedEvent} from "ag-grid-community";
 import {StorageService} from "../../../../utils/storage.service";
 import {ActivatedRoute} from "@angular/router";
 import {BaseInfoService} from "../../../../api/base-info.service";
@@ -57,6 +57,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   private detailGridApi: any
   private detailGridColumnApi: any
   extraId: number
+  selectedRow: any
 
   @ViewChild('grid') grid!: AgGridAngular;
   @ViewChild('detailGrid') detailGrid!: AgGridAngular;
@@ -94,7 +95,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     if (sortModel.length) {
       sort = sortModel.map(item => {
         const obj = {colId: item.colId, sort: item.sort}
-        return Object.values(obj).join(',');
+        return Object.values(obj).join(':');
       }).join(',')
     }
     return sort
@@ -143,17 +144,18 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
       // TODO this.selectedUnit.id,
       71,
       this.selectedPeriod.id,
+      // TODO this.selectedService?.serviceType.id,
+      this.form.formKind.id === FORM_KIND.FLAT || this.form.formKind.id === FORM_KIND.MULTI_LEVEL ? 24 : null,
       page,
       size,
       sort,
-      // TODO this.selectedService?.serviceType.id,
-      this.form.formKind.id === FORM_KIND.FLAT || this.form.formKind.id === FORM_KIND.MULTI_LEVEL ? 24 : null,
       this.form.formKind.id === FORM_KIND.MULTI_LEVEL && id ? id : null,
       this.form.formKind.id === FORM_KIND.DETAIL && id ? id : null,
+      null
     )
   }
 
-  handleRowClicked($event: any) {
+  handleRowDbClicked($event: any) {
     const selectedRow = $event.data
     this.extraId = selectedRow.id
     if (this.form.formKind.id === FORM_KIND.MULTI_LEVEL) {
@@ -222,6 +224,8 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     this.extraId = null
 
     this.gridHistory = []
+
+    this.selectedRow = null
   }
 
   handleClickHistory(item: any) {
@@ -229,4 +233,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     this.gridApi.setDatasource(this.dataSource)
   }
 
+  handleRowClick($event: RowClickedEvent<any>) {
+    this.selectedRow = $event.data
+  }
 }

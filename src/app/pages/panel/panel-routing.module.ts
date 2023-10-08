@@ -18,6 +18,11 @@ const routes: Routes = [
         loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
       },
       {
+        path: 'form/:id/update/:data',
+        loadChildren: () => import('./pages/update/update.module').then(m => m.UpdateModule),
+        resolve: {data: FormResolver}
+      },
+      {
         path: 'base-info/:id',
         loadChildren: () => import('./pages/base-info/base-info.module').then(m => m.BaseInfoModule),
         resolve: {data: FormResolver}
@@ -32,11 +37,6 @@ const routes: Routes = [
         loadChildren: () => import('./pages/create/create.module').then(m => m.CreateModule),
         resolve: {data: FormResolver}
       },
-      {
-        path: 'form/:id/update',
-        loadChildren: () => import('./pages/update/update.component').then(m => m.UpdateComponent),
-        resolve: {data: FormResolver}
-      }
     ]
   },
 ];

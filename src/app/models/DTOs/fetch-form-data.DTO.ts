@@ -6,12 +6,13 @@ export class FetchFormDataDTO {
     public sid: number,
     public uid: number,
     public pid: number,
+    public serialId?: number,
     public page?: number,
     public size?: number,
     public sort?: string,
-    public serialId?: number,
     public parentId?: number,
     public masterId?: number,
+    public id?: number
   ) {
   }
 }

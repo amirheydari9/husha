@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {INPUT_FIELD_TYPE} from "../constants/enums";
+import {INPUT_FIELD_TYPE, VIEW_TYPE} from "../constants/enums";
 import {dynamicField} from "../components/dynamic-form/dynamic-form.component";
 
 @Injectable({
@@ -10,15 +10,15 @@ export class HushaFormUtilService {
   constructor() {
   }
 
-  createModel(fields) {
+  createModel(fields, data?) {
     const model: dynamicField[][] = []
     const formFields = this.handleSortByField(fields, 'priority')
     const groupFields = this.handleGroupByField(formFields, 'groupCode')
     groupFields.map(group => {
       const modelItem = []
       group.map(field => {
-        if (this.handleShowField(field)) {
-          modelItem.push(this.handleCreateDynamicField(field))
+        if (this.handleShowField(field, data)) {
+          modelItem.push(this.handleCreateDynamicField(field, data))
         }
       })
       model.push(modelItem)
@@ -42,17 +42,18 @@ export class HushaFormUtilService {
     return Array.from(groups.values());
   }
 
-  handleShowField(field) {
-    // return field.formFields.viewType === VIEW_TYPE.SHOW_IN_FORM || field.formFields.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM
+  handleShowField(field, data) {
+    // return field.viewType === VIEW_TYPE.SHOW_IN_FORM || field.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM
     return true
   }
 
-  handleCreateDynamicField(field) {
+  handleCreateDynamicField(field, data) {
     const dynamicField: dynamicField = {
       type: this.handleType(field),
       name: field.name,
       label: field.caption,
       disabled: !field.editable,
+      value: data ? data[field.name] : null,
       rules: this.handleRules(field),
       meta: this.handleMeta(field)
     }
