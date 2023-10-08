@@ -8,6 +8,7 @@ export class FetchFormDataDTO {
     public pid: number,
     public page?: number,
     public size?: number,
+    public sort?: string,
     public serialId?: number,
     public parentId?: number,
     public masterId?: number,

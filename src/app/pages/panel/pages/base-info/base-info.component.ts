@@ -89,15 +89,25 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
   }
 
+  handleSortParam(sortModel: any[]) {
+    let sort = null
+    if (sortModel.length) {
+      sort = sortModel.map(item => {
+        const obj = {colId: item.colId, sort: item.sort}
+        return Object.values(obj).join(',');
+      }).join(',')
+    }
+    return sort
+  }
+
   dataSource: IDatasource = {
     getRows: ((params: IGetRowsParams) => {
-      let sort = undefined;
-      let colId = undefined;
-      if (params.sortModel[0]) {
-        sort = params.sortModel[0].sort
-        colId = params.sortModel[0].colId
-      }
-      this.baseInfoService.fetchFormData(this.handleCreatePayload(this.extraId ?? null, this.gridApi.paginationGetCurrentPage(), this.gridApi.paginationGetPageSize())).subscribe(formData => {
+      this.baseInfoService.fetchFormData(this.handleCreatePayload(
+        this.extraId ?? null,
+        this.gridApi.paginationGetCurrentPage(),
+        this.gridApi.paginationGetPageSize(),
+        this.handleSortParam(params.sortModel)
+      )).subscribe(formData => {
         const paginationInfo = formData.shift()
         const {colDefs, rowData} = this.createGrid(formData)
         this.columnDefs = colDefs
@@ -108,13 +118,12 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
   detailDataSource: IDatasource = {
     getRows: ((params: IGetRowsParams) => {
-      let sort = undefined;
-      let colId = undefined;
-      if (params.sortModel[0]) {
-        sort = params.sortModel[0].sort
-        colId = params.sortModel[0].colId
-      }
-      this.baseInfoService.fetchFormData(this.handleCreatePayload(this.extraId, this.detailGridApi.paginationGetCurrentPage(), this.detailGridApi.paginationGetPageSize())).subscribe(formData => {
+      this.baseInfoService.fetchFormData(this.handleCreatePayload(
+        this.extraId,
+        this.detailGridApi.paginationGetCurrentPage(),
+        this.detailGridApi.paginationGetPageSize(),
+        this.handleSortParam(params.sortModel)
+      )).subscribe(formData => {
         const paginationInfo = formData.shift()
         const {colDefs, rowData} = this.createGrid(formData)
         this.detailColumnDefs = colDefs
@@ -124,7 +133,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   }
 
 
-  handleCreatePayload(id?: number, page: number = 0, size: number = this.defaultPageSize) {
+  handleCreatePayload(id?: number, page: number = 0, size: number = this.defaultPageSize, sort?: string) {
     return new FetchFormDataDTO(
       this.selectedCustomer.id,
       this.form.id,
@@ -136,10 +145,11 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
       this.selectedPeriod.id,
       page,
       size,
+      sort,
       // this.selectedService?.serviceType.id,
       this.form.formKind.id === FORM_KIND.FLAT || this.form.formKind.id === FORM_KIND.MULTI_LEVEL ? 24 : null,
       this.form.formKind.id === FORM_KIND.MULTI_LEVEL && id ? id : null,
-      this.form.formKind.id === FORM_KIND.DETAIL && id ? id : null
+      this.form.formKind.id === FORM_KIND.DETAIL && id ? id : null,
     )
   }
 
