@@ -1,6 +1,6 @@
 import {Component, Input, NgModule, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, FormGroupDirective, ReactiveFormsModule, Validators} from "@angular/forms";
-import {CommonModule, NgFor, NgSwitch, NgSwitchCase} from "@angular/common";
+import {NgFor, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
 import {CustomInputTextModule} from "../../ui-kits/custom-input-text/custom-input-text.component";
 import {CustomInputNumberModule} from "../../ui-kits/custom-input-number/custom-input-number.component";
 import {CustomRadioModule} from "../../ui-kits/custom-radio/custom-radio.component";
@@ -11,6 +11,7 @@ import {CustomValidators} from "../../utils/Custom-Validators";
 import {INPUT_FIELD_TYPE} from "../../constants/enums";
 import {CustomSwitchModule} from "../../ui-kits/custom-switch/custom-switch.component";
 import {DividerModule} from "primeng/divider";
+import {CustomTextAreaModule} from "../../ui-kits/custom-text-area/custom-text-area.component";
 
 export interface dynamicField {
   type: INPUT_FIELD_TYPE;
@@ -60,11 +61,11 @@ export interface dynamicField {
               [label]="field.label"
               [timeEnable]="field.meta?.timeEnable"
             ></app-custom-date-picker>
-            <app-custom-date-picker
+            <app-custom-text-area
               *ngSwitchCase="INPUT_FIELD_TYPE.TEXT_AREA"
               [formControlName]="field.name"
               [label]="field.label"
-            ></app-custom-date-picker>
+            ></app-custom-text-area>
           </ng-container>
         </div>
         <p-divider class="w-full" *ngIf="groups.length -1 !== index"></p-divider>
@@ -166,6 +167,7 @@ export class DynamicFormComponent implements OnInit {
     NgSwitch,
     NgSwitchCase,
     NgFor,
+    NgIf,
     ReactiveFormsModule,
     CustomInputTextModule,
     CustomInputNumberModule,
@@ -175,7 +177,7 @@ export class DynamicFormComponent implements OnInit {
     CustomDatePickerModule,
     CustomSwitchModule,
     DividerModule,
-    CommonModule
+    CustomTextAreaModule
   ],
   exports: [DynamicFormComponent]
 })
