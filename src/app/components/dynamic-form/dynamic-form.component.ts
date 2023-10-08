@@ -1,6 +1,6 @@
 import {Component, Input, NgModule, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, FormGroupDirective, ReactiveFormsModule, Validators} from "@angular/forms";
-import {NgFor, NgSwitch, NgSwitchCase} from "@angular/common";
+import {CommonModule, NgFor, NgSwitch, NgSwitchCase} from "@angular/common";
 import {CustomInputTextModule} from "../../ui-kits/custom-input-text/custom-input-text.component";
 import {CustomInputNumberModule} from "../../ui-kits/custom-input-number/custom-input-number.component";
 import {CustomRadioModule} from "../../ui-kits/custom-radio/custom-radio.component";
@@ -10,6 +10,7 @@ import {CustomDatePickerModule} from "../../ui-kits/custom-date-picker/custom-da
 import {CustomValidators} from "../../utils/Custom-Validators";
 import {INPUT_FIELD_TYPE} from "../../constants/enums";
 import {CustomSwitchModule} from "../../ui-kits/custom-switch/custom-switch.component";
+import {DividerModule} from "primeng/divider";
 
 export interface dynamicField {
   type: INPUT_FIELD_TYPE;
@@ -25,10 +26,10 @@ export interface dynamicField {
 @Component({
   selector: 'app-dynamic-form',
   template: `
-    <form [formGroup]="dynamicFormGroup" class="flex align-items-center flex-wrap justify-content-start">
-      <ng-container *ngFor="let field of fields">
-        <ng-container [ngSwitch]="field.type">
-          <div [class]="handleCalculateCol(field.type)">
+    <form [formGroup]="dynamicFormGroup">
+      <div class="flex flex-row flex-wrap justify-content-start align-items-center" *ngFor="let group of groups;let index = index">
+        <div [class]="handleCalculateCol(field.type)" *ngFor="let field of group">
+          <ng-container [ngSwitch]="field.type">
             <app-custom-input-text
               *ngSwitchCase="INPUT_FIELD_TYPE.TEXT"
               [formControlName]="field.name"
@@ -64,9 +65,10 @@ export interface dynamicField {
               [formControlName]="field.name"
               [label]="field.label"
             ></app-custom-date-picker>
-          </div>
-        </ng-container>
-      </ng-container>
+          </ng-container>
+        </div>
+        <p-divider class="w-full" *ngIf="groups.length -1 !== index"></p-divider>
+      </div>
     </form>
   `,
   styles: []
@@ -77,7 +79,7 @@ export class DynamicFormComponent implements OnInit {
   @ViewChild(FormGroupDirective) formRef: FormGroupDirective;
 
   dynamicFormGroup: FormGroup;
-  fields = [];
+  groups = [];
 
   constructor(
     private fb: FormBuilder,
@@ -99,13 +101,15 @@ export class DynamicFormComponent implements OnInit {
   getFormControlsFields() {
     const formGroupFields = {};
     this.model.forEach(group => {
+      const groupArr = []
       group.forEach(field => {
         formGroupFields[field.name] = this.fb.control({
           value: field.value ?? null,
           disabled: field.disabled
         }, DynamicFormComponent.addValidators(field.rules));
-        this.fields.push(field);
+        groupArr.push(field);
       })
+      this.groups.push(groupArr);
     })
     return formGroupFields;
   }
@@ -169,7 +173,9 @@ export class DynamicFormComponent implements OnInit {
     CustomCheckboxModule,
     CustomDropdownModule,
     CustomDatePickerModule,
-    CustomSwitchModule
+    CustomSwitchModule,
+    DividerModule,
+    CommonModule
   ],
   exports: [DynamicFormComponent]
 })

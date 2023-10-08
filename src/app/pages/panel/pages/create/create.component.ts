@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {dynamicField} from "../../../../components/dynamic-form/dynamic-form.component";
-import {INPUT_FIELD_TYPE, VIEW_TYPE} from "../../../../constants/enums";
+import {INPUT_FIELD_TYPE} from "../../../../constants/enums";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
@@ -16,12 +16,17 @@ export class CreateComponent implements OnInit {
   subscription: Subscription [] = []
   model: dynamicField[][] = []
 
-  data = [
-    {name: 'ali', age: 20},
-    {name: 'amir', age: 20},
-    {name: 'saeed', age: null},
-    {name: 'reza', age: 10},
-  ]
+  // data = [
+  //   {order: 0, name: 'ali', age: 20},
+  //   {order: 0, name: 'amir', age: 20},
+  //   {order: 1, name: 'saeed', age: null},
+  //   {order: 2, name: 'reza', age: 10},
+  //   {order: 2, name: 'reza1', age: 10},
+  //   {order: 2, name: 'reza2', age: 10},
+  //   {order: 2, name: 'reza3', age: 10},
+  //   {order: 2, name: 'reza4', age: 10},
+  //   {order: 2, name: 'reza5', age: 10},
+  // ]
 
   constructor(
     private activatedRoute: ActivatedRoute
@@ -50,7 +55,6 @@ export class CreateComponent implements OnInit {
           })
           this.model.push(modelArr)
         })
-        console.log(this.model)
       })
     )
   }
@@ -110,16 +114,13 @@ export class CreateComponent implements OnInit {
 
   handleGroupByField(array, field) {
     const groups = new Map();
-    array.forEach(function (object) {
-      let value = object[field];
-      if (value === null) {
-        value = "null";
-      }
+    array.forEach(item => {
+      let value = item[field];
       if (!groups.has(value)) {
         groups.set(value, []);
       }
-      groups.get(value).push(object);
-    });
+      groups.get(value).push(item);
+    })
     return Array.from(groups.values());
   }
 
