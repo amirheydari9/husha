@@ -73,7 +73,7 @@ export interface dynamicField {
 })
 export class DynamicFormComponent implements OnInit {
 
-  @Input() model: dynamicField[];
+  @Input() model: dynamicField[][] = [];
   @ViewChild(FormGroupDirective) formRef: FormGroupDirective;
 
   dynamicFormGroup: FormGroup;
@@ -98,12 +98,14 @@ export class DynamicFormComponent implements OnInit {
 
   getFormControlsFields() {
     const formGroupFields = {};
-    this.model.forEach(field => {
-      formGroupFields[field.name] = this.fb.control({
-        value: field.value ?? null,
-        disabled: field.disabled
-      }, DynamicFormComponent.addValidators(field.rules));
-      this.fields.push(field);
+    this.model.forEach(group => {
+      group.forEach(field => {
+        formGroupFields[field.name] = this.fb.control({
+          value: field.value ?? null,
+          disabled: field.disabled
+        }, DynamicFormComponent.addValidators(field.rules));
+        this.fields.push(field);
+      })
     })
     return formGroupFields;
   }

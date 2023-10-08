@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {dynamicField} from "../../../../components/dynamic-form/dynamic-form.component";
-import {INPUT_FIELD_TYPE} from "../../../../constants/enums";
+import {INPUT_FIELD_TYPE, VIEW_TYPE} from "../../../../constants/enums";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
@@ -14,8 +14,14 @@ import {ActivatedRoute} from "@angular/router";
 export class CreateComponent implements OnInit {
 
   subscription: Subscription [] = []
+  model: dynamicField[][] = []
 
-  model: dynamicField[] = []
+  data = [
+    {name: 'ali', age: 20},
+    {name: 'amir', age: 20},
+    {name: 'saeed', age: null},
+    {name: 'reza', age: 10},
+  ]
 
   constructor(
     private activatedRoute: ActivatedRoute
@@ -26,22 +32,33 @@ export class CreateComponent implements OnInit {
     this.subscription.push(
       this.activatedRoute.params.subscribe(() => {
         const formFields = [...this.activatedRoute.snapshot.data['data'].fields].sort((a, b) => a.priority - b.priority)
-        formFields.map(field => {
-          // if (formFields.viewType === VIEW_TYPE.SHOW_IN_FORM || formFields.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM) {
-          const model: dynamicField = {
-            type: this.handleType(field),
-            name: field.name,
-            label: field.caption,
-            disabled: !field.editable,
-            rules: this.handleRules(field),
-            meta: this.handleMeta(field)
-          }
-          console.log(model)
-          this.model.push(model)
-          // }
+        const groupFields = this.handleGroupByField(formFields, 'groupCode')
+        groupFields.map(group => {
+          const modelArr = []
+          group.map(field => {
+            if (this.handleShowField(field)) {
+              const model: dynamicField = {
+                type: this.handleType(field),
+                name: field.name,
+                label: field.caption,
+                disabled: !field.editable,
+                rules: this.handleRules(field),
+                meta: this.handleMeta(field)
+              }
+              modelArr.push(model)
+            }
+          })
+          this.model.push(modelArr)
         })
+        console.log(this.model)
       })
     )
+  }
+
+
+  handleShowField(field) {
+    // return field.formFields.viewType === VIEW_TYPE.SHOW_IN_FORM || field.formFields.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM
+    return true
   }
 
   handleType(field) {
@@ -89,6 +106,21 @@ export class CreateComponent implements OnInit {
       meta = {...meta, suffix: 'ریال'}
     }
     return meta ?? null
+  }
+
+  handleGroupByField(array, field) {
+    const groups = new Map();
+    array.forEach(function (object) {
+      let value = object[field];
+      if (value === null) {
+        value = "null";
+      }
+      if (!groups.has(value)) {
+        groups.set(value, []);
+      }
+      groups.get(value).push(object);
+    });
+    return Array.from(groups.values());
   }
 
 }
