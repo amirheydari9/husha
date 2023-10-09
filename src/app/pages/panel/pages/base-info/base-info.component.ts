@@ -58,6 +58,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   private detailGridColumnApi: any
   extraId: number
   selectedRow: any
+  selectedDetailRow: any
 
   @ViewChild('grid') grid!: AgGridAngular;
   @ViewChild('detailGrid') detailGrid!: AgGridAngular;
@@ -226,6 +227,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     this.gridHistory = []
 
     this.selectedRow = null
+    this.selectedDetailRow = null
   }
 
   handleClickHistory(item: any) {
@@ -233,7 +235,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     this.gridApi.setDatasource(this.dataSource)
   }
 
-  handleRowClick($event: RowClickedEvent<any>) {
-    this.selectedRow = $event.data
+  handleDelete($event: any) {
+    console.log($event)
   }
 }

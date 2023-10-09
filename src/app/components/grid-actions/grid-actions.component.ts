@@ -9,28 +9,30 @@ import {
   QueryList,
   ViewChildren
 } from '@angular/core';
-import {ButtonModule} from "primeng/button";
-import {TooltipModule} from "primeng/tooltip";
 import {NgFor, NgIf} from "@angular/common";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
 import {FORM_KIND} from "../../constants/enums";
 import {Router} from "@angular/router";
+import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 
 @Component({
   selector: 'app-grid-actions',
   template: `
     <div class="flex justify-content-end mb-2">
-
       <ng-container *ngIf="showPrevNext">
-        <p-button *ngFor="let action of historyActions" [icon]="action.icon" [styleClass]="action.styleClass"
-                  [pTooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"
-                  [disabled]="!gridHistory.length || (action.type === 'prev' ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.gridHistory.length - 1)"
-        ></p-button>
+        <app-custom-button
+          *ngFor="let action of historyActions" [icon]="action.icon" [styleClass]="action.styleClass"
+          [tooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"
+          [disabled]="!gridHistory.length || (action.type === 'prev' ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.gridHistory.length - 1)"
+        ></app-custom-button>
       </ng-container>
-
-      <p-button *ngFor="let action of actions" [icon]="action.icon" [styleClass]="action.styleClass"
-                [disabled]="(action.type === 'edit' || action.type === 'delete') ? !(!!selectedRow) :false"
-                [pTooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"></p-button>
+      <app-custom-button
+        *ngFor="let action of actions" [icon]="action.icon" [styleClass]="action.styleClass"
+        [disabled]="(action.type === 'edit' || action.type === 'delete') ? !(!!selectedRow) :false"
+        [tooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"
+        [confirmationConfig]="action.type==='delete'? {confirmation:true,header:'حذف رکورد'} : null"
+        (confirm)="onDelete.emit(this.selectedRow)"
+      ></app-custom-button>
     </div>
     <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">
       <span #history class="cursor-pointer" (click)="handleClickHistory(item,i)">{{item.title}}-{{item.id}}</span>
@@ -58,6 +60,7 @@ export class GridActionsComponent implements OnInit {
   @ViewChildren('history') history: QueryList<ElementRef>
 
   @Output() clickHistory: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onDelete: EventEmitter<any> = new EventEmitter<any>()
 
   historyActions = [
     {icon: "pi pi-arrow-up", styleClass: "p-button-rounded", type: 'prev', tooltip: "سطح قبلی"},
@@ -137,10 +140,9 @@ export class GridActionsComponent implements OnInit {
 @NgModule({
   declarations: [GridActionsComponent],
   imports: [
-    ButtonModule,
-    TooltipModule,
     NgFor,
-    NgIf
+    NgIf,
+    CustomButtonModule
   ],
   exports: [GridActionsComponent]
 })

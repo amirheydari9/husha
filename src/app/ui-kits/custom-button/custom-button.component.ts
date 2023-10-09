@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, NgModule, Output} from '@angular/core';
 import {ButtonModule} from "primeng/button";
-import {CustomConfirmDialogModule} from "../custom-confirm-dialog/custom-confirm-dialog.component";
+import {ConfirmationConfig, CustomConfirmDialogModule} from "../custom-confirm-dialog/custom-confirm-dialog.component";
+import {TooltipModule} from "primeng/tooltip";
 
 @Component({
   selector: 'app-custom-button',
@@ -15,13 +16,12 @@ import {CustomConfirmDialogModule} from "../custom-confirm-dialog/custom-confirm
         [disabled]="disabled"
         [icon]="icon"
         iconPos="right"
-        [style]="{'width':'100%'}"
         (onClick)="handleClick($event)"
+        [pTooltip]="tooltip"
       ></p-button>
     </div>
     <app-custom-confirm-dialog
-      [header]="confirmationHeader"
-      [message]="confirmationText"
+      [confirmationConfig]="confirmationConfig"
       [(visible)]="showConfirmDialog"
       (accepted)="confirm.emit()"
     ></app-custom-confirm-dialog>
@@ -53,26 +53,24 @@ export class CustomButtonComponent {
 
   @Input() icon: string;
 
-  @Input() confirmation: boolean = false
+  @Input() tooltip: string;
 
-  @Input() confirmationText: string
+  @Input() confirmationConfig: ConfirmationConfig
 
-  @Input() confirmationHeader: string
-
-  @Output() onclick: EventEmitter<void> = new EventEmitter<void>();
+  @Output() onClick: EventEmitter<void> = new EventEmitter<void>();
 
   @Output() confirm: EventEmitter<void> = new EventEmitter<any>();
 
   showConfirmDialog: boolean = false
 
   handleClick($event: any): void {
-    this.confirmation ? this.showConfirmDialog = true : this.onclick.emit($event);
+    this.confirmationConfig?.confirmation ? this.showConfirmDialog = true : this.onClick.emit($event);
   }
 }
 
 @NgModule({
   declarations: [CustomButtonComponent],
-  imports: [ButtonModule, ButtonModule, CustomConfirmDialogModule],
+  imports: [ButtonModule, ButtonModule, CustomConfirmDialogModule, TooltipModule],
   exports: [CustomButtonComponent]
 })
 export class CustomButtonModule {
