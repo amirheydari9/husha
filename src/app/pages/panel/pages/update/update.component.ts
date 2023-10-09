@@ -1,15 +1,13 @@
-import {ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {Subscription} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {HushaFormUtilService} from "../../../../utils/husha-form-util.service";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
-import {FetchFormDataDTO} from "../../../../models/DTOs/fetch-form-data.DTO";
-import {FORM_KIND} from "../../../../constants/enums";
-import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../../../constants/keys";
-import {IGetServicesRes} from "../../../../models/interface/get-services-res.interface";
+import {selectedCustomerKey} from "../../../../constants/keys";
 import {StorageService} from "../../../../utils/storage.service";
 import {BaseInfoService} from "../../../../api/base-info.service";
 import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
+import {FetchFormDataByIdDTO} from "../../../../models/DTOs/fetch-form-data-by-id.DTO";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -29,21 +27,17 @@ export class UpdateComponent implements OnInit {
     private hushaFormUtilService: HushaFormUtilService,
     private storageService: StorageService,
     private baseInfoService: BaseInfoService,
-    private cdr: ChangeDetectorRef
   ) {
   }
 
   selectedCustomer = this.storageService.getSessionStorage(selectedCustomerKey)
-  selectedService: IGetServicesRes = this.storageService.getSessionStorage(selectedServiceKey)
-  selectedUnit = this.storageService.getSessionStorage(selectedUnitKey)
-  selectedPeriod = this.storageService.getSessionStorage(selectedPeriodKey)
 
   async ngOnInit(): Promise<void> {
     this.subscription.push(
       this.activatedRoute.params.subscribe(async params => {
         this.containerRef.clear();
         try {
-          const data = await this.baseInfoService.getFormDataById(this.handleCreatePayload(this.activatedRoute.snapshot.data['data'])).toPromise();
+          const data = await this.baseInfoService.fetchFormData(this.handleCreatePayload(this.activatedRoute.snapshot.data['data'])).toPromise();
           const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'].fields, data);
           const tempRef = this.templateRef.createEmbeddedView({context: model});
           this.containerRef.insert(tempRef);
@@ -55,26 +49,15 @@ export class UpdateComponent implements OnInit {
   }
 
   handleCreatePayload(form: IFetchFormRes) {
-    return new FetchFormDataDTO(
+    return new FetchFormDataByIdDTO(
       this.selectedCustomer.id,
+      // TODO this.selectedService?.serviceType.id,
+      24,
       form.id,
       form.formKind.id,
-      // TODO this.selectedService.id,
-      101,
-      // TODO this.selectedUnit.id,
-      71,
-      this.selectedPeriod.id,
-      // TODO this.selectedService?.serviceType.id,
-      form.formKind.id === FORM_KIND.FLAT || form.formKind.id === FORM_KIND.MULTI_LEVEL ? 24 : null,
-      null,
-      null,
-      null,
-      null,
-      null,
       +this.activatedRoute.snapshot.params['data']
     )
   }
-
 
   handleOnSubmit($event: any) {
     console.log('asas')

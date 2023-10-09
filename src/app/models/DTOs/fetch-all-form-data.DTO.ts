@@ -1,4 +1,4 @@
-export class FetchFormDataDTO {
+export class FetchAllFormDataDTO {
   constructor(
     public cid: number,
     public formId: number,
@@ -12,7 +12,6 @@ export class FetchFormDataDTO {
     public sort?: string,
     public parentId?: number,
     public masterId?: number,
-    public id?: number
   ) {
   }
 }

@@ -1,15 +1,13 @@
 import {Injectable} from '@angular/core';
 import {Select} from "@ngxs/store";
-import {BaseInfoState, FetchFormAction, FetchFormDataAction, FetchMenuAction} from "./base-info.store";
+import {BaseInfoState, FetchMenuAction} from "./base-info.store";
 import {Observable} from "rxjs";
 import {Dispatch} from "@ngxs-labs/dispatch-decorator";
 import {BaseInfoService} from "../../api/base-info.service";
 import {IMenuRes} from "../../models/interface/menu-res.interface";
 import {FetchMenuReqDTO} from "../../models/DTOs/fetch-menu-req.DTO";
 import {FetchFormDTO} from "../../models/DTOs/fetch-form.DTO";
-import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
-import {FetchFormDataDTO} from "../../models/DTOs/fetch-form-data.DTO";
-import {IFetchFormDataRes} from "../../models/interface/fetch-form-data-res.interface";
+import {FetchAllFormDataDTO} from "../../models/DTOs/fetch-all-form-data.DTO";
 
 @Injectable({
   providedIn: 'root'
@@ -38,8 +36,8 @@ export class BaseInfoFacade {
   }
 
   @Dispatch()
-  async fetchFormData(payload: FetchFormDataDTO) {
-    const data = await this.baseInfoService.getAllFormData(payload)
+  async fetchFormData(payload: FetchAllFormDataDTO) {
+    const data = await this.baseInfoService.fetchAllFormData(payload)
     // return new FetchFormDataAction(data)
   }
 

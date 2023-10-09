@@ -4,13 +4,15 @@ import {IMenuRes} from "../models/interface/menu-res.interface";
 import {FetchMenuReqDTO} from "../models/DTOs/fetch-menu-req.DTO";
 import {FetchFormDTO} from "../models/DTOs/fetch-form.DTO";
 import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
-import {FetchFormDataDTO} from "../models/DTOs/fetch-form-data.DTO";
+import {FetchAllFormDataDTO} from "../models/DTOs/fetch-all-form-data.DTO";
 import {IFetchFormDataRes} from "../models/interface/fetch-form-data-res.interface";
 import {Observable} from "rxjs";
 import {FetchAccessActionDTO} from "../models/DTOs/fetch-access-action.DTO";
 import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
 import {IFetchTypeValuesRes} from "../models/interface/fetch-type-values-res.interface";
 import {IFetchAccessActionRes} from "../models/interface/fetch-access-action-res.interface";
+import {FetchFormDataByIdDTO} from "../models/DTOs/fetch-form-data-by-id.DTO";
+import {DeleteFormDataDTO} from "../models/DTOs/delete-form-data.DTO";
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +33,7 @@ export class BaseInfoService {
     return this.httpService.get<IFetchFormRes>(`baseinfo/form/getById/${payload.formId}`)
   }
 
-  getAllFormData(payload: FetchFormDataDTO): Observable<IFetchFormDataRes[]> {
+  fetchAllFormData(payload: FetchAllFormDataDTO): Observable<IFetchFormDataRes[]> {
     const params = this.httpService.toHttpParam(payload)
     // const headers = new HttpHeaders({
     //   'Content-Type': 'application/x-www-form-urlencoded'
@@ -39,12 +41,12 @@ export class BaseInfoService {
     return this.httpService.get<IFetchFormDataRes[]>(`baseinfo/data`, params)
   }
 
-  getFormDataById(payload: FetchFormDataDTO): Observable<IFetchFormDataRes> {
+  fetchFormData(payload: FetchFormDataByIdDTO): Observable<IFetchFormDataRes> {
     const params = this.httpService.toHttpParam(payload)
     return this.httpService.get<IFetchFormDataRes>(`baseinfo/data/id`, params)
   }
 
-  deleteFormData(payload: FetchFormDataDTO): Observable<boolean> {
+  deleteFormData(payload: DeleteFormDataDTO): Observable<boolean> {
     const params = this.httpService.toHttpParam(payload)
     // return of({"response": true, "error": null}).pipe(delay(1000))
     return this.httpService.delete<boolean>(`baseinfo/data`, params)

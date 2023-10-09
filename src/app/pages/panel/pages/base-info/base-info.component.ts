@@ -11,16 +11,17 @@ import {Subscription} from "rxjs";
 import {FORM_KIND, VIEW_TYPE} from "../../../../constants/enums";
 import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../../../constants/keys";
 import {IGetServicesRes} from "../../../../models/interface/get-services-res.interface";
-import {ColDef, GridOptions, IDatasource, IGetRowsParams, RowClickedEvent} from "ag-grid-community";
+import {ColDef, GridOptions, IDatasource, IGetRowsParams} from "ag-grid-community";
 import {StorageService} from "../../../../utils/storage.service";
 import {ActivatedRoute} from "@angular/router";
 import {BaseInfoService} from "../../../../api/base-info.service";
-import {FetchFormDataDTO} from "../../../../models/DTOs/fetch-form-data.DTO";
+import {FetchAllFormDataDTO} from "../../../../models/DTOs/fetch-all-form-data.DTO";
 import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {IFetchFormDataRes} from "../../../../models/interface/fetch-form-data-res.interface";
 import {AgGridAngular} from "ag-grid-angular";
 import {GridActionsComponent} from "../../../../components/grid-actions/grid-actions.component";
+import {DeleteFormDataDTO} from "../../../../models/DTOs/delete-form-data.DTO";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -104,7 +105,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
   dataSource: IDatasource = {
     getRows: ((params: IGetRowsParams) => {
-      this.baseInfoService.getAllFormData(this.handleCreatePayload(
+      this.baseInfoService.fetchAllFormData(this.handleCreatePayload(
         this.extraId ?? null,
         this.gridApi.paginationGetCurrentPage(),
         this.gridApi.paginationGetPageSize(),
@@ -120,7 +121,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
   detailDataSource: IDatasource = {
     getRows: ((params: IGetRowsParams) => {
-      this.baseInfoService.getAllFormData(this.handleCreatePayload(
+      this.baseInfoService.fetchAllFormData(this.handleCreatePayload(
         this.extraId,
         this.detailGridApi.paginationGetCurrentPage(),
         this.detailGridApi.paginationGetPageSize(),
@@ -136,7 +137,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
 
   handleCreatePayload(id?: number, page: number = 0, size: number = this.defaultPageSize, sort?: string) {
-    return new FetchFormDataDTO(
+    return new FetchAllFormDataDTO(
       this.selectedCustomer.id,
       this.form.id,
       this.form.formKind.id,
@@ -152,7 +153,6 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
       sort,
       this.form.formKind.id === FORM_KIND.MULTI_LEVEL && id ? id : null,
       this.form.formKind.id === FORM_KIND.DETAIL && id ? id : null,
-      null
     )
   }
 
@@ -237,22 +237,12 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   }
 
   handleDelete($event: any) {
-    const payload = new FetchFormDataDTO(
+    const payload = new DeleteFormDataDTO(
       this.selectedCustomer.id,
+      // TODO this.selectedService?.serviceType.id,
+      24,
       this.form.id,
       this.form.formKind.id,
-      // TODO this.selectedService.id,
-      101,
-      // TODO this.selectedUnit.id,
-      71,
-      this.selectedPeriod.id,
-      // TODO this.selectedService?.serviceType.id,
-      this.form.formKind.id === FORM_KIND.FLAT || this.form.formKind.id === FORM_KIND.MULTI_LEVEL ? 24 : null,
-      null,
-      null,
-      null,
-      null,
-      null,
       +$event.id
     )
     this.subscription.push(
