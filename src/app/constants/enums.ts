@@ -4,6 +4,14 @@ export enum GRANT_TYPES {
   PASSWORD = "password",
 }
 
+//TODO انواع اکشن ها چیست ؟
+export enum ACCESS_FORM_ACTION_TYPE {
+  ADD = 'add',
+  GET = 'get',
+  UPDATE = 'update',
+  DELETE = 'delete',
+}
+
 export enum FORM_KIND {
   MULTI_LEVEL = 1,
   MASTER = 2,
