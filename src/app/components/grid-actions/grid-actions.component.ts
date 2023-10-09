@@ -29,7 +29,7 @@ import {Router} from "@angular/router";
       </ng-container>
 
       <p-button *ngFor="let action of actions" [icon]="action.icon" [styleClass]="action.styleClass"
-                [disabled]="action.type === 'edit' ? !(!!selectedRow) :false"
+                [disabled]="(action.type === 'edit' || action.type === 'delete') ? !(!!selectedRow) :false"
                 [pTooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"></p-button>
     </div>
     <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">

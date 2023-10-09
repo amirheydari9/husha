@@ -1,6 +1,6 @@
 <ng-container #containerRef></ng-container>
 
-<ng-template #templateRef>
+<ng-template #templateRef let-model=context>
   <app-dynamic-form [model]="model"></app-dynamic-form>
 </ng-template>
 

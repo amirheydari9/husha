@@ -21,7 +21,6 @@ import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interfa
 export class UpdateComponent implements OnInit {
 
   subscription: Subscription [] = []
-  model: dynamicField[][] = []
 
   @ViewChild('containerRef', {read: ViewContainerRef, static: true}) containerRef: ViewContainerRef
   @ViewChild('templateRef', {read: TemplateRef, static: true}) templateRef: TemplateRef<any>
@@ -42,15 +41,19 @@ export class UpdateComponent implements OnInit {
 
   ngOnInit(): void {
     //TODO تکلیف فیلدهای آبجکتی در ایجاد و ویرایش چی میشه
-    this.containerRef.clear()
-    this.activatedRoute.params.subscribe(params => {
-      this.baseInfoService.fetchFormData(this.handleCreatePayload(this.activatedRoute.snapshot.data['data'])).subscribe(data => {
-        const row = data.find(item => item['id'] = +params['data'])
-        this.model = this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'].fields, row)
-        const tempRef = this.templateRef.createEmbeddedView(null)
-        this.containerRef.insert(tempRef)
+    this.subscription.push(
+      this.activatedRoute.params.subscribe(params => {
+        this.containerRef.clear()
+        this.subscription.push(
+          this.baseInfoService.fetchFormData(this.handleCreatePayload(this.activatedRoute.snapshot.data['data'])).subscribe(data => {
+            const row = data.find(item => item['id'] = +params['data'])
+            const model = this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'].fields, row)
+            const tempRef = this.templateRef.createEmbeddedView({context: model})
+            this.containerRef.insert(tempRef)
+          })
+        )
       })
-    })
+    )
   }
 
   handleCreatePayload(form: IFetchFormRes) {
