@@ -4,9 +4,11 @@ import {
   EventEmitter,
   Input,
   NgModule,
+  OnChanges,
   OnInit,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChildren
 } from '@angular/core';
 import {NgFor, NgIf} from "@angular/common";
@@ -45,7 +47,7 @@ import {StorageService} from "../../utils/storage.service";
   `,
   styles: []
 })
-export class GridActionsComponent implements OnInit {
+export class GridActionsComponent implements OnInit, OnChanges {
 
   selectedCustomer = this.storageService.getSessionStorage(selectedCustomerKey)
   selectedService: IGetServicesRes = this.storageService.getSessionStorage(selectedServiceKey)
@@ -56,16 +58,7 @@ export class GridActionsComponent implements OnInit {
   showPrevNext: boolean
   @Input() selectedRow: any
   @Input() gridHistory = []
-
-  private _form
-  @Input() set form(data: IFetchFormRes) {
-    this.showPrevNext = data?.formKind.id === FORM_KIND.MULTI_LEVEL
-    this._form = data
-  }
-
-  get form(): IFetchFormRes {
-    return this._form
-  }
+  @Input() form: IFetchFormRes
 
   @ViewChildren('history') history: QueryList<ElementRef>
 
@@ -97,19 +90,26 @@ export class GridActionsComponent implements OnInit {
   ) {
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['form']?.currentValue) {
+      const form = changes['form'].currentValue
+      this.showPrevNext = form?.formKind.id === FORM_KIND.MULTI_LEVEL
+      const payload = new FetchAccessActionDTO(
+        this.selectedCustomer.id,
+        // TODO this.selectedService.id,
+        101,
+        // TODO this.selectedUnit.id,
+        71,
+        form.id,
+      )
+      this.baseInfoService.accessFormAction(payload).subscribe(data => {
+        console.log(data)
+      })
+    }
+  }
+
   ngOnInit(): void {
-    // console.log(this.form)
-    // const payload = new FetchAccessActionDTO(
-    //   this.selectedCustomer.id,
-    //   // TODO this.selectedService.id,
-    //   101,
-    //   // TODO this.selectedUnit.id,
-    //   71,
-    //   101104,
-    // )
-    // this.baseInfoService.accessFormAction(payload).subscribe(data => {
-    //   console.log(payload)
-    // })
+
   }
 
   activeHistory(i: number) {

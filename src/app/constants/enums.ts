@@ -4,7 +4,7 @@ export enum GRANT_TYPES {
   PASSWORD = "password",
 }
 
-//TODO انواع اکشن ها چیست ؟
+//TODO انواع اکشن ها چیست ؟  , get به چه دردی میخوره
 export enum ACCESS_FORM_ACTION_TYPE {
   ADD = 'add',
   GET = 'get',
