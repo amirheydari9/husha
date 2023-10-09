@@ -14,6 +14,11 @@ import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
 import {FORM_KIND} from "../../constants/enums";
 import {Router} from "@angular/router";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
+import {BaseInfoService} from "../../api/base-info.service";
+import {FetchAccessActionDTO} from "../../models/DTOs/fetch-access-action.DTO";
+import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../constants/keys";
+import {IGetServicesRes} from "../../models/interface/get-services-res.interface";
+import {StorageService} from "../../utils/storage.service";
 
 @Component({
   selector: 'app-grid-actions',
@@ -41,6 +46,11 @@ import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.comp
   styles: []
 })
 export class GridActionsComponent implements OnInit {
+
+  selectedCustomer = this.storageService.getSessionStorage(selectedCustomerKey)
+  selectedService: IGetServicesRes = this.storageService.getSessionStorage(selectedServiceKey)
+  selectedUnit = this.storageService.getSessionStorage(selectedUnitKey)
+  selectedPeriod = this.storageService.getSessionStorage(selectedPeriodKey)
 
   currentHistoryIndex: number
   showPrevNext: boolean
@@ -81,11 +91,25 @@ export class GridActionsComponent implements OnInit {
   ]
 
   constructor(
-    private router: Router
+    private router: Router,
+    private baseInfoService: BaseInfoService,
+    private storageService: StorageService,
   ) {
   }
 
   ngOnInit(): void {
+    // console.log(this.form)
+    // const payload = new FetchAccessActionDTO(
+    //   this.selectedCustomer.id,
+    //   // TODO this.selectedService.id,
+    //   101,
+    //   // TODO this.selectedUnit.id,
+    //   71,
+    //   101104,
+    // )
+    // this.baseInfoService.accessFormAction(payload).subscribe(data => {
+    //   console.log(payload)
+    // })
   }
 
   activeHistory(i: number) {
