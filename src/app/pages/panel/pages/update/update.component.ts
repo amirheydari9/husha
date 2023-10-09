@@ -1,6 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {Subscription} from "rxjs";
-import {dynamicField} from "../../../../components/dynamic-form/dynamic-form.component";
 import {ActivatedRoute} from "@angular/router";
 import {HushaFormUtilService} from "../../../../utils/husha-form-util.service";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
@@ -39,19 +38,20 @@ export class UpdateComponent implements OnInit {
   selectedUnit = this.storageService.getSessionStorage(selectedUnitKey)
   selectedPeriod = this.storageService.getSessionStorage(selectedPeriodKey)
 
-   ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.subscription.push(
-      this.activatedRoute.params.subscribe(params => {
-        this.containerRef.clear()
-        this.subscription.push(
-          this.baseInfoService.getFormDataById(this.handleCreatePayload(this.activatedRoute.snapshot.data['data'])).subscribe(data => {
-            const model = this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'].fields, data)
-            const tempRef = this.templateRef.createEmbeddedView({context: model})
-            this.containerRef.insert(tempRef)
-          })
-        )
+      this.activatedRoute.params.subscribe(async params => {
+        this.containerRef.clear();
+        try {
+          const data = await this.baseInfoService.getFormDataById(this.handleCreatePayload(this.activatedRoute.snapshot.data['data'])).toPromise();
+          const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'].fields, data);
+          const tempRef = this.templateRef.createEmbeddedView({ context: model });
+          this.containerRef.insert(tempRef);
+        } catch (error) {
+          console.error(error);
+        }
       })
-    )
+    );
   }
 
   handleCreatePayload(form: IFetchFormRes) {

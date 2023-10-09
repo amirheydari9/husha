@@ -15,20 +15,26 @@ export class HushaFormUtilService {
   }
 
   createModel(fields, data?) {
-    const model: dynamicField[][] = []
-    const formFields = this.handleSortByField(fields, 'priority')
-    const groupFields = this.handleGroupByField(formFields, 'groupCode')
-    groupFields.map(group => {
-      const modelItem = []
-      group.map(field => {
-        if (this.handleShowField(field, data)) {
-          modelItem.push(this.handleCreateDynamicField(field, data))
+    const model: dynamicField[][] = [];
+    const formFields = this.handleSortByField(fields, 'priority');
+    const groupFields = this.handleGroupByField(formFields, 'groupCode');
+    return new Promise(async (resolve, reject) => {
+      try {
+        for (const group of groupFields) {
+          const modelItem = [];
+          for (const field of group) {
+            if (this.handleShowField(field, data)) {
+              const dynamicField = await this.handleCreateDynamicField(field, data);
+              modelItem.push(dynamicField);
+            }
+          }
+          model.push(modelItem);
         }
-      })
-      console.log(modelItem)
-      model.push(modelItem)
-    })
-    return model
+        resolve(model);
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   handleSortByField(array, fieldName) {
@@ -52,13 +58,13 @@ export class HushaFormUtilService {
     return true
   }
 
-  handleCreateDynamicField(field, data) {
+  async handleCreateDynamicField(field, data) {
     //TODO اگه مقدار فیلد از نوع آبکت بود
     const dynamicField: dynamicField = {
       type: this.handleType(field),
       name: field.name,
       label: field.caption,
-      options: this.handleOptions(field),
+      options: await this.handleOptions(field),
       disabled: !field.editable,
       value: this.handleValue(field, data),
       rules: this.handleRules(field),
@@ -121,20 +127,11 @@ export class HushaFormUtilService {
     return meta ?? null
   }
 
-  handleOptions(field) {
-    let options = null
+  async handleOptions(field) {
     if (field.fieldType.id === INPUT_FIELD_TYPE.DROP_DOWN) {
-      const payload = new FetchTypeValuesDTO(field.lookUpType.id)
-      this.baseInfoService.fetchTypeValues(payload).subscribe(data => {
-        console.log(data)
-        return options = data.map(item => {
-          return {
-            id: item['id'], title: item['title']
-          }
-        })
-      })
+      const payload = new FetchTypeValuesDTO(field.lookUpType.id);
+      return await this.baseInfoService.fetchTypeValues(payload).toPromise();
     }
-    return options
+    return null
   }
-
 }
