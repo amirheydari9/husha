@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {INPUT_FIELD_TYPE, VIEW_TYPE} from "../constants/enums";
+import {INPUT_FIELD_TYPE} from "../constants/enums";
 import {dynamicField} from "../components/dynamic-form/dynamic-form.component";
 import {BaseInfoService} from "../api/base-info.service";
 import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
@@ -74,7 +74,7 @@ export class HushaFormUtilService {
   }
 
   handleType(field) {
-    switch (field.fieldType) {
+    switch (field.fieldType.id) {
       case INPUT_FIELD_TYPE.FLOAT :
       case INPUT_FIELD_TYPE.NUMBER_WITH_HINT :
       case INPUT_FIELD_TYPE.CURRENCY :
@@ -82,6 +82,8 @@ export class HushaFormUtilService {
       case INPUT_FIELD_TYPE.URL :
       case INPUT_FIELD_TYPE.EMAIL:
         return INPUT_FIELD_TYPE.TEXT
+      case INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM :
+        return INPUT_FIELD_TYPE.DROP_DOWN
       case INPUT_FIELD_TYPE.JALALI_DATE_PICKER_WITH_TIME :
         return INPUT_FIELD_TYPE.JALALI_DATE_PICKER
       case INPUT_FIELD_TYPE.GEORGIAN_DATE_PICKER_WITH_TIME:
@@ -92,6 +94,7 @@ export class HushaFormUtilService {
   }
 
   handleValue(field, data) {
+    //TODO فیلد default value در فرم
     if (data) {
       return (typeof data[field.name] === 'object' && data[field.name] !== null) ? data[field.name].id : data[field.name]
     }
@@ -131,6 +134,8 @@ export class HushaFormUtilService {
     if (field.fieldType.id === INPUT_FIELD_TYPE.DROP_DOWN) {
       const payload = new FetchTypeValuesDTO(field.lookUpType.id);
       return await this.baseInfoService.fetchTypeValues(payload).toPromise();
+    } else if (field.fieldType.id === INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM) {
+
     }
     return null
   }
