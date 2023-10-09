@@ -45,7 +45,7 @@ export class UpdateComponent implements OnInit {
         try {
           const data = await this.baseInfoService.getFormDataById(this.handleCreatePayload(this.activatedRoute.snapshot.data['data'])).toPromise();
           const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'].fields, data);
-          const tempRef = this.templateRef.createEmbeddedView({ context: model });
+          const tempRef = this.templateRef.createEmbeddedView({context: model});
           this.containerRef.insert(tempRef);
         } catch (error) {
           console.error(error);
@@ -76,4 +76,7 @@ export class UpdateComponent implements OnInit {
   }
 
 
+  handleOnSubmit($event: any) {
+    console.log('asas')
+  }
 }

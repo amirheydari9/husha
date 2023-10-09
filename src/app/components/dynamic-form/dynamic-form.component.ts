@@ -1,4 +1,4 @@
-import {Component, Input, NgModule, OnInit, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, FormGroupDirective, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgFor, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
 import {CustomInputTextModule} from "../../ui-kits/custom-input-text/custom-input-text.component";
@@ -12,6 +12,8 @@ import {INPUT_FIELD_TYPE} from "../../constants/enums";
 import {CustomSwitchModule} from "../../ui-kits/custom-switch/custom-switch.component";
 import {DividerModule} from "primeng/divider";
 import {CustomTextAreaModule} from "../../ui-kits/custom-text-area/custom-text-area.component";
+import {CustomCardModule} from "../../ui-kits/custom-card/custom-card.component";
+import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 
 export interface dynamicField {
   type: INPUT_FIELD_TYPE;
@@ -27,50 +29,67 @@ export interface dynamicField {
 @Component({
   selector: 'app-dynamic-form',
   template: `
-    <form [formGroup]="dynamicFormGroup">
-      <div class="flex flex-row flex-wrap justify-content-start align-items-center" *ngFor="let group of groups;let index = index">
-        <div [class]="handleCalculateCol(field.type)" *ngFor="let field of group">
-          <ng-container [ngSwitch]="field.type">
-            <app-custom-input-text
-              *ngSwitchCase="INPUT_FIELD_TYPE.TEXT"
-              [formControlName]="field.name"
-              [label]="field.label"
-            ></app-custom-input-text>
-            <app-custom-input-number
-              *ngSwitchCase="INPUT_FIELD_TYPE.NUMBER"
-              [formControlName]="field.name"
-              [label]="field.label"
-              [showFraction]="field.meta?.showFraction"
-              [showCurrencyToNumber]="field.meta?.showCurrencyToNumber"
-              [suffix]="field.meta.suffix"
-            ></app-custom-input-number>
-            <app-custom-dropdown
-              *ngSwitchCase="INPUT_FIELD_TYPE.DROP_DOWN"
-              [formControlName]="field.name"
-              [options]="field.options"
-              [label]="field.label"
-            ></app-custom-dropdown>
-            <app-custom-switch
-              *ngSwitchCase="INPUT_FIELD_TYPE.SWITCH"
-              [formControlName]="field.name"
-              [label]="field.label"
-            ></app-custom-switch>
-            <app-custom-date-picker
-              *ngSwitchCase="INPUT_FIELD_TYPE.JALALI_DATE_PICKER"
-              [formControlName]="field.name"
-              [label]="field.label"
-              [timeEnable]="field.meta?.timeEnable"
-            ></app-custom-date-picker>
-            <app-custom-text-area
-              *ngSwitchCase="INPUT_FIELD_TYPE.TEXT_AREA"
-              [formControlName]="field.name"
-              [label]="field.label"
-            ></app-custom-text-area>
-          </ng-container>
+    <app-custom-card>
+
+      <span class="font-md-regular mr-2 text-1">عنوان فرم</span>
+
+      <p-divider></p-divider>
+
+      <form [formGroup]="dynamicFormGroup" (ngSubmit)="onSubmit.emit(dynamicFormGroup.getRawValue())">
+        <div class="flex flex-row flex-wrap justify-content-start align-items-center"
+             *ngFor="let group of groups;let index = index">
+          <div [class]="handleCalculateCol(field.type)" *ngFor="let field of group">
+            <ng-container [ngSwitch]="field.type">
+              <app-custom-input-text
+                *ngSwitchCase="INPUT_FIELD_TYPE.TEXT"
+                [formControlName]="field.name"
+                [label]="field.label"
+              ></app-custom-input-text>
+              <app-custom-input-number
+                *ngSwitchCase="INPUT_FIELD_TYPE.NUMBER"
+                [formControlName]="field.name"
+                [label]="field.label"
+                [showFraction]="field.meta?.showFraction"
+                [showCurrencyToNumber]="field.meta?.showCurrencyToNumber"
+                [suffix]="field.meta.suffix"
+              ></app-custom-input-number>
+              <app-custom-dropdown
+                *ngSwitchCase="INPUT_FIELD_TYPE.DROP_DOWN"
+                [formControlName]="field.name"
+                [options]="field.options"
+                [label]="field.label"
+              ></app-custom-dropdown>
+              <app-custom-switch
+                *ngSwitchCase="INPUT_FIELD_TYPE.SWITCH"
+                [formControlName]="field.name"
+                [label]="field.label"
+              ></app-custom-switch>
+              <app-custom-date-picker
+                *ngSwitchCase="INPUT_FIELD_TYPE.JALALI_DATE_PICKER"
+                [formControlName]="field.name"
+                [label]="field.label"
+                [timeEnable]="field.meta?.timeEnable"
+              ></app-custom-date-picker>
+              <app-custom-text-area
+                *ngSwitchCase="INPUT_FIELD_TYPE.TEXT_AREA"
+                [formControlName]="field.name"
+                [label]="field.label"
+              ></app-custom-text-area>
+            </ng-container>
+          </div>
+          <p-divider class="w-full" *ngIf="groups.length -1 !== index"></p-divider>
         </div>
-        <p-divider class="w-full" *ngIf="groups.length -1 !== index"></p-divider>
-      </div>
-    </form>
+        <div class="flex flex-row-reverse">
+          <app-custom-button
+            label="ذخیره تغیرات"
+            icon="pi pi-check"
+            [disabled]="dynamicFormGroup.invalid"
+          ></app-custom-button>
+        </div>
+      </form>
+
+    </app-custom-card>
+
   `,
   styles: []
 })
@@ -78,6 +97,8 @@ export class DynamicFormComponent implements OnInit {
 
   @Input() model: dynamicField[][] = [];
   @ViewChild(FormGroupDirective) formRef: FormGroupDirective;
+
+  @Output() onSubmit: EventEmitter<any> = new EventEmitter<any>()
 
   dynamicFormGroup: FormGroup;
   groups = [];
@@ -159,6 +180,7 @@ export class DynamicFormComponent implements OnInit {
         return 'col-3'
     }
   }
+
 }
 
 @NgModule({
@@ -177,7 +199,9 @@ export class DynamicFormComponent implements OnInit {
     CustomDatePickerModule,
     CustomSwitchModule,
     DividerModule,
-    CustomTextAreaModule
+    CustomTextAreaModule,
+    CustomCardModule,
+    CustomButtonModule
   ],
   exports: [DynamicFormComponent]
 })
