@@ -37,10 +37,11 @@ export class UpdateComponent implements OnInit {
       this.activatedRoute.params.subscribe(async params => {
         this.containerRef.clear();
         try {
-          const data = await this.baseInfoService.fetchFormData(this.handleCreatePayload(this.activatedRoute.snapshot.data['data'])).toPromise();
-          const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'].fields, data);
-          const tempRef = this.templateRef.createEmbeddedView({context: model});
-          this.containerRef.insert(tempRef);
+          this.baseInfoService.fetchFormData(this.handleCreatePayload(this.activatedRoute.snapshot.data['data'])).subscribe(async data => {
+            const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'].fields, data);
+            const tempRef = this.templateRef.createEmbeddedView({context: model});
+            this.containerRef.insert(tempRef);
+          })
         } catch (error) {
           console.error(error);
         }
