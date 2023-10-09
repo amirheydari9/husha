@@ -209,6 +209,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   }
 
   resetForm() {
+
     this.columnDefs = [];
     this.rowData = [];
 
@@ -236,6 +237,28 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   }
 
   handleDelete($event: any) {
-    console.log($event)
+    const payload = new FetchFormDataDTO(
+      this.selectedCustomer.id,
+      this.form.id,
+      this.form.formKind.id,
+      // TODO this.selectedService.id,
+      101,
+      // TODO this.selectedUnit.id,
+      71,
+      this.selectedPeriod.id,
+      // TODO this.selectedService?.serviceType.id,
+      this.form.formKind.id === FORM_KIND.FLAT || this.form.formKind.id === FORM_KIND.MULTI_LEVEL ? 24 : null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      +$event.id
+    )
+    this.subscription.push(
+      this.baseInfoService.deleteFormData(payload).subscribe(data => {
+        this.gridApi.setDatasource(this.dataSource)
+      })
+    )
   }
 }

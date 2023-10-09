@@ -6,7 +6,7 @@ import {FetchFormDTO} from "../models/DTOs/fetch-form.DTO";
 import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
 import {FetchFormDataDTO} from "../models/DTOs/fetch-form-data.DTO";
 import {IFetchFormDataRes} from "../models/interface/fetch-form-data-res.interface";
-import {Observable} from "rxjs";
+import {delay, Observable, of, timeout} from "rxjs";
 import {HttpHeaders} from "@angular/common/http";
 
 @Injectable({
@@ -34,5 +34,11 @@ export class BaseInfoService {
     //   'Content-Type': 'application/x-www-form-urlencoded'
     // });
     return this.httpService.get<IFetchFormDataRes[]>(`baseinfo/data`, params)
+  }
+
+  deleteFormData(payload: FetchFormDataDTO): Observable<any> {
+    const params = this.httpService.toHttpParam(payload)
+    // return of({"response": true, "error": null}).pipe(delay(1000))
+    return this.httpService.delete<IFetchFormDataRes[]>(`baseinfo/data`, params)
   }
 }
