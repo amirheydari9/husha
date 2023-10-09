@@ -37,7 +37,16 @@ export class UpdateComponent implements OnInit {
       this.activatedRoute.params.subscribe(async params => {
         this.containerRef.clear();
         try {
-          this.baseInfoService.fetchFormData(this.handleCreatePayload(this.activatedRoute.snapshot.data['data'])).subscribe(async data => {
+          const form = this.activatedRoute.snapshot.data['data']
+          const payload = new FetchFormDataByIdDTO(
+            this.selectedCustomer.id,
+            // TODO this.selectedService?.serviceType.id,
+            24,
+            form.id,
+            form.formKind.id,
+            +params['data']
+          )
+          this.baseInfoService.fetchFormData(payload).subscribe(async data => {
             const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'].fields, data);
             const tempRef = this.templateRef.createEmbeddedView({context: model});
             this.containerRef.insert(tempRef);
@@ -47,17 +56,6 @@ export class UpdateComponent implements OnInit {
         }
       })
     );
-  }
-
-  handleCreatePayload(form: IFetchFormRes) {
-    return new FetchFormDataByIdDTO(
-      this.selectedCustomer.id,
-      // TODO this.selectedService?.serviceType.id,
-      24,
-      form.id,
-      form.formKind.id,
-      +this.activatedRoute.snapshot.params['data']
-    )
   }
 
   handleOnSubmit($event: any) {
