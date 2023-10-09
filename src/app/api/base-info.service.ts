@@ -9,6 +9,8 @@ import {IFetchFormDataRes} from "../models/interface/fetch-form-data-res.interfa
 import {delay, Observable, of, timeout} from "rxjs";
 import {HttpHeaders} from "@angular/common/http";
 import {FetchAccessActionDTO} from "../models/DTOs/fetch-access-action.DTO";
+import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
+import {IFetchTypeValuesRes} from "../models/interface/fetch-type-values-res.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -29,12 +31,17 @@ export class BaseInfoService {
     return this.httpService.get<IFetchFormRes>(`baseinfo/form/getById/${payload.formId}`)
   }
 
-  fetchFormData(payload: FetchFormDataDTO): Observable<IFetchFormDataRes[]> {
+  getAllFormData(payload: FetchFormDataDTO): Observable<IFetchFormDataRes[]> {
     const params = this.httpService.toHttpParam(payload)
     // const headers = new HttpHeaders({
     //   'Content-Type': 'application/x-www-form-urlencoded'
     // });
     return this.httpService.get<IFetchFormDataRes[]>(`baseinfo/data`, params)
+  }
+
+  getFormDataById(payload: FetchFormDataDTO): Observable<IFetchFormDataRes[]> {
+    const params = this.httpService.toHttpParam(payload)
+    return this.httpService.get<IFetchFormDataRes[]>(`baseinfo/data/id`, params)
   }
 
   deleteFormData(payload: FetchFormDataDTO): Observable<any> {
@@ -44,6 +51,12 @@ export class BaseInfoService {
   }
 
   accessFormAction(payload: FetchAccessActionDTO) {
-    return this.httpService.get(`baseinfo/apiFunction/${payload.cid}/${payload.sid}/${payload.uid}/${payload.formId}/accessFormAction`)
+    return this.httpService.get(`baseinfo/apiFunction/${payload.cid}/${payload.sid}/${payload.uid}/${payload.formId}/accessFormActions`)
   }
+
+  fetchTypeValues(payload: FetchTypeValuesDTO):Observable<IFetchTypeValuesRes[]> {
+    return this.httpService.get<IFetchTypeValuesRes[]>(`baseinfo/typeValue/${payload.typeId}/getValues`)
+  }
+
+
 }

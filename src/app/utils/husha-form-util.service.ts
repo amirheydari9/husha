@@ -1,13 +1,17 @@
 import {Injectable} from '@angular/core';
 import {INPUT_FIELD_TYPE, VIEW_TYPE} from "../constants/enums";
 import {dynamicField} from "../components/dynamic-form/dynamic-form.component";
+import {BaseInfoService} from "../api/base-info.service";
+import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
 
 @Injectable({
   providedIn: 'root'
 })
 export class HushaFormUtilService {
 
-  constructor() {
+  constructor(
+    private baseInfoService: BaseInfoService
+  ) {
   }
 
   createModel(fields, data?) {
@@ -21,6 +25,7 @@ export class HushaFormUtilService {
           modelItem.push(this.handleCreateDynamicField(field, data))
         }
       })
+      console.log(modelItem)
       model.push(modelItem)
     })
     return model
@@ -48,12 +53,14 @@ export class HushaFormUtilService {
   }
 
   handleCreateDynamicField(field, data) {
+    //TODO اگه مقدار فیلد از نوع آبکت بود
     const dynamicField: dynamicField = {
       type: this.handleType(field),
       name: field.name,
       label: field.caption,
+      options: this.handleOptions(field),
       disabled: !field.editable,
-      value: data ? data[field.name] : null,
+      value: this.handleValue(field, data),
       rules: this.handleRules(field),
       meta: this.handleMeta(field)
     }
@@ -76,6 +83,13 @@ export class HushaFormUtilService {
       default:
         return field.fieldType.id
     }
+  }
+
+  handleValue(field, data) {
+    if (data) {
+      return (typeof data[field.name] === 'object' && data[field.name] !== null) ? data[field.name].id : data[field.name]
+    }
+    return null
   }
 
   handleRules(field) {
@@ -105,6 +119,22 @@ export class HushaFormUtilService {
       meta = {...meta, suffix: 'ریال'}
     }
     return meta ?? null
+  }
+
+  handleOptions(field) {
+    let options = null
+    if (field.fieldType.id === INPUT_FIELD_TYPE.DROP_DOWN) {
+      const payload = new FetchTypeValuesDTO(field.lookUpType.id)
+      this.baseInfoService.fetchTypeValues(payload).subscribe(data => {
+        console.log(data)
+        return options = data.map(item => {
+          return {
+            id: item['id'], title: item['title']
+          }
+        })
+      })
+    }
+    return options
   }
 
 }

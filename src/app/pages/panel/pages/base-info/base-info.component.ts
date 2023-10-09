@@ -104,7 +104,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
   dataSource: IDatasource = {
     getRows: ((params: IGetRowsParams) => {
-      this.baseInfoService.fetchFormData(this.handleCreatePayload(
+      this.baseInfoService.getAllFormData(this.handleCreatePayload(
         this.extraId ?? null,
         this.gridApi.paginationGetCurrentPage(),
         this.gridApi.paginationGetPageSize(),
@@ -120,7 +120,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
   detailDataSource: IDatasource = {
     getRows: ((params: IGetRowsParams) => {
-      this.baseInfoService.fetchFormData(this.handleCreatePayload(
+      this.baseInfoService.getAllFormData(this.handleCreatePayload(
         this.extraId,
         this.detailGridApi.paginationGetCurrentPage(),
         this.detailGridApi.paginationGetPageSize(),
@@ -176,8 +176,8 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     })
     for (let i = 0; i < rowData.length; i++) {
       for (let prop in rowData[i]) {
-        if (typeof rowData[i][prop] === 'object') {
-          rowData[i][prop] = rowData[i][prop]?.id;
+        if (typeof rowData[i][prop] === 'object' && rowData[i][prop] !== null) {
+          rowData[i][prop] = rowData[i][prop].id;
         }
       }
     }

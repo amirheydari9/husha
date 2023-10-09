@@ -58,7 +58,7 @@ export class CustomDropdownComponent extends BaseControlValueAccessor<string> im
 
   @Input() required = false;
 
-  @Input() optionLabel = 'name';
+  @Input() optionLabel = 'title';
 
   @Input() optionValue = 'id';
 

@@ -39,7 +39,7 @@ export class BaseInfoFacade {
 
   @Dispatch()
   async fetchFormData(payload: FetchFormDataDTO) {
-    const data = await this.baseInfoService.fetchFormData(payload)
+    const data = await this.baseInfoService.getAllFormData(payload)
     // return new FetchFormDataAction(data)
   }
 

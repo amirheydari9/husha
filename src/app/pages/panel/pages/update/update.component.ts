@@ -39,15 +39,13 @@ export class UpdateComponent implements OnInit {
   selectedUnit = this.storageService.getSessionStorage(selectedUnitKey)
   selectedPeriod = this.storageService.getSessionStorage(selectedPeriodKey)
 
-  ngOnInit(): void {
-    //TODO تکلیف فیلدهای آبجکتی در ایجاد و ویرایش چی میشه
+   ngOnInit(): void {
     this.subscription.push(
       this.activatedRoute.params.subscribe(params => {
         this.containerRef.clear()
         this.subscription.push(
-          this.baseInfoService.fetchFormData(this.handleCreatePayload(this.activatedRoute.snapshot.data['data'])).subscribe(data => {
-            const row = data.find(item => item['id'] = +params['data'])
-            const model = this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'].fields, row)
+          this.baseInfoService.getFormDataById(this.handleCreatePayload(this.activatedRoute.snapshot.data['data'])).subscribe(data => {
+            const model = this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'].fields, data)
             const tempRef = this.templateRef.createEmbeddedView({context: model})
             this.containerRef.insert(tempRef)
           })
