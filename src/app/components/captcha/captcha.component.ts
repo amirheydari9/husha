@@ -35,7 +35,7 @@ import {FieldErrorModule} from "../../ui-kits/field-error/field-error.component"
 
       .captcha {
         border: 1px solid $color-2;
-        border-radius: 3px;
+        border-radius: 6px;
         height: 42px;
         z-index: 2;
 
