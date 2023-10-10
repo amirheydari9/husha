@@ -3,10 +3,10 @@ import {FormBuilder, FormGroup, FormGroupDirective, ReactiveFormsModule, Validat
 import {NgFor, NgIf, NgSwitch, NgSwitchCase} from "@angular/common";
 import {CustomInputTextModule} from "../../ui-kits/custom-input-text/custom-input-text.component";
 import {CustomInputNumberModule} from "../../ui-kits/custom-input-number/custom-input-number.component";
-import {CustomRadioModule} from "../../ui-kits/custom-radio/custom-radio.component";
-import {CustomCheckboxModule} from "../../ui-kits/custom-checkbox/custom-checkbox.component";
 import {CustomDropdownModule} from "../../ui-kits/custom-dropdown/custom-dropdown.component";
-import {CustomJalaliDatePickerModule} from "../../ui-kits/custom-jalali-date-picker/custom-jalali-date-picker.component";
+import {
+  CustomJalaliDatePickerModule
+} from "../../ui-kits/custom-jalali-date-picker/custom-jalali-date-picker.component";
 import {CustomValidators} from "../../utils/Custom-Validators";
 import {INPUT_FIELD_TYPE} from "../../constants/enums";
 import {CustomSwitchModule} from "../../ui-kits/custom-switch/custom-switch.component";
@@ -202,8 +202,6 @@ export class DynamicFormComponent implements OnInit {
     ReactiveFormsModule,
     CustomInputTextModule,
     CustomInputNumberModule,
-    CustomRadioModule,
-    CustomCheckboxModule,
     CustomDropdownModule,
     CustomJalaliDatePickerModule,
     CustomSwitchModule,
