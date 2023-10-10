@@ -18,9 +18,7 @@ import {Router} from "@angular/router";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 import {BaseInfoService} from "../../api/base-info.service";
 import {FetchAccessActionDTO} from "../../models/DTOs/fetch-access-action.DTO";
-import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../constants/keys";
-import {IGetServicesRes} from "../../models/interface/get-services-res.interface";
-import {StorageService} from "../../utils/storage.service";
+import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
 
 @Component({
   selector: 'app-grid-actions',
@@ -48,11 +46,6 @@ import {StorageService} from "../../utils/storage.service";
   styles: []
 })
 export class GridActionsComponent implements OnInit, OnChanges {
-
-  selectedCustomer = this.storageService.getSessionStorage(selectedCustomerKey)
-  selectedService: IGetServicesRes = this.storageService.getSessionStorage(selectedServiceKey)
-  selectedUnit = this.storageService.getSessionStorage(selectedUnitKey)
-  selectedPeriod = this.storageService.getSessionStorage(selectedPeriodKey)
 
   currentHistoryIndex: number
   showPrevNext: boolean
@@ -86,7 +79,7 @@ export class GridActionsComponent implements OnInit, OnChanges {
   constructor(
     private router: Router,
     private baseInfoService: BaseInfoService,
-    private storageService: StorageService,
+    private hushaCustomerUtilService: HushaCustomerUtilService
   ) {
   }
 
@@ -95,11 +88,9 @@ export class GridActionsComponent implements OnInit, OnChanges {
       const form = changes['form'].currentValue
       this.showPrevNext = form?.formKind.id === FORM_KIND.MULTI_LEVEL
       const payload = new FetchAccessActionDTO(
-        this.selectedCustomer.id,
-        // TODO this.selectedService.id,
-        101,
-        // TODO this.selectedUnit.id,
-        71,
+        this.hushaCustomerUtilService.customer.id,
+        this.hushaCustomerUtilService.service.id,
+        this.hushaCustomerUtilService.unit.id,
         form.id,
       )
       this.baseInfoService.accessFormAction(payload).subscribe(data => {

@@ -11,11 +11,10 @@ import {MenuItem} from "primeng/api";
 import {FetchMenuReqDTO} from "../../models/DTOs/fetch-menu-req.DTO";
 import {GetUnitsReqDTO} from "../../models/DTOs/get-units-req.DTO";
 import {IGetServicesRes} from "../../models/interface/get-services-res.interface";
-import {StorageService} from "../../utils/storage.service";
-import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../constants/keys";
 import {Router} from "@angular/router";
 import {AppConfigService} from "../../utils/app-config.service";
 import {CustomMenuComponent, CustomMenuModule} from "../../ui-kits/custom-menu/custom-menu.component";
+import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -34,11 +33,6 @@ export class MyCustomersComponent implements OnInit {
   unitMenuItems: MenuItem[] = []
   periodMenuItems: MenuItem[] = []
 
-  selectedCustomer: MenuItem;
-  selectedService: IGetServicesRes;
-  selectedUnit: MenuItem;
-  selectedPeriod: MenuItem;
-
   showUnitMenu: boolean = false
 
   @ViewChild(CustomMenuComponent) customerMenu: CustomMenuComponent
@@ -46,26 +40,28 @@ export class MyCustomersComponent implements OnInit {
   @ViewChild(CustomMenuComponent) unitMenu: CustomMenuComponent
   @ViewChild(CustomMenuComponent) periodMenu: CustomMenuComponent
 
+  selectedCustomer = this.hushaCustomerUtilService.customer
+  selectedService = this.hushaCustomerUtilService.service
+  selectedUnit = this.hushaCustomerUtilService.unit
+  selectedPeriod = this.hushaCustomerUtilService.period
+
+
   constructor(
     private customerFacade: CustomerFacade,
     private baseInfoFacade: BaseInfoFacade,
-    private storageService: StorageService,
     private router: Router,
     private appConfigService: AppConfigService,
+    private hushaCustomerUtilService: HushaCustomerUtilService
   ) {
   }
 
   async ngOnInit(): Promise<void> {
-    this.selectedCustomer = this.storageService.getSessionStorage(selectedCustomerKey);
-    this.selectedService = this.storageService.getSessionStorage(selectedServiceKey);
-    this.selectedUnit = this.storageService.getSessionStorage(selectedUnitKey);
-    this.selectedPeriod = this.storageService.getSessionStorage(selectedPeriodKey);
     try {
       const payload = new FetchMenuReqDTO(
-        +this.selectedCustomer?.id,
-        +this.selectedService?.id,
-        +this.selectedUnit?.id,
-        +this.selectedPeriod?.id,
+        this.selectedCustomer?.id,
+        this.selectedService?.id,
+        this.selectedUnit?.id,
+        this.selectedPeriod?.id,
       )
       await this.baseInfoFacade.fetchMenu(payload)
     } catch (e) {
@@ -114,10 +110,11 @@ export class MyCustomersComponent implements OnInit {
   async handleSelectCustomer($event: MenuItem): Promise<boolean | void> {
     if (this.selectedCustomer && this.selectedCustomer.id === $event.id) return false
     this.selectedCustomer = $event
-    this.storageService.setSessionStorage(selectedCustomerKey, $event)
+    this.hushaCustomerUtilService.customer = $event
     this.resetService()
     this.resetUnit()
     this.resetPeriod()
+    await this.baseInfoFacade.fetchMenu(new FetchMenuReqDTO(+this.selectedCustomer?.id))
     await this.handleFetchServicesAndPeriods(+$event.id)
     this.appConfigService.resetTabMenu()
     this.router.navigate(['/'])
@@ -148,7 +145,7 @@ export class MyCustomersComponent implements OnInit {
     const service = this.services.find(item => item.id === +$event.id)
     this.selectedService = service
     this.resetUnit()
-    this.storageService.setSessionStorage(selectedServiceKey, service)
+    this.hushaCustomerUtilService.service = service
     service.haveUnit ? await this.handleFetchUnits() : await this.handleFetchMenu()
   }
 
@@ -163,38 +160,39 @@ export class MyCustomersComponent implements OnInit {
   async handleSelectUnit($event: MenuItem): Promise<boolean | void> {
     if (this.selectedUnit && this.selectedUnit.id === $event.id) return false
     this.selectedUnit = $event
-    this.storageService.setSessionStorage(selectedUnitKey, $event)
+    this.hushaCustomerUtilService.unit = $event
     await this.handleFetchMenu()
   }
 
   async handleSelectPeriod($event: MenuItem): Promise<boolean | void> {
     if (!this.selectedPeriod) {
       this.selectedPeriod = $event
-      this.storageService.setSessionStorage(selectedPeriodKey, $event)
+      this.hushaCustomerUtilService.period = $event
       await this.handleFetchMenu()
     } else {
       this.selectedPeriod = $event
-      this.storageService.setSessionStorage(selectedPeriodKey, $event)
+      this.hushaCustomerUtilService.period = $event
     }
   }
 
   resetService() {
     this.selectedService = null
     this.serviceMenuItems = []
-    this.storageService.removeSessionStorage(selectedServiceKey)
+    this.hushaCustomerUtilService.service = null
   }
 
   resetUnit() {
     this.showUnitMenu = false
     this.selectedUnit = null
     this.unitMenuItems = []
-    this.storageService.removeSessionStorage(selectedUnitKey)
+    this.hushaCustomerUtilService.service = null
+    this.hushaCustomerUtilService.unit = null
   }
 
   resetPeriod() {
     this.selectedPeriod = null
     this.periodMenuItems = []
-    this.storageService.removeSessionStorage(selectedPeriodKey)
+    this.hushaCustomerUtilService.period = null
   }
 
   async handleFetchMenu(): Promise<void> {

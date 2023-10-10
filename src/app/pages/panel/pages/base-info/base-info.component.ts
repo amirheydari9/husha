@@ -9,10 +9,7 @@ import {
 } from '@angular/core';
 import {Subscription} from "rxjs";
 import {FORM_KIND, VIEW_TYPE} from "../../../../constants/enums";
-import {selectedCustomerKey, selectedPeriodKey, selectedServiceKey, selectedUnitKey} from "../../../../constants/keys";
-import {IGetServicesRes} from "../../../../models/interface/get-services-res.interface";
 import {ColDef, GridOptions, IDatasource, IGetRowsParams} from "ag-grid-community";
-import {StorageService} from "../../../../utils/storage.service";
 import {ActivatedRoute} from "@angular/router";
 import {BaseInfoService} from "../../../../api/base-info.service";
 import {FetchAllFormDataDTO} from "../../../../models/DTOs/fetch-all-form-data.DTO";
@@ -22,6 +19,7 @@ import {IFetchFormDataRes} from "../../../../models/interface/fetch-form-data-re
 import {AgGridAngular} from "ag-grid-angular";
 import {GridActionsComponent} from "../../../../components/grid-actions/grid-actions.component";
 import {DeleteFormDataDTO} from "../../../../models/DTOs/delete-form-data.DTO";
+import {HushaCustomerUtilService} from "../../../../utils/husha-customer-util.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -33,11 +31,6 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
   subscription: Subscription[] = []
   form: IFetchFormRes
-
-  selectedCustomer = this.storageService.getSessionStorage(selectedCustomerKey)
-  selectedService: IGetServicesRes = this.storageService.getSessionStorage(selectedServiceKey)
-  selectedUnit = this.storageService.getSessionStorage(selectedUnitKey)
-  selectedPeriod = this.storageService.getSessionStorage(selectedPeriodKey)
 
   detailColumnDefs: ColDef[] = []
   detailRowData: any[] = []
@@ -70,10 +63,10 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
   gridHistory = []
 
   constructor(
-    private storageService: StorageService,
     private activatedRoute: ActivatedRoute,
     private baseInfoService: BaseInfoService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private hushaCustomerUtilService: HushaCustomerUtilService
   ) {
   }
 
@@ -138,16 +131,13 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
   handleCreatePayload(id?: number, page: number = 0, size: number = this.defaultPageSize, sort?: string) {
     return new FetchAllFormDataDTO(
-      this.selectedCustomer.id,
+      this.hushaCustomerUtilService.customer.id,
       this.form.id,
       this.form.formKind.id,
-      // TODO this.selectedService.id,
-      101,
-      // TODO this.selectedUnit.id,
-      71,
-      this.selectedPeriod.id,
-      // TODO this.selectedService?.serviceType.id,
-      this.form.formKind.id === FORM_KIND.FLAT || this.form.formKind.id === FORM_KIND.MULTI_LEVEL ? 24 : null,
+      this.hushaCustomerUtilService.service.id,
+      this.hushaCustomerUtilService.unit.id,
+      this.hushaCustomerUtilService.period.id,
+      this.form.formKind.id === FORM_KIND.FLAT || this.form.formKind.id === FORM_KIND.MULTI_LEVEL ? this.hushaCustomerUtilService.serviceTypeId : null,
       page,
       size,
       sort,
@@ -238,9 +228,8 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
 
   handleDelete($event: any) {
     const payload = new DeleteFormDataDTO(
-      this.selectedCustomer.id,
-      // TODO this.selectedService?.serviceType.id,
-      24,
+      this.hushaCustomerUtilService.customer,
+      this.hushaCustomerUtilService.serviceTypeId,
       this.form.id,
       this.form.formKind.id,
       +$event.id

@@ -45,7 +45,7 @@ export class HttpService {
     let params = new HttpParams()
     for (const key of Object.keys(queryParamValue)) {
       const value = queryParamValue[key]
-      if (value !== null) params = params.append(key, value);
+      if (value !== null && value !== undefined) params = params.append(key, value);
     }
     return params
   }

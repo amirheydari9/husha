@@ -3,11 +3,9 @@ import {Subscription} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {HushaFormUtilService} from "../../../../utils/husha-form-util.service";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
-import {selectedCustomerKey} from "../../../../constants/keys";
-import {StorageService} from "../../../../utils/storage.service";
 import {BaseInfoService} from "../../../../api/base-info.service";
-import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
 import {FetchFormDataByIdDTO} from "../../../../models/DTOs/fetch-form-data-by-id.DTO";
+import {HushaCustomerUtilService} from "../../../../utils/husha-customer-util.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -25,12 +23,10 @@ export class UpdateComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private hushaFormUtilService: HushaFormUtilService,
-    private storageService: StorageService,
     private baseInfoService: BaseInfoService,
+    private hushaCustomerUtilService: HushaCustomerUtilService
   ) {
   }
-
-  selectedCustomer = this.storageService.getSessionStorage(selectedCustomerKey)
 
   async ngOnInit(): Promise<void> {
     this.subscription.push(
@@ -39,9 +35,8 @@ export class UpdateComponent implements OnInit {
         try {
           const form = this.activatedRoute.snapshot.data['data']
           const payload = new FetchFormDataByIdDTO(
-            this.selectedCustomer.id,
-            // TODO this.selectedService?.serviceType.id,
-            24,
+            this.hushaCustomerUtilService.customer.id,
+            this.hushaCustomerUtilService.serviceTypeId,
             form.id,
             form.formKind.id,
             +params['data']
