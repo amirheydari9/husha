@@ -98,12 +98,11 @@ export class HushaFormUtilService {
   }
 
   async handleValue(field, data, form) {
-    //TODO فیلد default value در فرم
     if (data) {
       return (typeof data[field.name] === 'object' && data[field.name] !== null) ? data[field.name].id : data[field.name]
     } else {
-      //TODO   و اینکه چک بشه فیلد قابل ویرایش هست یا نه شرط کال وب سرویس
-      if (field.isAuto) {
+      //TODO   و اینکه چک بشه فیلد قابل ایجاد هست یا نه شرط کال وب سرویس
+      if (!field.isAuto) {
         const payload = new FetchMaxIncValueByFieldNameDTO(
           this.hushaCustomerUtilService.customer.id,
           this.hushaCustomerUtilService.serviceTypeId,
@@ -114,9 +113,11 @@ export class HushaFormUtilService {
           form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
         )
         return await this.baseInfoService.fetchMaxIncValue(payload).toPromise();
+      } else {
+        //TODO فیلد default value در فرم
+        return null
       }
     }
-    return null
   }
 
   handleRules(field) {
