@@ -5,6 +5,8 @@ export class DeleteFormDataDTO {
     public formId: number,
     public formKind: number,
     public id: number,
+    public uid?: number,
+    public pid?: number,
   ) {
   }
 }

@@ -1,8 +1,10 @@
 import {Injectable} from '@angular/core';
-import {INPUT_FIELD_TYPE} from "../constants/enums";
+import {FORM_KIND, INPUT_FIELD_TYPE} from "../constants/enums";
 import {dynamicField} from "../components/dynamic-form/dynamic-form.component";
 import {BaseInfoService} from "../api/base-info.service";
 import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
+import {FetchMaxIncValueByFieldNameDTO} from "../models/DTOs/fetch-max-inc-value-by-field-name.DTO";
+import {HushaCustomerUtilService} from "./husha-customer-util.service";
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +12,14 @@ import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
 export class HushaFormUtilService {
 
   constructor(
-    private baseInfoService: BaseInfoService
+    private baseInfoService: BaseInfoService,
+    private hushaCustomerUtilService: HushaCustomerUtilService
   ) {
   }
 
-  createModel(fields, data?) {
+  createModel(form, data?) {
     const model: dynamicField[][] = [];
+    const fields = form.fields
     const formFields = this.handleSortByField(fields, 'priority');
     const groupFields = this.handleGroupByField(formFields, 'groupCode');
     return new Promise(async (resolve, reject) => {
@@ -24,7 +28,7 @@ export class HushaFormUtilService {
           const modelItem = [];
           for (const field of group) {
             if (this.handleShowField(field, data)) {
-              const dynamicField = await this.handleCreateDynamicField(field, data);
+              const dynamicField = await this.handleCreateDynamicField(field, data, form);
               modelItem.push(dynamicField);
             }
           }
@@ -58,7 +62,7 @@ export class HushaFormUtilService {
     return true
   }
 
-  async handleCreateDynamicField(field, data) {
+  async handleCreateDynamicField(field, data, form) {
     //TODO اگه مقدار فیلد از نوع آبکت بود
     const dynamicField: dynamicField = {
       type: this.handleType(field),
@@ -66,7 +70,7 @@ export class HushaFormUtilService {
       label: field.caption,
       options: await this.handleOptions(field),
       disabled: !field.editable,
-      value: this.handleValue(field, data),
+      value: await this.handleValue(field, data, form),
       rules: this.handleRules(field),
       meta: this.handleMeta(field)
     }
@@ -93,10 +97,24 @@ export class HushaFormUtilService {
     }
   }
 
-  handleValue(field, data) {
+  async handleValue(field, data, form) {
     //TODO فیلد default value در فرم
     if (data) {
       return (typeof data[field.name] === 'object' && data[field.name] !== null) ? data[field.name].id : data[field.name]
+    } else {
+      //TODO   و اینکه چک بشه فیلد قابل ویرایش هست یا نه شرط کال وب سرویس
+      if (field.isAuto) {
+        const payload = new FetchMaxIncValueByFieldNameDTO(
+          this.hushaCustomerUtilService.customer.id,
+          this.hushaCustomerUtilService.serviceTypeId,
+          form.id,
+          form.formKind.id,
+          field.name,
+          form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
+          form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
+        )
+        return await this.baseInfoService.fetchMaxIncValue(payload).toPromise();
+      }
     }
     return null
   }

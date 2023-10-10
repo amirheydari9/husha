@@ -232,7 +232,9 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
       this.hushaCustomerUtilService.serviceTypeId,
       this.form.id,
       this.form.formKind.id,
-      +$event.id
+      +$event.id,
+      this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
+      this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
     )
     this.subscription.push(
       this.baseInfoService.deleteFormData(payload).subscribe(data => {

@@ -38,7 +38,7 @@ export class CreateComponent implements OnInit {
       this.activatedRoute.params.subscribe(async params => {
         this.containerRef.clear();
         try {
-          const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'].fields);
+          const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data']);
           const tempRef = this.templateRef.createEmbeddedView({context: model});
           this.containerRef.insert(tempRef);
         } catch (e) {

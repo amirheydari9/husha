@@ -6,6 +6,7 @@ import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {BaseInfoService} from "../../../../api/base-info.service";
 import {FetchFormDataByIdDTO} from "../../../../models/DTOs/fetch-form-data-by-id.DTO";
 import {HushaCustomerUtilService} from "../../../../utils/husha-customer-util.service";
+import {FORM_KIND} from "../../../../constants/enums";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -39,10 +40,12 @@ export class UpdateComponent implements OnInit {
             this.hushaCustomerUtilService.serviceTypeId,
             form.id,
             form.formKind.id,
-            +params['data']
+            +params['data'],
+            form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
+            form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
           )
           this.baseInfoService.fetchFormData(payload).subscribe(async data => {
-            const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'].fields, data);
+            const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'], data);
             const tempRef = this.templateRef.createEmbeddedView({context: model});
             this.containerRef.insert(tempRef);
           })

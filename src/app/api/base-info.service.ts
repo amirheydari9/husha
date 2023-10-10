@@ -6,13 +6,14 @@ import {FetchFormDTO} from "../models/DTOs/fetch-form.DTO";
 import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
 import {FetchAllFormDataDTO} from "../models/DTOs/fetch-all-form-data.DTO";
 import {IFetchFormDataRes} from "../models/interface/fetch-form-data-res.interface";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {FetchAccessActionDTO} from "../models/DTOs/fetch-access-action.DTO";
 import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
 import {IFetchTypeValuesRes} from "../models/interface/fetch-type-values-res.interface";
 import {IFetchAccessActionRes} from "../models/interface/fetch-access-action-res.interface";
 import {FetchFormDataByIdDTO} from "../models/DTOs/fetch-form-data-by-id.DTO";
 import {DeleteFormDataDTO} from "../models/DTOs/delete-form-data.DTO";
+import {FetchMaxIncValueByFieldNameDTO} from "../models/DTOs/fetch-max-inc-value-by-field-name.DTO";
 
 @Injectable({
   providedIn: 'root'
@@ -58,6 +59,13 @@ export class BaseInfoService {
 
   fetchTypeValues(payload: FetchTypeValuesDTO): Observable<IFetchTypeValuesRes[]> {
     return this.httpService.get<IFetchTypeValuesRes[]>(`baseinfo/typeValue/${payload.typeId}/getValues`)
+  }
+
+  fetchMaxIncValue(payload: FetchMaxIncValueByFieldNameDTO): Observable<any> {
+    const params = this.httpService.toHttpParam(payload)
+    return of(1234)
+    //TODO 404
+    // return this.httpService.get<any>(`baseinfo/data/max_inc-value-by-field-name`,params)
   }
 
 
