@@ -14,6 +14,7 @@ import {IFetchAccessActionRes} from "../models/interface/fetch-access-action-res
 import {FetchFormDataByIdDTO} from "../models/DTOs/fetch-form-data-by-id.DTO";
 import {DeleteFormDataDTO} from "../models/DTOs/delete-form-data.DTO";
 import {FetchMaxIncValueByFieldNameDTO} from "../models/DTOs/fetch-max-inc-value-by-field-name.DTO";
+import {IFetchAllSummaryRes} from "../models/interface/fetch-all-summary-res.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -66,6 +67,14 @@ export class BaseInfoService {
     return of(1234)
     //TODO 404
     // return this.httpService.get<any>(`baseinfo/data/max_inc-value-by-field-name`,params)
+  }
+
+  fetchAllSummary(payload: FetchAllFormDataDTO):Observable<IFetchAllSummaryRes[]> {
+    const params = this.httpService.toHttpParam(payload)
+    // const headers = new HttpHeaders({
+    //   'Content-Type': 'application/x-www-form-urlencoded'
+    // });
+    return this.httpService.get<IFetchAllSummaryRes[]>(`baseinfo/summary`, params)
   }
 
 
