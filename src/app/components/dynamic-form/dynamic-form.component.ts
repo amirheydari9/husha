@@ -6,7 +6,7 @@ import {CustomInputNumberModule} from "../../ui-kits/custom-input-number/custom-
 import {CustomRadioModule} from "../../ui-kits/custom-radio/custom-radio.component";
 import {CustomCheckboxModule} from "../../ui-kits/custom-checkbox/custom-checkbox.component";
 import {CustomDropdownModule} from "../../ui-kits/custom-dropdown/custom-dropdown.component";
-import {CustomDatePickerModule} from "../../ui-kits/custom-date-picker/custom-date-picker.component";
+import {CustomJalaliDatePickerModule} from "../../ui-kits/custom-jalali-date-picker/custom-jalali-date-picker.component";
 import {CustomValidators} from "../../utils/Custom-Validators";
 import {INPUT_FIELD_TYPE} from "../../constants/enums";
 import {CustomSwitchModule} from "../../ui-kits/custom-switch/custom-switch.component";
@@ -14,6 +14,9 @@ import {DividerModule} from "primeng/divider";
 import {CustomTextAreaModule} from "../../ui-kits/custom-text-area/custom-text-area.component";
 import {CustomCardModule} from "../../ui-kits/custom-card/custom-card.component";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
+import {
+  CustomGeorgianDatePickerModule
+} from "../../ui-kits/custom-georgian-date-picker/custom-georgian-date-picker.component";
 
 export interface dynamicField {
   type: INPUT_FIELD_TYPE;
@@ -64,12 +67,18 @@ export interface dynamicField {
                 [formControlName]="field.name"
                 [label]="field.label"
               ></app-custom-switch>
-              <app-custom-date-picker
+              <app-custom-jalali-date-picker
                 *ngSwitchCase="INPUT_FIELD_TYPE.JALALI_DATE_PICKER"
                 [formControlName]="field.name"
                 [label]="field.label"
                 [timeEnable]="field.meta?.timeEnable"
-              ></app-custom-date-picker>
+              ></app-custom-jalali-date-picker>
+              <app-custom-georgian-date-picker
+                *ngSwitchCase="INPUT_FIELD_TYPE.GEORGIAN_DATE_PICKER"
+                [formControlName]="field.name"
+                [label]="field.label"
+                [timeEnable]="field.meta?.timeEnable"
+              ></app-custom-georgian-date-picker>
               <app-custom-text-area
                 *ngSwitchCase="INPUT_FIELD_TYPE.TEXT_AREA"
                 [formControlName]="field.name"
@@ -196,12 +205,13 @@ export class DynamicFormComponent implements OnInit {
     CustomRadioModule,
     CustomCheckboxModule,
     CustomDropdownModule,
-    CustomDatePickerModule,
+    CustomJalaliDatePickerModule,
     CustomSwitchModule,
     DividerModule,
     CustomTextAreaModule,
     CustomCardModule,
-    CustomButtonModule
+    CustomButtonModule,
+    CustomGeorgianDatePickerModule
   ],
   exports: [DynamicFormComponent]
 })

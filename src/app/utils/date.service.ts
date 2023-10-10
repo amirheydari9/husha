@@ -49,7 +49,11 @@ export class DateService {
   }
 
   addDays(date: string, add: number): string {
-    return moment(date, 'YYYY-MM-DD').add(add,'days').format('YYYY-MM-DD')
+    return moment(date, 'YYYY-MM-DD').add(add, 'days').format('YYYY-MM-DD')
+  }
+
+  formatDate(date, format) {
+    return moment(date).format(format)
   }
 
 }

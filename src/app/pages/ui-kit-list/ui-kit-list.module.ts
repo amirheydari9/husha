@@ -4,7 +4,7 @@ import {UiKitListComponent} from './ui-kit-list.component';
 import {RouterModule} from "@angular/router";
 import {CustomInputNumberModule} from "../../ui-kits/custom-input-number/custom-input-number.component";
 import {ReactiveFormsModule} from "@angular/forms";
-import {CustomDatePickerModule} from "../../ui-kits/custom-date-picker/custom-date-picker.component";
+import {CustomJalaliDatePickerModule} from "../../ui-kits/custom-jalali-date-picker/custom-jalali-date-picker.component";
 import {CustomUploadFileModule} from "../../ui-kits/custom-upload-file/custom-upload-file.component";
 
 
@@ -17,7 +17,7 @@ import {CustomUploadFileModule} from "../../ui-kits/custom-upload-file/custom-up
     RouterModule.forChild([{path: '', component: UiKitListComponent}]),
     CustomInputNumberModule,
     ReactiveFormsModule,
-    CustomDatePickerModule,
+    CustomJalaliDatePickerModule,
     CustomUploadFileModule,
   ]
 })
