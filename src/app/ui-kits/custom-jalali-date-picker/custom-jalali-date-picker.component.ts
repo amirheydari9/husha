@@ -8,7 +8,7 @@ import {FieldErrorModule} from "../field-error/field-error.component";
 import {CustomValidators} from "../../utils/Custom-Validators";
 
 @Component({
-  selector: 'app-custom-date-picker',
+  selector: 'app-custom-jalali-date-picker',
   template: `
     <div class="w-full uikit-wrapper-height" [ngClass]="class">
       <ng-persian-datepicker
@@ -34,6 +34,7 @@ import {CustomValidators} from "../../utils/Custom-Validators";
           <label class="text-1 font-sm-regular">{{label}}</label>
         </span>
       </ng-persian-datepicker>
+      <div>aas</div>
       <app-field-error [formField]="control"></app-field-error>
     </div>
   `,
@@ -44,7 +45,7 @@ import {CustomValidators} from "../../utils/Custom-Validators";
     }
   `]
 })
-export class CustomDatePickerComponent extends BaseControlValueAccessor<string> implements OnInit {
+export class CustomJalaliDatePickerComponent extends BaseControlValueAccessor<string> implements OnInit {
 
   control: FormControl
 
@@ -82,7 +83,7 @@ export class CustomDatePickerComponent extends BaseControlValueAccessor<string> 
 }
 
 @NgModule({
-  declarations: [CustomDatePickerComponent],
+  declarations: [CustomJalaliDatePickerComponent],
   imports: [
     InputTextModule,
     NgPersianDatepickerModule,
@@ -90,8 +91,8 @@ export class CustomDatePickerComponent extends BaseControlValueAccessor<string> 
     FieldErrorModule,
     NgClass
   ],
-  exports: [CustomDatePickerComponent]
+  exports: [CustomJalaliDatePickerComponent]
 })
-export class CustomDatePickerModule {
+export class CustomJalaliDatePickerModule {
 
 }
