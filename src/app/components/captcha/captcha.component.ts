@@ -31,7 +31,7 @@ import {FieldErrorModule} from "../../ui-kits/field-error/field-error.component"
     @import "../../../scss/variabels";
 
     .captcha-container {
-      height: 70px;
+      height: 75px;
 
       .captcha {
         border: 1px solid $color-2;
@@ -45,8 +45,9 @@ import {FieldErrorModule} from "../../ui-kits/field-error/field-error.component"
 
         input {
           border: none;
-          height: 100%;
-          outline: unset
+          //height: 100%;
+          outline: unset;
+          border-radius: 6px;
         }
 
         .captcha-image {
