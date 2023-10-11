@@ -54,7 +54,7 @@ export interface dynamicField {
                 [formControlName]="field.name"
                 [label]="field.label"
                 [showFraction]="field.meta?.showFraction"
-                [showCurrencyToNumber]="field.meta?.showCurrencyToText"
+                [showCurrencyToText]="field.meta?.showCurrencyToText"
                 [suffix]="field.meta.suffix"
               ></app-custom-input-number>
               <app-custom-dropdown
