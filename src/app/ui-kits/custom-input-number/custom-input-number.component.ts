@@ -28,7 +28,7 @@ import {NumberToCurrencyPipeModule} from "../../pipes/number-to-currency.pipe";
         [inputStyle]="{'width':'100%'}"
         [suffix]="suffix"
       ></p-inputNumber>
-      <span hint *ngIf="showCurrencyToNumber && !showFraction" class="text-1 font-xs-regular">{{control.value| numberToCurrency}}</span>
+      <span hint *ngIf="showCurrencyToText && !showFraction" class="text-1 font-xs-regular">{{control.value| numberToCurrency}}</span>
     </app-input-wrapper>
   `,
 })
@@ -50,7 +50,7 @@ export class CustomInputNumberComponent extends BaseControlValueAccessor<number>
 
   @Input() suffix: string;
 
-  @Input() showCurrencyToNumber: boolean;
+  @Input() showCurrencyToText: boolean;
 
   minFractionDigits: number;
 

@@ -5,6 +5,7 @@ import {BaseInfoService} from "../api/base-info.service";
 import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
 import {FetchMaxIncValueByFieldNameDTO} from "../models/DTOs/fetch-max-inc-value-by-field-name.DTO";
 import {HushaCustomerUtilService} from "./husha-customer-util.service";
+import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class HushaFormUtilService {
   ) {
   }
 
-  createModel(form, data?) {
+  createModel(form: IFetchFormRes, data?) {
     const model: dynamicField[][] = [];
     const fields = form.fields
     const formFields = this.handleSortByField(fields, 'priority');
@@ -86,8 +87,6 @@ export class HushaFormUtilService {
       case INPUT_FIELD_TYPE.URL :
       case INPUT_FIELD_TYPE.EMAIL:
         return INPUT_FIELD_TYPE.TEXT
-      case INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM :
-        return INPUT_FIELD_TYPE.DROP_DOWN
       case INPUT_FIELD_TYPE.JALALI_DATE_PICKER_WITH_TIME :
         return INPUT_FIELD_TYPE.JALALI_DATE_PICKER
       case INPUT_FIELD_TYPE.GEORGIAN_DATE_PICKER_WITH_TIME:
@@ -115,7 +114,7 @@ export class HushaFormUtilService {
         return await this.baseInfoService.fetchMaxIncValue(payload).toPromise();
       } else {
         //TODO فیلد default value در فرم
-        return null
+        return data[field.name].defaultValue
       }
     }
   }
@@ -132,7 +131,7 @@ export class HushaFormUtilService {
     if (field.fieldType.id === INPUT_FIELD_TYPE.EMAIL) {
       rules = {...rules, email: true}
     }
-    return rules ?? null
+    return rules
   }
 
   handleMeta(field) {
@@ -140,21 +139,19 @@ export class HushaFormUtilService {
     if (field.fieldType.id === INPUT_FIELD_TYPE.NUMBER) {
       meta = {...meta, showFraction: true}
     } else if (field.fieldType.id === INPUT_FIELD_TYPE.NUMBER_WITH_HINT) {
-      meta = {...meta, showCurrencyToNumber: true}
+      meta = {...meta, showCurrencyToText: true}
     } else if (field.fieldType.id === INPUT_FIELD_TYPE.GEORGIAN_DATE_PICKER_WITH_TIME || field.fieldType.id === INPUT_FIELD_TYPE.JALALI_DATE_PICKER_WITH_TIME) {
       meta = {...meta, timeEnable: true}
     } else if (field.fieldType.id === INPUT_FIELD_TYPE.CURRENCY) {
       meta = {...meta, suffix: 'ریال'}
     }
-    return meta ?? null
+    return meta
   }
 
   async handleOptions(field) {
     if (field.fieldType.id === INPUT_FIELD_TYPE.DROP_DOWN) {
       const payload = new FetchTypeValuesDTO(field.lookUpType.id);
       return await this.baseInfoService.fetchTypeValues(payload).toPromise();
-    } else if (field.fieldType.id === INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM) {
-
     }
     return null
   }
