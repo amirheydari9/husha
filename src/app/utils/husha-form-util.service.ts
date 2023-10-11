@@ -5,7 +5,7 @@ import {BaseInfoService} from "../api/base-info.service";
 import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
 import {FetchMaxIncValueByFieldNameDTO} from "../models/DTOs/fetch-max-inc-value-by-field-name.DTO";
 import {HushaCustomerUtilService} from "./husha-customer-util.service";
-import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
+import {IFetchFormRes, IFormField} from "../models/interface/fetch-form-res.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class HushaFormUtilService {
 
   createModel(form: IFetchFormRes, data?) {
     const model: dynamicField[][] = [];
-    const fields = form.fields
+    const fields: IFormField[] = form.fields
     const formFields = this.handleSortByField(fields, 'priority');
     const groupFields = this.handleGroupByField(formFields, 'groupCode');
     return new Promise(async (resolve, reject) => {
@@ -63,7 +63,7 @@ export class HushaFormUtilService {
     return true
   }
 
-  async handleCreateDynamicField(field, data, form) {
+  async handleCreateDynamicField(field: IFormField, data, form: IFetchFormRes) {
     //TODO اگه مقدار فیلد از نوع آبکت بود
     const dynamicField: dynamicField = {
       type: this.handleType(field),
@@ -78,7 +78,7 @@ export class HushaFormUtilService {
     return dynamicField
   }
 
-  handleType(field) {
+  handleType(field: IFormField) {
     switch (field.fieldType.id) {
       case INPUT_FIELD_TYPE.FLOAT :
       case INPUT_FIELD_TYPE.NUMBER_WITH_HINT :
@@ -96,7 +96,7 @@ export class HushaFormUtilService {
     }
   }
 
-  async handleValue(field, data, form) {
+  async handleValue(field: IFormField, data, form: IFetchFormRes) {
     if (data) {
       return (typeof data[field.name] === 'object' && data[field.name] !== null) ? data[field.name].id : data[field.name]
     } else {
@@ -119,7 +119,7 @@ export class HushaFormUtilService {
     }
   }
 
-  handleRules(field) {
+  handleRules(field: IFormField) {
     //TODO min and max
     let rules = null
     if (field.notNullable) {
@@ -134,7 +134,7 @@ export class HushaFormUtilService {
     return rules
   }
 
-  handleMeta(field) {
+  handleMeta(field: IFormField) {
     let meta = null
     if (field.fieldType.id === INPUT_FIELD_TYPE.NUMBER) {
       meta = {...meta, showFraction: true}
@@ -148,7 +148,7 @@ export class HushaFormUtilService {
     return meta
   }
 
-  async handleOptions(field) {
+  async handleOptions(field: IFormField) {
     if (field.fieldType.id === INPUT_FIELD_TYPE.DROP_DOWN) {
       const payload = new FetchTypeValuesDTO(field.lookUpType.id);
       return await this.baseInfoService.fetchTypeValues(payload).toPromise();
