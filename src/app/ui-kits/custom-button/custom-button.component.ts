@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, NgModule, Output} from '@angular/core';
 import {ButtonModule} from "primeng/button";
 import {ConfirmationConfig, CustomConfirmDialogModule} from "../custom-confirm-dialog/custom-confirm-dialog.component";
 import {TooltipModule} from "primeng/tooltip";
+import {NgStyle} from "@angular/common";
 
 @Component({
   selector: 'app-custom-button',
@@ -18,6 +19,7 @@ import {TooltipModule} from "primeng/tooltip";
         iconPos="right"
         (onClick)="handleClick($event)"
         [pTooltip]="tooltip"
+        [style]="{'width':fullWidth ? '100%':''}"
       ></p-button>
     </div>
     <app-custom-confirm-dialog
@@ -55,6 +57,8 @@ export class CustomButtonComponent {
 
   @Input() tooltip: string;
 
+  @Input() fullWidth: boolean = false
+
   @Input() confirmationConfig: ConfirmationConfig
 
   @Output() onClick: EventEmitter<void> = new EventEmitter<void>();
@@ -70,7 +74,7 @@ export class CustomButtonComponent {
 
 @NgModule({
   declarations: [CustomButtonComponent],
-  imports: [ButtonModule, ButtonModule, CustomConfirmDialogModule, TooltipModule],
+  imports: [ButtonModule, ButtonModule, CustomConfirmDialogModule, TooltipModule, NgStyle],
   exports: [CustomButtonComponent]
 })
 export class CustomButtonModule {
