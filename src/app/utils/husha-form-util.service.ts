@@ -73,7 +73,7 @@ export class HushaFormUtilService {
       disabled: !field.editable,
       value: await this.handleValue(field, data, form),
       rules: this.handleRules(field),
-      meta: this.handleMeta(field)
+      meta: this.handleMeta(field, form)
     }
     return dynamicField
   }
@@ -134,16 +134,22 @@ export class HushaFormUtilService {
     return rules
   }
 
-  handleMeta(field: IFormField) {
+  handleMeta(field: IFormField, form: IFetchFormRes) {
     let meta = null
-    if (field.fieldType.id === INPUT_FIELD_TYPE.NUMBER) {
+    if (field.fieldType.id === INPUT_FIELD_TYPE.FLOAT || field.fieldType.id === INPUT_FIELD_TYPE.NUMBER_WITH_HINT || field.fieldType.id === INPUT_FIELD_TYPE.CURRENCY) {
       meta = {...meta, showFraction: true}
-    } else if (field.fieldType.id === INPUT_FIELD_TYPE.NUMBER_WITH_HINT) {
+    }
+    if (field.fieldType.id === INPUT_FIELD_TYPE.NUMBER_WITH_HINT) {
       meta = {...meta, showCurrencyToText: true}
-    } else if (field.fieldType.id === INPUT_FIELD_TYPE.GEORGIAN_DATE_PICKER_WITH_TIME || field.fieldType.id === INPUT_FIELD_TYPE.JALALI_DATE_PICKER_WITH_TIME) {
+    }
+    if (field.fieldType.id === INPUT_FIELD_TYPE.GEORGIAN_DATE_PICKER_WITH_TIME || field.fieldType.id === INPUT_FIELD_TYPE.JALALI_DATE_PICKER_WITH_TIME) {
       meta = {...meta, timeEnable: true}
-    } else if (field.fieldType.id === INPUT_FIELD_TYPE.CURRENCY) {
+    }
+    if (field.fieldType.id === INPUT_FIELD_TYPE.CURRENCY) {
       meta = {...meta, suffix: 'ریال'}
+    }
+    if (field.fieldType.id === INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM) {
+      meta = {...meta, form: form, field: field}
     }
     return meta
   }

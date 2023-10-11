@@ -17,6 +17,7 @@ import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.comp
 import {
   CustomGeorgianDatePickerModule
 } from "../../ui-kits/custom-georgian-date-picker/custom-georgian-date-picker.component";
+import {CustomLookupFormModule} from "../../ui-kits/custom-lookup-form/custom-lookup-form.component";
 
 export interface dynamicField {
   type: INPUT_FIELD_TYPE;
@@ -84,6 +85,13 @@ export interface dynamicField {
                 [formControlName]="field.name"
                 [label]="field.label"
               ></app-custom-text-area>
+              <app-custom-lookup-form
+                *ngSwitchCase="INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM"
+                [formControlName]="field.name"
+                [label]="field.label"
+                [form]="field.meta?.form"
+                [field]="field.meta?.field"
+              ></app-custom-lookup-form>
             </ng-container>
           </div>
           <p-divider class="w-full" *ngIf="groups.length -1 !== index"></p-divider>
@@ -209,7 +217,8 @@ export class DynamicFormComponent implements OnInit {
     CustomTextAreaModule,
     CustomCardModule,
     CustomButtonModule,
-    CustomGeorgianDatePickerModule
+    CustomGeorgianDatePickerModule,
+    CustomLookupFormModule
   ],
   exports: [DynamicFormComponent]
 })
