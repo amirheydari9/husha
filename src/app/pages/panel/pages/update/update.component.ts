@@ -8,6 +8,7 @@ import {FetchFormDataByIdDTO} from "../../../../models/DTOs/fetch-form-data-by-i
 import {HushaCustomerUtilService} from "../../../../utils/husha-customer-util.service";
 import {FORM_KIND} from "../../../../constants/enums";
 import {DynamicFormComponent} from "../../../../components/dynamic-form/dynamic-form.component";
+import {AddFormDataReqDTO} from "../../../../models/DTOs/add-form-data-req.DTO";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -52,7 +53,21 @@ export class UpdateComponent implements AfterViewInit {
             comRef.setInput('model', model)
             this.subscription.push(
               comRef.instance.onSubmit.subscribe(data => {
-                console.log(data)
+                //TODO هند کردن masterId برای دیتیل گرید
+                const formKindId = form.formKind.id
+                const payload = new AddFormDataReqDTO(
+                  form.id,
+                  formKindId,
+                  formKindId === FORM_KIND.DETAIL ? null : this.hushaCustomerUtilService.customer.id,
+                  formKindId === FORM_KIND.MULTI_LEVEL || formKindId === FORM_KIND.FLAT ? this.hushaCustomerUtilService.serviceTypeId : null,
+                  formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.service.id : null,
+                  formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
+                  formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
+                  // formKindId === FORM_KIND.DETAIL ? form.masterId : null,
+                )
+                this.baseInfoService.updateFormData(payload, data).subscribe(res => {
+                  console.log(res)
+                })
               })
             )
           })

@@ -15,6 +15,9 @@ import {FetchFormDataByIdDTO} from "../models/DTOs/fetch-form-data-by-id.DTO";
 import {DeleteFormDataDTO} from "../models/DTOs/delete-form-data.DTO";
 import {FetchMaxIncValueByFieldNameDTO} from "../models/DTOs/fetch-max-inc-value-by-field-name.DTO";
 import {IFetchAllSummaryRes} from "../models/interface/fetch-all-summary-res.interface";
+import {AddFormDataReqDTO} from "../models/DTOs/add-form-data-req.DTO";
+import {HttpHeaders} from "@angular/common/http";
+import {UpdateFormDataReqDTO} from "../models/DTOs/update-form-data-req.DTO";
 
 @Injectable({
   providedIn: 'root'
@@ -69,12 +72,30 @@ export class BaseInfoService {
     // return this.httpService.get<any>(`baseinfo/data/max_inc-value-by-field-name`,params)
   }
 
-  fetchAllSummary(payload: FetchAllFormDataDTO):Observable<IFetchAllSummaryRes[]> {
+  fetchAllSummary(payload: FetchAllFormDataDTO): Observable<IFetchAllSummaryRes[]> {
     const params = this.httpService.toHttpParam(payload)
     // const headers = new HttpHeaders({
     //   'Content-Type': 'application/x-www-form-urlencoded'
     // });
     return this.httpService.get<IFetchAllSummaryRes[]>(`baseinfo/summary`, params)
+  }
+
+  addFormData(payload: AddFormDataReqDTO, model: any) {
+    const params = this.httpService.toHttpParam(payload)
+    const formData = this.httpService.toFormData(model)
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    return this.httpService.post(`baseinfo/data`, formData, params, headers)
+  }
+
+  updateFormData(payload: UpdateFormDataReqDTO, model: any) {
+    const params = this.httpService.toHttpParam(payload)
+    const formData = this.httpService.toFormData(model)
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    return this.httpService.put(`baseinfo/data`, formData, params, headers)
   }
 
 
