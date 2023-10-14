@@ -45,16 +45,7 @@ export class InterceptorService implements HttpInterceptor {
         takeUntil(this.appConfigService.onCancelPendingRequests()),
         filter(res => res instanceof HttpResponse),
         // map((res: HttpResponse<any>) => res.clone({body: res.body.response})),
-        map((res: HttpResponse<any>) => {
-          if (res.body && res.body.error) {
-            if (res.body.error['message']) {
-              this.notificationService.error(res.body.error['message'])
-            } else if (res.body.error['errors'].length) {
-              res.body.error['errors'].forEach(item => this.notificationService.error(item.summary))
-            }
-          }
-          return res.clone({body: res.body.response});
-        }),
+        map((res: HttpResponse<any>) => this.handleResponse(res)),
         catchError(error => {
           if (error instanceof HttpErrorResponse) this.errorHandler(error)
           return throwError(error);
@@ -68,6 +59,18 @@ export class InterceptorService implements HttpInterceptor {
 
   private addTokenHeader(request: HttpRequest<any>, token: string): HttpRequest<any> {
     return request.clone({headers: request.headers.set(this.TOKEN_HEADER_KEY, 'Bearer ' + token)});
+  }
+
+  private handleResponse(res: HttpResponse<any>): HttpResponse<any> {
+    if (res.body && res.body.error) {
+      if (res.body.error['message']) {
+        this.notificationService.error(res.body.error['message'])
+      } else if (res.body.error['errors'].length) {
+        res.body.error['errors'].forEach(item => this.notificationService.error(item.summary))
+      }
+      throw new Error('An error occurred');
+    }
+    return res.clone({body: res.body.response});
   }
 
   private errorHandler(error: HttpErrorResponse) {
