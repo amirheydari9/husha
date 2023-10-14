@@ -55,7 +55,7 @@ export interface dynamicField {
                 [label]="field.label"
                 [showFraction]="field.meta?.showFraction"
                 [showCurrencyToText]="field.meta?.showCurrencyToText"
-                [suffix]="field.meta.suffix"
+                [suffix]="field.meta?.suffix"
               ></app-custom-input-number>
               <app-custom-dropdown
                 *ngSwitchCase="INPUT_FIELD_TYPE.DROP_DOWN"
