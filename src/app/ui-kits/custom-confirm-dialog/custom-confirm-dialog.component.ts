@@ -35,6 +35,7 @@ export interface ConfirmationConfig {
       </ng-template>
     </p-confirmDialog>
   `,
+  providers: [ConfirmationService]
 })
 export class CustomConfirmDialogComponent {
 
@@ -71,8 +72,7 @@ export class CustomConfirmDialogComponent {
 @NgModule({
   declarations: [CustomConfirmDialogComponent],
   imports: [ConfirmDialogModule],
-  exports: [CustomConfirmDialogComponent],
-  providers: [ConfirmationService]
+  exports: [CustomConfirmDialogComponent]
 })
 export class CustomConfirmDialogModule {
 }

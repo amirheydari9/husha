@@ -5,6 +5,7 @@ import {IFetchFormDataRes} from "../models/interface/fetch-form-data-res.interfa
 import {ColDef} from "ag-grid-community";
 import {HushaCustomerUtilService} from "./husha-customer-util.service";
 import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
+import {DeleteFormDataDTO} from "../models/DTOs/delete-form-data.DTO";
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,24 @@ export class HushaGridUtilService {
   constructor(
     private hushaCustomerUtilService: HushaCustomerUtilService,
   ) {
+  }
+
+  handleCreatePayloadForFetchAllData(form: IFetchFormRes, parentId?: number, masterId?: number, page: number = 0, size: number = 5, sort?: string) {
+    const formKindId = masterId ? FORM_KIND.DETAIL : form.formKind.id
+    return new FetchAllFormDataDTO(
+      this.hushaCustomerUtilService.customer.id,
+      form.id,
+      formKindId,
+      this.hushaCustomerUtilService.service.id,
+      this.hushaCustomerUtilService.unit.id,
+      this.hushaCustomerUtilService.period.id,
+      formKindId === FORM_KIND.FLAT || formKindId === FORM_KIND.MULTI_LEVEL ? this.hushaCustomerUtilService.serviceTypeId : null,
+      page,
+      size,
+      sort,
+      formKindId === FORM_KIND.MULTI_LEVEL ? parentId : null,
+      formKindId === FORM_KIND.DETAIL ? masterId : null,
+    )
   }
 
   createGrid(rowData: IFetchFormDataRes[], form: IFetchFormRes) {
@@ -27,29 +46,11 @@ export class HushaGridUtilService {
     for (let i = 0; i < rowData.length; i++) {
       for (let prop in rowData[i]) {
         if (typeof rowData[i][prop] === 'object' && rowData[i][prop] !== null) {
-          rowData[i][prop] = rowData[i][prop].id;
+          rowData[i][prop] = rowData[i][prop].title;
         }
       }
     }
     return {colDefs, rowData}
-  }
-
-  handleCreatePayload(form: IFetchFormRes, id?: number, page: number = 0, size: number = 5, sort?: string) {
-    const formKindId = form.formKind.id
-    return new FetchAllFormDataDTO(
-      this.hushaCustomerUtilService.customer.id,
-      form.id,
-      form.formKind.id,
-      this.hushaCustomerUtilService.service.id,
-      this.hushaCustomerUtilService.unit.id,
-      this.hushaCustomerUtilService.period.id,
-      formKindId === FORM_KIND.FLAT || formKindId === FORM_KIND.MULTI_LEVEL ? this.hushaCustomerUtilService.serviceTypeId : null,
-      page,
-      size,
-      sort,
-      formKindId === FORM_KIND.MULTI_LEVEL ? id : null,
-      formKindId === FORM_KIND.DETAIL ? id : null,
-    )
   }
 
   handleSortParam(sortModel: any[]) {
@@ -63,5 +64,17 @@ export class HushaGridUtilService {
     return sort
   }
 
+  handleCreatePayloadForDeleteRow(form: IFetchFormRes, id: number, masterId?: number) {
+    const formKindId = masterId ? FORM_KIND.DETAIL : form.formKind.id
+    return new DeleteFormDataDTO(
+      this.hushaCustomerUtilService.customer,
+      this.hushaCustomerUtilService.serviceTypeId,
+      form.id,
+      formKindId,
+      id,
+      formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
+      formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
+    )
+  }
 
 }

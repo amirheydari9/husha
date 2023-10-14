@@ -24,7 +24,7 @@ const routes: Routes = [
       },
       {
         path: 'base-info/:id',
-        loadChildren: () => import('./pages/base-info/base-info.module').then(m => m.BaseInfoModule),
+        loadChildren: () => import('./pages/base-form/base-form.module').then(m => m.BaseFormModule),
         resolve: {data: FormResolver}
       },
       {
