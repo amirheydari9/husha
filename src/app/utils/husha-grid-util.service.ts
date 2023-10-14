@@ -6,6 +6,19 @@ import {ColDef} from "ag-grid-community";
 import {HushaCustomerUtilService} from "./husha-customer-util.service";
 import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
 import {DeleteFormDataDTO} from "../models/DTOs/delete-form-data.DTO";
+import {BaseInfoService} from "../api/base-info.service";
+
+export class FetchAllDataPayloadDTO {
+  constructor(
+    public form: IFetchFormRes,
+    public parentId?: number,
+    public masterId?: number,
+    public page?: number,
+    public size?: number,
+    public sort?: string,
+  ) {
+  }
+}
 
 @Injectable({
   providedIn: 'root'
@@ -14,24 +27,25 @@ export class HushaGridUtilService {
 
   constructor(
     private hushaCustomerUtilService: HushaCustomerUtilService,
+    private baseInfoService: BaseInfoService
   ) {
   }
 
-  handleCreatePayloadForFetchAllData(form: IFetchFormRes, parentId?: number, masterId?: number, page: number = 0, size: number = 5, sort?: string) {
-    const formKindId = masterId ? FORM_KIND.DETAIL : form.formKind.id
+  handleCreatePayloadForFetchAllData(payload: FetchAllDataPayloadDTO) {
+    const formKindId = payload.masterId ? FORM_KIND.DETAIL : payload.form.formKind.id
     return new FetchAllFormDataDTO(
       this.hushaCustomerUtilService.customer.id,
-      form.id,
+      payload.form.id,
       formKindId,
       this.hushaCustomerUtilService.service.id,
       this.hushaCustomerUtilService.unit.id,
       this.hushaCustomerUtilService.period.id,
       formKindId === FORM_KIND.FLAT || formKindId === FORM_KIND.MULTI_LEVEL ? this.hushaCustomerUtilService.serviceTypeId : null,
-      page,
-      size,
-      sort,
-      formKindId === FORM_KIND.MULTI_LEVEL ? parentId : null,
-      formKindId === FORM_KIND.DETAIL ? masterId : null,
+      payload.page,
+      payload.size,
+      payload.sort,
+      formKindId === FORM_KIND.MULTI_LEVEL ? payload.parentId : null,
+      formKindId === FORM_KIND.DETAIL ? payload.masterId : null,
     )
   }
 
@@ -77,4 +91,12 @@ export class HushaGridUtilService {
     )
   }
 
+  handleFetchData(fetchSummary: boolean, data: FetchAllDataPayloadDTO) {
+    const payload = this.handleCreatePayloadForFetchAllData(data)
+    if (fetchSummary) {
+      return this.baseInfoService.fetchAllSummary(payload)
+    } else {
+      return this.baseInfoService.fetchAllFormData(payload)
+    }
+  }
 }

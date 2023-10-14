@@ -31,13 +31,15 @@ import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service"
           [disabled]="!gridHistory.length || (action.type === 'prev' ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.gridHistory.length - 1)"
         ></app-custom-button>
       </ng-container>
-      <app-custom-button
-        *ngFor="let action of actions" [icon]="action.icon" [styleClass]="action.styleClass"
-        [disabled]="(action.type === 'edit' || action.type === 'delete') ? !(!!selectedRow) :false"
-        [tooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"
-        [confirmationConfig]="action.type==='delete'? {confirmation:true,header:'حذف رکورد'} : null"
-        (confirm)="onDelete.emit(this.selectedRow)"
-      ></app-custom-button>
+      <ng-container *ngIf="showCrudActions">
+        <app-custom-button
+          *ngFor="let action of actions" [icon]="action.icon" [styleClass]="action.styleClass"
+          [disabled]="(action.type === 'edit' || action.type === 'delete') ? !(!!selectedRow) :false"
+          [tooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"
+          [confirmationConfig]="action.type==='delete'? {confirmation:true,header:'حذف رکورد'} : null"
+          (confirm)="onDelete.emit(this.selectedRow)"
+        ></app-custom-button>
+      </ng-container>
     </div>
     <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">
       <span #history class="cursor-pointer" (click)="handleClickHistory(item,i)">{{item.title}}-{{item.id}}</span>
@@ -52,6 +54,7 @@ export class GridActionsComponent implements OnInit, OnChanges {
   @Input() selectedRow: any
   @Input() gridHistory = []
   @Input() form: IFetchFormRes
+  @Input() showCrudActions: boolean
 
   @ViewChildren('history') history: QueryList<ElementRef>
 
@@ -87,15 +90,17 @@ export class GridActionsComponent implements OnInit, OnChanges {
     if (changes['form']?.currentValue) {
       const form = changes['form'].currentValue
       this.showPrevNext = form?.formKind.id === FORM_KIND.MULTI_LEVEL
-      const payload = new FetchAccessActionDTO(
-        this.hushaCustomerUtilService.customer.id,
-        this.hushaCustomerUtilService.service.id,
-        this.hushaCustomerUtilService.unit.id,
-        form.id,
-      )
-      this.baseInfoService.accessFormAction(payload).subscribe(data => {
-        console.log(data)
-      })
+      if (changes['showCrudActions'].currentValue) {
+        const payload = new FetchAccessActionDTO(
+          this.hushaCustomerUtilService.customer.id,
+          this.hushaCustomerUtilService.service.id,
+          this.hushaCustomerUtilService.unit.id,
+          form.id,
+        )
+        this.baseInfoService.accessFormAction(payload).subscribe(data => {
+          console.log(data)
+        })
+      }
     }
   }
 

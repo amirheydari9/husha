@@ -8,7 +8,7 @@ import {ColDef, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams} from "
 import {BaseInfoService} from "../../api/base-info.service";
 import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
 import {FORM_KIND} from "../../constants/enums";
-import {HushaGridUtilService} from "../../utils/husha-grid-util.service";
+import {FetchAllDataPayloadDTO, HushaGridUtilService} from "../../utils/husha-grid-util.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -39,6 +39,8 @@ export class BaseInfoGridComponent implements OnInit {
 
   @Input() form: IFetchFormRes
   @Input() masterId: number
+  @Input() fetchSummary: boolean = false
+  @Input() showCrudActions: boolean = true
 
   @ViewChild('gridActions') gridActions: GridActionsComponent
 
@@ -67,14 +69,15 @@ export class BaseInfoGridComponent implements OnInit {
 
   dataSource: IDatasource = {
     getRows: ((params: IGetRowsParams) => {
-      this.baseInfoService.fetchAllFormData(this.hushaGridUtilService.handleCreatePayloadForFetchAllData(
+      const payload = new FetchAllDataPayloadDTO(
         this.form,
         this.parentId,
         this.masterId,
         this.gridApi.paginationGetCurrentPage(),
         this.gridApi.paginationGetPageSize(),
         this.hushaGridUtilService.handleSortParam(params.sortModel)
-      )).subscribe(formData => {
+      )
+      this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).subscribe(formData => {
         const paginationInfo = formData.shift()
         const {colDefs, rowData} = this.hushaGridUtilService.createGrid(formData, this.form)
         this.columnDefs = colDefs

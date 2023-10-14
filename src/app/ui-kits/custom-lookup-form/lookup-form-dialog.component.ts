@@ -24,6 +24,8 @@ export class LookupFormDialogComponent implements OnInit {
   ngOnInit(): void {
     const comRef = this.container.createComponent(BaseInfoGridComponent)
     comRef.setInput('form', this.form)
+    comRef.setInput('fetchSummary', true)
+    comRef.setInput('showCrudActions', false)
     this.cdr.detectChanges()
   }
 
