@@ -114,7 +114,7 @@ export class HushaFormUtilService {
         return await this.baseInfoService.fetchMaxIncValue(payload).toPromise();
       } else {
         //TODO فیلد default value در فرم
-        return data[field.name].defaultValue
+        return field.defaultValue
       }
     }
   }
