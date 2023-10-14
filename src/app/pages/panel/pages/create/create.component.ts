@@ -42,6 +42,11 @@ export class CreateComponent implements AfterViewInit {
           const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data']);
           const comRef = this.containerRef.createComponent(DynamicFormComponent)
           comRef.setInput('model', model)
+          this.subscription.push(
+            comRef.instance.onSubmit.subscribe(data => {
+              console.log(data)
+            })
+          )
         } catch (e) {
           console.log(e)
         }

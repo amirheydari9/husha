@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {Subscription} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {HushaFormUtilService} from "../../../../utils/husha-form-util.service";
@@ -7,19 +7,21 @@ import {BaseInfoService} from "../../../../api/base-info.service";
 import {FetchFormDataByIdDTO} from "../../../../models/DTOs/fetch-form-data-by-id.DTO";
 import {HushaCustomerUtilService} from "../../../../utils/husha-customer-util.service";
 import {FORM_KIND} from "../../../../constants/enums";
+import {DynamicFormComponent} from "../../../../components/dynamic-form/dynamic-form.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
   selector: 'app-update',
-  templateUrl: './update.component.html',
+  template: `
+    <ng-container #containerRef></ng-container>
+  `,
   styleUrls: ['./update.component.scss']
 })
-export class UpdateComponent implements OnInit {
+export class UpdateComponent implements AfterViewInit {
 
   subscription: Subscription [] = []
 
-  @ViewChild('containerRef', {read: ViewContainerRef, static: true}) containerRef: ViewContainerRef
-  @ViewChild('templateRef', {read: TemplateRef, static: true}) templateRef: TemplateRef<any>
+  @ViewChild('containerRef', {read: ViewContainerRef}) containerRef: ViewContainerRef
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -29,7 +31,7 @@ export class UpdateComponent implements OnInit {
   ) {
   }
 
-  async ngOnInit(): Promise<void> {
+  async ngAfterViewInit(): Promise<void> {
     this.subscription.push(
       this.activatedRoute.params.subscribe(async params => {
         this.containerRef.clear();
@@ -46,8 +48,13 @@ export class UpdateComponent implements OnInit {
           )
           this.baseInfoService.fetchFormData(payload).subscribe(async data => {
             const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'], data);
-            const tempRef = this.templateRef.createEmbeddedView({context: model});
-            this.containerRef.insert(tempRef);
+            const comRef = this.containerRef.createComponent(DynamicFormComponent)
+            comRef.setInput('model', model)
+            this.subscription.push(
+              comRef.instance.onSubmit.subscribe(data => {
+                console.log(data)
+              })
+            )
           })
         } catch (error) {
           console.error(error);
