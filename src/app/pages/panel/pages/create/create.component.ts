@@ -1,19 +1,20 @@
-import {Component, OnInit, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, ViewChild, ViewContainerRef} from '@angular/core';
 import {Subscription} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {HushaFormUtilService} from "../../../../utils/husha-form-util.service";
+import {DynamicFormComponent} from "../../../../components/dynamic-form/dynamic-form.component";
 
 @Component({
   selector: 'app-create',
-  templateUrl: './create.component.html',
+  template: `
+    <ng-container #containerRef></ng-container>`,
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit {
+export class CreateComponent implements AfterViewInit {
 
   subscription: Subscription [] = []
 
-  @ViewChild('containerRef', {read: ViewContainerRef, static: true}) containerRef: ViewContainerRef
-  @ViewChild('templateRef', {read: TemplateRef, static: true}) templateRef: TemplateRef<any>
+  @ViewChild('containerRef', {read: ViewContainerRef}) containerRef: ViewContainerRef
 
   // data = [
   //   {order: 0, name: 'ali', age: 20},
@@ -33,14 +34,14 @@ export class CreateComponent implements OnInit {
   ) {
   }
 
-  async ngOnInit(): Promise<void> {
+  async ngAfterViewInit(): Promise<void> {
     this.subscription.push(
       this.activatedRoute.params.subscribe(async params => {
         this.containerRef.clear();
         try {
           const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data']);
-          const tempRef = this.templateRef.createEmbeddedView({context: model});
-          this.containerRef.insert(tempRef);
+          const comRef = this.containerRef.createComponent(DynamicFormComponent)
+          comRef.setInput('model', model)
         } catch (e) {
           console.log(e)
         }
