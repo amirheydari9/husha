@@ -52,19 +52,7 @@ export class CreateComponent implements AfterViewInit {
           comRef.setInput('model', model)
           this.subscription.push(
             comRef.instance.onSubmit.subscribe(data => {
-              //TODO هند کردن masterId برای دیتیل گرید
-              const formKindId = form.formKind.id
-              const payload = new AddFormDataReqDTO(
-                form.id,
-                formKindId,
-                formKindId === FORM_KIND.DETAIL ? null : this.hushaCustomerUtilService.customer.id,
-                formKindId === FORM_KIND.MULTI_LEVEL || formKindId === FORM_KIND.FLAT ? this.hushaCustomerUtilService.serviceTypeId : null,
-                formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.service.id : null,
-                formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
-                formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
-                // formKindId === FORM_KIND.DETAIL ? form.masterId : null,
-              )
-              this.baseInfoService.addFormData(payload, data).subscribe(res => {
+              this.baseInfoService.addFormData(this.handleCreatePayload(form), data).subscribe(res => {
                 console.log(res)
               })
             })
@@ -73,6 +61,21 @@ export class CreateComponent implements AfterViewInit {
           console.log(e)
         }
       })
+    )
+  }
+
+  handleCreatePayload(form: IFetchFormRes) {
+    //TODO هند کردن masterId برای دیتیل گرید
+    const formKindId = form.formKind.id
+    return new AddFormDataReqDTO(
+      form.id,
+      formKindId,
+      formKindId === FORM_KIND.DETAIL ? null : this.hushaCustomerUtilService.customer.id,
+      formKindId === FORM_KIND.MULTI_LEVEL || formKindId === FORM_KIND.FLAT ? this.hushaCustomerUtilService.serviceTypeId : null,
+      formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.service.id : null,
+      formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
+      formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
+      // formKindId === FORM_KIND.DETAIL ? form.masterId : null,
     )
   }
 }
