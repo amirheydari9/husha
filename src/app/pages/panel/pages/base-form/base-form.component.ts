@@ -44,7 +44,7 @@ export class BaseFormComponent implements OnInit, AfterViewInit {
       this.subscription.push(
         comRef.instance.onDbClick.subscribe(masterId => {
           this.detailContainer.clear()
-          this.baseInfoService.fetchDetailGrid(new FetchDetailGridFormsReqDTO(101201)).subscribe(detailForms => {
+          this.baseInfoService.fetchDetailGrid(new FetchDetailGridFormsReqDTO(form.id)).subscribe(detailForms => {
             detailForms.forEach(detailForm => {
               const detailCompRef = this.detailContainer.createComponent(BaseInfoGridComponent)
               detailCompRef.setInput('form', detailForm)
