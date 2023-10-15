@@ -18,7 +18,7 @@ export class GlobalErrorHandlerService implements ErrorHandler {
           if (errorObj.message) {
             this.notificationService.error(errorObj.message);
           } else if (errorObj.errors && errorObj.errors.length) {
-            errorObj.errors.forEach(item => this.notificationService.error(item));
+            errorObj.errors.forEach(item => this.notificationService.error(item.summary));
           }
         } catch (e) {
           console.error('Error parsing JSON:', e);
