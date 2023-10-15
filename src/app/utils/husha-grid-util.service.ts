@@ -49,12 +49,19 @@ export class HushaGridUtilService {
     )
   }
 
-  createGrid(rowData: IFetchFormDataRes[], form: IFetchFormRes) {
+  createGrid(rowData: IFetchFormDataRes[], form: IFetchFormRes, fetchSummary: boolean) {
     const colDefs: ColDef[] = []
     form.fields.forEach(item => {
-      if (item.isActive && (item.viewType == VIEW_TYPE.SHOW_IN_GRID || item.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM)) {
-        const col: ColDef = {field: item.name, headerName: item.caption}
-        colDefs.push(col)
+      //TODO که دیگه کاری به viewType نداریم  چک و تیک برای وقتی که حلت خلاصه داریم
+      if (fetchSummary) {
+        if (item.name === 'id' || item.name === 'code' || item.name === 'title') {
+          colDefs.push({field: item.name, headerName: item.caption})
+        }
+      } else {
+        if (item.isActive && (item.viewType == VIEW_TYPE.SHOW_IN_GRID || item.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM)) {
+          const col: ColDef = {field: item.name, headerName: item.caption}
+          colDefs.push(col)
+        }
       }
     })
     for (let i = 0; i < rowData.length; i++) {
