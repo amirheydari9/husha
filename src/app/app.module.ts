@@ -12,6 +12,7 @@ import {InterceptorService} from "./utils/interceptor.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {NgxUiLoaderConfig, NgxUiLoaderHttpModule, NgxUiLoaderModule, SPINNER,} from "ngx-ui-loader";
 import {CustomToastModule} from "./ui-kits/custom-toast/custom-toast.component";
+import {DialogService} from "primeng/dynamicdialog";
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   fgsType: SPINNER.ballSpinClockwise,
@@ -44,7 +45,8 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     CustomToastModule
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true},
+    DialogService
   ],
   bootstrap: [AppComponent]
 })

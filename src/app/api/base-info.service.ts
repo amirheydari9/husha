@@ -77,25 +77,23 @@ export class BaseInfoService {
     // const headers = new HttpHeaders({
     //   'Content-Type': 'application/x-www-form-urlencoded'
     // });
-    return this.httpService.get<IFetchAllSummaryRes[]>(`baseinfo/summary`, params)
+    return this.httpService.get<IFetchAllSummaryRes[]>(`baseinfo/data/summary`, params)
   }
 
   addFormData(payload: AddFormDataReqDTO, model: any) {
     const params = this.httpService.toHttpParam(payload)
-    const formData = this.httpService.toFormData(model)
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'
     });
-    return this.httpService.post(`baseinfo/data`, formData, params, headers)
+    return this.httpService.post(`baseinfo/data`, model, params, headers)
   }
 
   updateFormData(payload: UpdateFormDataReqDTO, model: any) {
     const params = this.httpService.toHttpParam(payload)
-    const formData = this.httpService.toFormData(model)
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'
     });
-    return this.httpService.put(`baseinfo/data`, formData, params, headers)
+    return this.httpService.put(`baseinfo/data`, model, params, headers)
   }
 
 

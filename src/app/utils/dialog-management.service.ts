@@ -19,11 +19,13 @@ export class DialogManagementService {
     resizable: true,
     modal: true,
     width: '50vw',
-    height: '50vh'
+    height: '50vh',
+    // closable: false,
+    // closeOnEscape: false
   }
 
-  openDialog(component: any, options: DynamicDialogConfig): Observable<any> {
-    const config = {...this.dialogConfig, options}
+  openDialog(component: any, options?: DynamicDialogConfig): Observable<any> {
+    const config = {...this.dialogConfig, ...options}
     const dialogClosedSubject: Subject<any> = new Subject<any>();
     const ref: DynamicDialogRef = this.dialogService.open(component, config);
     ref.onClose.subscribe(data => {

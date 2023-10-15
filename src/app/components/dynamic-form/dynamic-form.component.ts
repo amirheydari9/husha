@@ -89,7 +89,6 @@ export interface dynamicField {
                 *ngSwitchCase="INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM"
                 [formControlName]="field.name"
                 [label]="field.label"
-                [form]="field.meta?.form"
                 [field]="field.meta?.field"
               ></app-custom-lookup-form>
             </ng-container>
