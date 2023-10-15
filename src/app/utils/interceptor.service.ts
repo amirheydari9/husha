@@ -14,6 +14,7 @@ import {AppConfigService} from "./app-config.service";
 import {environment} from "../../environments/environment";
 import {OauthFacade} from "../data-core/oauth/oauth.facade";
 import {NotificationService} from "../ui-kits/custom-toast/notification.service";
+import {hushaHttpError} from "../constants/keys";
 
 @Injectable()
 export class InterceptorService implements HttpInterceptor {
@@ -63,12 +64,7 @@ export class InterceptorService implements HttpInterceptor {
 
   private handleResponse(res: HttpResponse<any>): HttpResponse<any> {
     if (res.body && res.body.error) {
-      if (res.body.error['message']) {
-        this.notificationService.error(res.body.error['message'])
-      } else if (res.body.error['errors'].length) {
-        res.body.error['errors'].forEach(item => this.notificationService.error(item.summary))
-      }
-      throw new Error('An error occurred');
+      throw new Error(JSON.stringify({error: res.body.error, type: hushaHttpError}));
     }
     return res.clone({body: res.body.response});
   }

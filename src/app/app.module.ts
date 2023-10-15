@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -13,6 +13,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {NgxUiLoaderConfig, NgxUiLoaderHttpModule, NgxUiLoaderModule, SPINNER,} from "ngx-ui-loader";
 import {CustomToastModule} from "./ui-kits/custom-toast/custom-toast.component";
 import {DialogService} from "primeng/dynamicdialog";
+import {GlobalErrorHandlerService} from "./utils/global-error-handler.service";
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   fgsType: SPINNER.ballSpinClockwise,
@@ -46,6 +47,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true},
+    {provide: ErrorHandler, useClass: GlobalErrorHandlerService},
     DialogService
   ],
   bootstrap: [AppComponent]
