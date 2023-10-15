@@ -32,7 +32,7 @@ export class HushaGridUtilService {
   }
 
   handleCreatePayloadForFetchAllData(payload: FetchAllDataPayloadDTO) {
-    const formKindId = payload.masterId ? FORM_KIND.DETAIL : payload.form.formKind.id
+    const formKindId = payload.form.formKind.id
     return new FetchAllFormDataDTO(
       this.hushaCustomerUtilService.customer.id,
       payload.form.id,
@@ -78,8 +78,8 @@ export class HushaGridUtilService {
     return sort
   }
 
-  handleCreatePayloadForDeleteRow(form: IFetchFormRes, id: number, masterId?: number) {
-    const formKindId = masterId ? FORM_KIND.DETAIL : form.formKind.id
+  handleCreatePayloadForDeleteRow(form: IFetchFormRes, id: number) {
+    const formKindId = form.formKind.id
     return new DeleteFormDataDTO(
       this.hushaCustomerUtilService.customer,
       this.hushaCustomerUtilService.serviceTypeId,

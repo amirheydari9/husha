@@ -21,7 +21,6 @@ export class BaseInfoGridComponent implements OnInit {
 
   gridApi: any
   defaultPageSize = 2
-  rowData = []
   columnDefs: ColDef[] = []
   gridOptions: GridOptions = {
     defaultColDef: {
@@ -81,6 +80,7 @@ export class BaseInfoGridComponent implements OnInit {
         const paginationInfo = formData.shift()
         const {colDefs, rowData} = this.hushaGridUtilService.createGrid(formData, this.form)
         this.columnDefs = colDefs
+        //TODO وقتی دیتا نداریم باید عیارت دیتا یافت نشد نمایش داده شود
         params.successCallback(rowData, paginationInfo['paginationTotalElements'])
       })
     })
@@ -90,15 +90,15 @@ export class BaseInfoGridComponent implements OnInit {
   handleRowDbClicked($event: any) {
     this.selectedRow = null
     const selectedRow = $event.data
-    this.parentId = selectedRow.id
     if (this.form.formKind.id === FORM_KIND.MULTI_LEVEL) {
       this.handleMultiLevelGid(selectedRow)
-    } else if (this.form.formKind.id === FORM_KIND.MASTER) {
-      this.onDbClick.emit($event.id)
+    } else if (this.form.formKind.id === FORM_KIND.FLAT) {
+      this.onDbClick.emit(selectedRow.id)
     }
   }
 
   handleMultiLevelGid(selectedRow: any) {
+    this.parentId = selectedRow.id
     this.gridApi.setDatasource(this.dataSource)
     if (!this.gridHistory.length) this.gridHistory.push(selectedRow)
     this.cdr.detectChanges()
@@ -123,7 +123,6 @@ export class BaseInfoGridComponent implements OnInit {
       this.baseInfoService.deleteFormData(this.hushaGridUtilService.handleCreatePayloadForDeleteRow(
         this.form,
         $event.id,
-        this.masterId,
       )).subscribe(data => {
         this.gridApi.setDatasource(this.dataSource)
       })

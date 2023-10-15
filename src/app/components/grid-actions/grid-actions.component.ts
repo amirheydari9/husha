@@ -66,6 +66,7 @@ export class GridActionsComponent implements OnInit, OnChanges {
     {icon: "pi pi-arrow-down", styleClass: "p-button-rounded", type: 'next', tooltip: "سطح بعدی"},
   ]
 
+  //TODO از کجا بفهمبم فرم ایمپورت اسکپورت داره ؟
   actions = [
     {icon: "pi pi-plus", styleClass: "p-button-rounded", type: 'create', tooltip: "ایجاد رکورد جدید"},
     {icon: "pi pi-pencil", styleClass: "p-button-rounded p-button-secondary", type: 'edit', tooltip: "ویرایش"},

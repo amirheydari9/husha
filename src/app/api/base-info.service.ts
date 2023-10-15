@@ -18,6 +18,7 @@ import {IFetchAllSummaryRes} from "../models/interface/fetch-all-summary-res.int
 import {AddFormDataReqDTO} from "../models/DTOs/add-form-data-req.DTO";
 import {HttpHeaders} from "@angular/common/http";
 import {UpdateFormDataReqDTO} from "../models/DTOs/update-form-data-req.DTO";
+import {GetDetailsReqDTO} from "../models/DTOs/get-details-req.DTO";
 
 @Injectable({
   providedIn: 'root'
@@ -94,6 +95,10 @@ export class BaseInfoService {
       'Content-Type': 'application/x-www-form-urlencoded'
     });
     return this.httpService.put(`baseinfo/data`, model, params, headers)
+  }
+
+  getDetails(payload: GetDetailsReqDTO) {
+    return this.httpService.get(`baseinfo/form/${payload.masterFormId}/getDetails`)
   }
 
 

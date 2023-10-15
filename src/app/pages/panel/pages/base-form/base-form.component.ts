@@ -1,8 +1,9 @@
 import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {Subscription} from "rxjs";
-import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
 import {BaseInfoGridComponent} from "../../../../components/base-info-grid/base-info-grid.component";
+import {BaseInfoService} from "../../../../api/base-info.service";
+import {GetDetailsReqDTO} from "../../../../models/DTOs/get-details-req.DTO";
 
 @Component({
   selector: 'app-base-form',
@@ -26,7 +27,8 @@ export class BaseFormComponent implements OnInit, AfterViewInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private baseInfoService: BaseInfoService
   ) {
   }
 
@@ -44,14 +46,14 @@ export class BaseFormComponent implements OnInit, AfterViewInit {
       this.subscription.push(
         comRef.instance.onDbClick.subscribe(masterId => {
           this.detailContainer.clear()
-          const detailCompRef = this.detailContainer.createComponent(BaseInfoGridComponent)
-          detailCompRef.setInput('form', form)
-          detailCompRef.setInput('masterId', masterId)
+          this.baseInfoService.getDetails(new GetDetailsReqDTO(form.id)).subscribe(detailForm => {
+            const detailCompRef = this.detailContainer.createComponent(BaseInfoGridComponent)
+            detailCompRef.setInput('form', detailForm[0])
+            detailCompRef.setInput('masterId', masterId)
+          })
         })
       )
       this.cdr.detectChanges()
     })
   }
-
-
 }
