@@ -92,7 +92,7 @@ export class BaseInfoGridComponent implements OnInit {
     const selectedRow = $event.data
     if (this.form.formKind.id === FORM_KIND.MULTI_LEVEL) {
       this.handleMultiLevelGid(selectedRow)
-    } else if (this.form.formKind.id === FORM_KIND.FLAT) {
+    } else if (this.form.formKind.id === FORM_KIND.MASTER) {
       this.onDbClick.emit(selectedRow.id)
     }
   }
