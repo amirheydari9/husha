@@ -1,4 +1,4 @@
-export class FetchDetailGridReqDTO {
+export class FetchDetailGridFormReqDTO {
   constructor(
     public masterFormId: number
   ) {

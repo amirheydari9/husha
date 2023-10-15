@@ -18,7 +18,7 @@ import {IFetchAllSummaryRes} from "../models/interface/fetch-all-summary-res.int
 import {AddFormDataReqDTO} from "../models/DTOs/add-form-data-req.DTO";
 import {HttpHeaders} from "@angular/common/http";
 import {UpdateFormDataReqDTO} from "../models/DTOs/update-form-data-req.DTO";
-import {FetchDetailGridReqDTO} from "../models/DTOs/fetch-detail-grid-req.DTO";
+import {FetchDetailGridFormReqDTO} from "../models/DTOs/fetch-detail-grid-form-req-d-t.o";
 
 @Injectable({
   providedIn: 'root'
@@ -97,7 +97,7 @@ export class BaseInfoService {
     return this.httpService.put(`baseinfo/data`, model, params, headers)
   }
 
-  fetchDetailGrid(payload: FetchDetailGridReqDTO) {
+  fetchDetailGrid(payload: FetchDetailGridFormReqDTO): Observable<IFetchFormRes[]> {
     return this.httpService.get(`baseinfo/form/${payload.masterFormId}/getDetails`)
   }
 

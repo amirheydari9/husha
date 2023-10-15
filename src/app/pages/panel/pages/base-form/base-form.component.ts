@@ -3,7 +3,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Subscription} from "rxjs";
 import {BaseInfoGridComponent} from "../../../../components/base-info-grid/base-info-grid.component";
 import {BaseInfoService} from "../../../../api/base-info.service";
-import {FetchDetailGridReqDTO} from "../../../../models/DTOs/fetch-detail-grid-req.DTO";
+import {FetchDetailGridFormReqDTO} from "../../../../models/DTOs/fetch-detail-grid-form-req-d-t.o";
 
 @Component({
   selector: 'app-base-form',
@@ -46,7 +46,7 @@ export class BaseFormComponent implements OnInit, AfterViewInit {
       this.subscription.push(
         comRef.instance.onDbClick.subscribe(masterId => {
           this.detailContainer.clear()
-          this.baseInfoService.fetchDetailGrid(new FetchDetailGridReqDTO(form.id)).subscribe(detailForm => {
+          this.baseInfoService.fetchDetailGrid(new FetchDetailGridFormReqDTO(form.id)).subscribe(detailForm => {
             const detailCompRef = this.detailContainer.createComponent(BaseInfoGridComponent)
             detailCompRef.setInput('form', detailForm[0])
             detailCompRef.setInput('masterId', masterId)
