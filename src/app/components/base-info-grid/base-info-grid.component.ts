@@ -36,6 +36,7 @@ export class BaseInfoGridComponent implements OnInit {
     pagination: true,
   }
 
+  @Input() class: string
   @Input() form: IFetchFormRes
   @Input() masterId: number
   @Input() fetchSummary: boolean = false
