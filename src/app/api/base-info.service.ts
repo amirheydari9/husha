@@ -97,7 +97,7 @@ export class BaseInfoService {
     return this.httpService.put(`baseinfo/data`, model, params, headers)
   }
 
-  fetchDetailGrid(payload: FetchDetailGridFormsReqDTO): Observable<IFetchFormRes[]> {
+  fetchDetailGridForms(payload: FetchDetailGridFormsReqDTO): Observable<IFetchFormRes[]> {
     return this.httpService.get(`baseinfo/form/${payload.masterFormId}/getDetails`)
   }
 
