@@ -10,6 +10,7 @@ export class GlobalErrorHandlerService implements ErrorHandler {
   ) {
   }
 
+  //TODO handle Uncaught promise error
   handleError(error: any) {
     if (error instanceof Error) {
       if (error.message.includes(hushaHttpError)) {
