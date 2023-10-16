@@ -13,13 +13,16 @@ import {
 } from '@angular/core';
 import {NgFor, NgIf} from "@angular/common";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
-import {FORM_KIND} from "../../constants/enums";
+import {ACCESS_FORM_ACTION_TYPE, FORM_KIND} from "../../constants/enums";
 import {Router} from "@angular/router";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 import {BaseInfoService} from "../../api/base-info.service";
 import {FetchAccessActionDTO} from "../../models/DTOs/fetch-access-action.DTO";
 import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
+import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
+import {Subscription} from "rxjs";
 
+@AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
   selector: 'app-grid-actions',
   template: `
@@ -34,9 +37,9 @@ import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service"
       <ng-container *ngIf="showCrudActions">
         <app-custom-button
           *ngFor="let action of actions" [icon]="action.icon" [styleClass]="action.styleClass"
-          [disabled]="(action.type === 'edit' || action.type === 'delete') ? !(!!selectedRow) :false"
+          [disabled]="(action.type === ACCESS_FORM_ACTION_TYPE.UPDATE || action.type === ACCESS_FORM_ACTION_TYPE.DELETE) ? !(!!selectedRow) :false"
           [tooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"
-          [confirmationConfig]="action.type==='delete'? {confirmation:true,header:'حذف رکورد'} : null"
+          [confirmationConfig]="action.type=== ACCESS_FORM_ACTION_TYPE.DELETE? {confirmation:true,header:'حذف رکورد'} : null"
           (confirm)="onDelete.emit(this.selectedRow)"
         ></app-custom-button>
       </ng-container>
@@ -48,6 +51,8 @@ import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service"
   styles: []
 })
 export class GridActionsComponent implements OnInit, OnChanges {
+
+  subscription: Subscription[] = []
 
   currentHistoryIndex: number
   showPrevNext: boolean
@@ -68,9 +73,6 @@ export class GridActionsComponent implements OnInit, OnChanges {
 
   //TODO از کجا بفهمبم فرم ایمپورت اسکپورت داره ؟
   actions = [
-    {icon: "pi pi-plus", styleClass: "p-button-rounded", type: 'create', tooltip: "ایجاد رکورد جدید"},
-    {icon: "pi pi-pencil", styleClass: "p-button-rounded p-button-secondary", type: 'edit', tooltip: "ویرایش"},
-    {icon: "pi pi-trash", styleClass: "p-button-rounded p-button-danger", type: 'delete', tooltip: "حذف"},
     {
       icon: "pi pi-download",
       styleClass: "p-button-rounded p-button-success",
@@ -84,6 +86,10 @@ export class GridActionsComponent implements OnInit, OnChanges {
     private baseInfoService: BaseInfoService,
     private hushaCustomerUtilService: HushaCustomerUtilService
   ) {
+  }
+
+  get ACCESS_FORM_ACTION_TYPE(): typeof ACCESS_FORM_ACTION_TYPE {
+    return ACCESS_FORM_ACTION_TYPE
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -105,9 +111,34 @@ export class GridActionsComponent implements OnInit, OnChanges {
           this.hushaCustomerUtilService.unit.id,
           form.id,
         )
-        this.baseInfoService.accessFormAction(payload).subscribe(data => {
-          console.log(data)
-        })
+        this.subscription.push(
+          this.baseInfoService.accessFormAction(payload).subscribe(actions => {
+            actions.forEach(item => {
+              if (item.action === this.ACCESS_FORM_ACTION_TYPE.ADD) {
+                this.actions.unshift({
+                  icon: "pi pi-plus",
+                  styleClass: "p-button-rounded",
+                  type: ACCESS_FORM_ACTION_TYPE.ADD,
+                  tooltip: "ایجاد رکورد جدید"
+                })
+              } else if (item.action === this.ACCESS_FORM_ACTION_TYPE.UPDATE) {
+                this.actions.unshift({
+                  icon: "pi pi-pencil",
+                  styleClass: "p-button-rounded p-button-secondary",
+                  type: ACCESS_FORM_ACTION_TYPE.UPDATE,
+                  tooltip: "ویرایش"
+                })
+              } else if (item.action === this.ACCESS_FORM_ACTION_TYPE.DELETE) {
+                this.actions.unshift({
+                  icon: "pi pi-trash",
+                  styleClass: "p-button-rounded p-button-danger",
+                  type: ACCESS_FORM_ACTION_TYPE.DELETE,
+                  tooltip: "حذف"
+                })
+              }
+            })
+          })
+        )
       }
     }
   }
@@ -152,10 +183,10 @@ export class GridActionsComponent implements OnInit, OnChanges {
       case 'next':
         this.handleClickNex()
         break
-      case 'create':
+      case ACCESS_FORM_ACTION_TYPE.ADD:
         this.router.navigate([`/form/${this.form.id}/create`])
         break
-      case 'edit':
+      case ACCESS_FORM_ACTION_TYPE.UPDATE:
         this.router.navigate([`/form/${this.form.id}/update/${this.selectedRow.id}`])
         break
       case 'import':
