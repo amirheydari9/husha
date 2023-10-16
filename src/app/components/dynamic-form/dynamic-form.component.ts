@@ -18,6 +18,7 @@ import {
   CustomGeorgianDatePickerModule
 } from "../../ui-kits/custom-georgian-date-picker/custom-georgian-date-picker.component";
 import {CustomLookupFormModule} from "../../ui-kits/custom-lookup-form/custom-lookup-form.component";
+import {CustomUploadFileModule} from "../../ui-kits/custom-upload-file/custom-upload-file.component";
 
 export interface dynamicField {
   type: INPUT_FIELD_TYPE;
@@ -90,13 +91,17 @@ export interface dynamicField {
                 [formControlName]="field.name"
                 [field]="field.meta?.field"
               ></app-custom-lookup-form>
+              <app-custom-upload-file
+                *ngSwitchCase="INPUT_FIELD_TYPE.IMAGE || INPUT_FIELD_TYPE.FILE"
+                [formControlName]="field.name"
+              ></app-custom-upload-file>
             </ng-container>
           </div>
           <p-divider class="w-full" *ngIf="groups.length -1 !== index"></p-divider>
         </div>
         <div class="flex flex-row-reverse">
           <app-custom-button
-            label="ذخیره تغیرات"
+            label="ثیت"
             icon="pi pi-check"
             [disabled]="dynamicFormGroup.invalid"
           ></app-custom-button>
@@ -216,7 +221,8 @@ export class DynamicFormComponent implements OnInit {
     CustomCardModule,
     CustomButtonModule,
     CustomGeorgianDatePickerModule,
-    CustomLookupFormModule
+    CustomLookupFormModule,
+    CustomUploadFileModule
   ],
   exports: [DynamicFormComponent]
 })
