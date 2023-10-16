@@ -20,7 +20,7 @@ export interface IFormField {
   unique: boolean,
   minSize: number,
   maxSize: number,
-  // lookUpForm
+  lookUpForm:number,
   lookUpType: { id: number, title: string, systemDefine: number, isActive: boolean, engTitle: string },
   isActive: boolean,
   viewType: VIEW_TYPE,
