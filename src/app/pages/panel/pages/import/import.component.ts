@@ -87,31 +87,15 @@ export class ImportComponent implements OnInit {
 
   readSheet(selectedSheetName: string) {
     this.readExcel.readSheet(selectedSheetName).subscribe(data => {
-      const excelHeader = data.header.map(item => {
-        return {id: item, title: item}
-      })
       this.model.map(item => {
-        item.options = excelHeader
+        item.options = data.header
         return item
       })
       const coldDefs: ColDef[] = []
-      data.header.map(item => {
-        coldDefs.push({field: item})
-      })
+      data.header.map(item => coldDefs.push({field: item}))
       this.columnDefs = coldDefs
       this.rowData = data.rowData
     })
-  }
-
-  handleSheets($event: string[]) {
-    console.log($event)
-    this.sheetOptions = $event.map(item => {
-      return {id: item, title: item}
-    })
-  }
-
-  handleClick() {
-    console.log(this.dynamicForm.dynamicFormGroup.getRawValue())
   }
 
   handleSubmitForm($event: any) {

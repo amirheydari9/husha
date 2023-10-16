@@ -54,7 +54,20 @@ export class CustomDropdownComponent extends BaseControlValueAccessor<string> im
 
   @Input() showClear = true;
 
-  @Input() options: any[];
+  private _options = []
+  @Input() set options(data) {
+    if (Array.isArray(data)) {
+      if (typeof data[0] === 'string' || typeof data[0] === 'number') {
+        this._options = data.map(item => ({id: item, title: item}));
+      } else {
+        this._options = data
+      }
+    }
+  }
+
+  get options(): any[] {
+    return this._options
+  }
 
   @Input() required = false;
 
