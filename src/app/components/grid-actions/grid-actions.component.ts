@@ -76,8 +76,7 @@ export class GridActionsComponent implements OnInit, OnChanges {
       styleClass: "p-button-rounded p-button-success",
       type: 'export',
       tooltip: "دانلود فایل اکسل"
-    },
-    {icon: "pi pi-upload", styleClass: "p-button-rounded p-button-warning", type: 'import', tooltip: "آپلود فایل اکسل"},
+    }
   ]
 
   constructor(
@@ -89,8 +88,16 @@ export class GridActionsComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['form']?.currentValue) {
-      const form = changes['form'].currentValue
-      this.showPrevNext = form?.formKind.id === FORM_KIND.MULTI_LEVEL
+      const form: IFetchFormRes = changes['form'].currentValue
+      this.showPrevNext = form.formKind.id === FORM_KIND.MULTI_LEVEL
+      if (form.hasFormImport) {
+        this.actions.push({
+          icon: "pi pi-upload",
+          styleClass: "p-button-rounded p-button-warning",
+          type: 'import',
+          tooltip: "آپلود فایل اکسل"
+        },)
+      }
       if (changes['showCrudActions'].currentValue) {
         const payload = new FetchAccessActionDTO(
           this.hushaCustomerUtilService.customer.id,
