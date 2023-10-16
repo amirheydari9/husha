@@ -4,7 +4,7 @@ import {FormControl, NgControl} from "@angular/forms";
 import {IFormField} from "../../models/interface/fetch-form-res.interface";
 import {LookupFormDialogComponent} from "./lookup-form-dialog.component";
 import {CustomDialogModule} from "../custom-dialog/custom-dialog.component";
-import {CommonModule, NgIf} from "@angular/common";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-custom-lookup-form',
@@ -24,7 +24,6 @@ export class CustomLookupFormComponent extends BaseControlValueAccessor<any> imp
   control: FormControl
   showDialog: boolean = false
 
-  @Input() public label: string;
   @Input() public field: IFormField
 
   constructor(
