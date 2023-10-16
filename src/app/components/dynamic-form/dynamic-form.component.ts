@@ -36,7 +36,7 @@ export interface dynamicField {
   template: `
     <app-custom-card>
 
-      <span class="font-md-regular mr-2 text-1">عنوان فرم</span>
+      <span class="font-md-regular mr-2 text-1">{{label}}</span>
 
       <p-divider></p-divider>
 
@@ -115,6 +115,7 @@ export interface dynamicField {
 })
 export class DynamicFormComponent implements OnInit {
 
+  @Input() label: string = 'عنوان'
   @Input() model: dynamicField[][] = [];
   @ViewChild(FormGroupDirective) formRef: FormGroupDirective;
 

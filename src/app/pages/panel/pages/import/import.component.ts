@@ -88,7 +88,7 @@ export class ImportComponent implements OnInit {
   readSheet(selectedSheetName: string) {
     this.readExcel.readSheet(selectedSheetName).subscribe(data => {
       const excelHeader = data.header.map(item => {
-        return {id: item, name: item}
+        return {id: item, title: item}
       })
       this.model.map(item => {
         item.options = excelHeader
@@ -104,12 +104,17 @@ export class ImportComponent implements OnInit {
   }
 
   handleSheets($event: string[]) {
+    console.log($event)
     this.sheetOptions = $event.map(item => {
-      return {id: item, name: item}
+      return {id: item, title: item}
     })
   }
 
   handleClick() {
     console.log(this.dynamicForm.dynamicFormGroup.getRawValue())
+  }
+
+  handleSubmitForm($event: any) {
+    console.log($event)
   }
 }
