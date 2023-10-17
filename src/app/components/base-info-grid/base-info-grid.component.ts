@@ -9,6 +9,7 @@ import {BaseInfoService} from "../../api/base-info.service";
 import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
 import {FORM_KIND} from "../../constants/enums";
 import {FetchAllDataPayloadDTO, HushaGridUtilService} from "../../utils/husha-grid-util.service";
+import {AG_GRID_LOCALE_FA} from "../../constants/ag-grid-locale-fa";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -34,6 +35,7 @@ export class BaseInfoGridComponent implements OnInit {
     // paginationAutoPageSize:true,
     enableRangeSelection: true,
     pagination: true,
+    localeText: AG_GRID_LOCALE_FA
   }
 
   @Input() class: string
@@ -130,6 +132,7 @@ export class BaseInfoGridComponent implements OnInit {
       })
     )
   }
+
 }
 
 @NgModule({
