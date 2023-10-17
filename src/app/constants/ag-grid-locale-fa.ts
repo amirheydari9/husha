@@ -77,7 +77,7 @@ export const AG_GRID_LOCALE_FA = {
   totalRows: 'همه ردیف ها',
   totalAndFilteredRows: 'ردیف',
   more: 'بیشتر',
-  to: 'به',
+  to: 'تا',
   of: 'از',
   page: 'صفحه',
   nextPage: 'صفحه بعدی',
