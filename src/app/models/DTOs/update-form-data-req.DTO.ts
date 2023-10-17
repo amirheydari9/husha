@@ -2,6 +2,7 @@ export class UpdateFormDataReqDTO {
   constructor(
     public formId: number,
     public formKind: number,
+    public model: any,
     public cid?: number,
     public serialId?: number,
     public sid?: number,

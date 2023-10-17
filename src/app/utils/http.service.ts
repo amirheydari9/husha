@@ -28,8 +28,8 @@ export class HttpService {
     return this.http.patch<T>(url, body, {params, headers})
   }
 
-  delete<T>(url: string, params?: HttpParams, headers?: HttpHeaders): Observable<T> {
-    return this.http.delete<T>(url, {params, headers})
+  delete<T>(url: string, body?: any, params?: HttpParams, headers?: HttpHeaders): Observable<T> {
+    return this.http.delete<T>(url, {body, params, headers})
   }
 
   toFormData<T>(formValue: T): FormData {

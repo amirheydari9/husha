@@ -16,7 +16,6 @@ import {DeleteFormDataDTO} from "../models/DTOs/delete-form-data.DTO";
 import {FetchMaxIncValueByFieldNameDTO} from "../models/DTOs/fetch-max-inc-value-by-field-name.DTO";
 import {IFetchAllSummaryRes} from "../models/interface/fetch-all-summary-res.interface";
 import {AddFormDataReqDTO} from "../models/DTOs/add-form-data-req.DTO";
-import {HttpHeaders} from "@angular/common/http";
 import {UpdateFormDataReqDTO} from "../models/DTOs/update-form-data-req.DTO";
 import {FetchDetailGridFormsReqDTO} from "../models/DTOs/fetch-detail-grid-forms-req-d-t.o";
 
@@ -40,22 +39,11 @@ export class BaseInfoService {
   }
 
   fetchAllFormData(payload: FetchAllFormDataDTO): Observable<IFetchFormDataRes[]> {
-    const params = this.httpService.toHttpParam(payload)
-    // const headers = new HttpHeaders({
-    //   'Content-Type': 'application/x-www-form-urlencoded'
-    // });
-    return this.httpService.get<IFetchFormDataRes[]>(`baseinfo/data`, params)
+    return this.httpService.post<IFetchFormDataRes[]>(`baseinfo/data/all`, payload)
   }
 
   fetchFormData(payload: FetchFormDataByIdDTO): Observable<IFetchFormDataRes> {
-    const params = this.httpService.toHttpParam(payload)
-    return this.httpService.get<IFetchFormDataRes>(`baseinfo/data/id`, params)
-  }
-
-  deleteFormData(payload: DeleteFormDataDTO): Observable<boolean> {
-    const params = this.httpService.toHttpParam(payload)
-    // return of({"response": true, "error": null}).pipe(delay(1000))
-    return this.httpService.delete<boolean>(`baseinfo/data`, params)
+    return this.httpService.post<IFetchFormDataRes>(`baseinfo/data/id`, payload)
   }
 
   accessFormAction(payload: FetchAccessActionDTO): Observable<IFetchAccessActionRes[]> {
@@ -66,35 +54,28 @@ export class BaseInfoService {
     return this.httpService.get<IFetchTypeValuesRes[]>(`baseinfo/typeValue/${payload.typeId}/getValues`)
   }
 
-  fetchMaxIncValue(payload: FetchMaxIncValueByFieldNameDTO): Observable<any> {
+  fetchMaxIncValue(payload: FetchMaxIncValueByFieldNameDTO): Observable<number> {
     const params = this.httpService.toHttpParam(payload)
     return of(1234)
-    //TODO 404
-    // return this.httpService.get<any>(`baseinfo/data/max_inc-value-by-field-name`,params)
+    //TODO active
+    // return this.httpService.post<number>(`baseinfo/data/max-inc-value-by-field-name`,payload)
   }
 
   fetchAllSummary(payload: FetchAllFormDataDTO): Observable<IFetchAllSummaryRes[]> {
-    const params = this.httpService.toHttpParam(payload)
-    // const headers = new HttpHeaders({
-    //   'Content-Type': 'application/x-www-form-urlencoded'
-    // });
-    return this.httpService.get<IFetchAllSummaryRes[]>(`baseinfo/data/summary`, params)
+    return this.httpService.post<IFetchAllSummaryRes[]>(`baseinfo/data/summary`, payload)
   }
 
-  addFormData(payload: AddFormDataReqDTO, model: any) {
-    const params = this.httpService.toHttpParam(payload)
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    return this.httpService.post(`baseinfo/data`, model, params, headers)
+  addFormData(payload: AddFormDataReqDTO) {
+    return this.httpService.post(`baseinfo/data`, payload)
   }
 
-  updateFormData(payload: UpdateFormDataReqDTO, model: any) {
-    const params = this.httpService.toHttpParam(payload)
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    return this.httpService.put(`baseinfo/data`, model, params, headers)
+  updateFormData(payload: UpdateFormDataReqDTO) {
+    return this.httpService.put(`baseinfo/data`, payload)
+  }
+
+  deleteFormData(payload: DeleteFormDataDTO): Observable<boolean> {
+    // return of({"response": true, "error": null}).pipe(delay(1000))
+    return this.httpService.delete<boolean>(`baseinfo/data`, payload)
   }
 
   fetchDetailGridForms(payload: FetchDetailGridFormsReqDTO): Observable<IFetchFormRes[]> {

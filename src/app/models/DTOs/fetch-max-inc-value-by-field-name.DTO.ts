@@ -7,6 +7,8 @@ export class FetchMaxIncValueByFieldNameDTO {
     public fieldName: string,
     public uid?: number,
     public pid?: number,
+    public masterId?: number,
+    //TODO افزودن criteria اینجا لازم است ؟
   ) {
   }
 }

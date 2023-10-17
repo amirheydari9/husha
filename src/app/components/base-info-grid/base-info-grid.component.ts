@@ -124,6 +124,7 @@ export class BaseInfoGridComponent implements OnInit {
       this.baseInfoService.deleteFormData(this.hushaGridUtilService.handleCreatePayloadForDeleteRow(
         this.form,
         $event.id,
+        this.masterId
       )).subscribe(data => {
         this.gridApi.setDatasource(this.dataSource)
       })

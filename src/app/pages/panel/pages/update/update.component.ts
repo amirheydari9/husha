@@ -44,8 +44,8 @@ export class UpdateComponent implements AfterViewInit {
             const comRef = this.containerRef.createComponent(DynamicFormComponent)
             comRef.setInput('model', model)
             this.subscription.push(
-              comRef.instance.onSubmit.subscribe(data => {
-                this.baseInfoService.updateFormData(this.handleCreatePayloadForUpdate(form), data).subscribe(res => {
+              comRef.instance.onSubmit.subscribe(formValue => {
+                this.baseInfoService.updateFormData(this.handleCreatePayloadForUpdate(form, formValue)).subscribe(res => {
                   console.log(res)
                 })
               })
@@ -70,12 +70,13 @@ export class UpdateComponent implements AfterViewInit {
     )
   }
 
-  handleCreatePayloadForUpdate(form: IFetchFormRes) {
+  handleCreatePayloadForUpdate(form: IFetchFormRes, formValue: any) {
     //TODO هند کردن masterId برای دیتیل گرید
     const formKindId = form.formKind.id
     return new UpdateFormDataReqDTO(
       form.id,
       formKindId,
+      formValue,
       formKindId === FORM_KIND.DETAIL ? null : this.hushaCustomerUtilService.customer.id,
       formKindId === FORM_KIND.MULTI_LEVEL || formKindId === FORM_KIND.FLAT ? this.hushaCustomerUtilService.serviceTypeId : null,
       formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.service.id : null,

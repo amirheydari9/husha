@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {FetchAllFormDataDTO} from "../models/DTOs/fetch-all-form-data.DTO";
-import {FORM_KIND, VIEW_TYPE} from "../constants/enums";
+import {CRITERIA_OPERATION_TYPE, FORM_KIND, VIEW_TYPE} from "../constants/enums";
 import {IFetchFormDataRes} from "../models/interface/fetch-form-data-res.interface";
 import {ColDef} from "ag-grid-community";
 import {HushaCustomerUtilService} from "./husha-customer-util.service";
@@ -46,6 +46,13 @@ export class HushaGridUtilService {
       payload.sort,
       formKindId === FORM_KIND.MULTI_LEVEL ? payload.parentId : null,
       formKindId === FORM_KIND.DETAIL ? payload.masterId : null,
+      [
+        {
+          key: "isActive",
+          operation: CRITERIA_OPERATION_TYPE.EQUAL,
+          value: "true"
+        }
+      ]
     )
   }
 
@@ -81,21 +88,22 @@ export class HushaGridUtilService {
       sort = sortModel.map(item => {
         const obj = {colId: item.colId, sort: item.sort}
         return Object.values(obj).join(':');
-      }).join(',')
+      })
     }
     return sort
   }
 
-  handleCreatePayloadForDeleteRow(form: IFetchFormRes, id: number) {
+  handleCreatePayloadForDeleteRow(form: IFetchFormRes, id: number, masterId: number) {
     const formKindId = form.formKind.id
     return new DeleteFormDataDTO(
-      this.hushaCustomerUtilService.customer,
+      this.hushaCustomerUtilService.customer.id,
       this.hushaCustomerUtilService.serviceTypeId,
       form.id,
       formKindId,
       id,
       formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
       formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
+      formKindId === FORM_KIND.DETAIL ? masterId : null,
     )
   }
 

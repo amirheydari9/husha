@@ -110,6 +110,9 @@ export class HushaFormUtilService {
           field.name,
           form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
           form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
+          // form.formKind.id === FORM_KIND.DETAIL ? this.hushaCustomerUtilService.period.id : null,
+          //TODO هندل کردن masterId
+
         )
         return await this.baseInfoService.fetchMaxIncValue(payload).toPromise();
       } else {

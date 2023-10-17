@@ -1,3 +1,5 @@
+import {CRITERIA_OPERATION_TYPE} from "../../constants/enums";
+
 export class FetchAllFormDataDTO {
   constructor(
     public cid: number,
@@ -12,6 +14,7 @@ export class FetchAllFormDataDTO {
     public sort?: string,
     public parentId?: number,
     public masterId?: number,
+    public criteria?: { key: string; operation: CRITERIA_OPERATION_TYPE, value: string }[]
   ) {
   }
 }
