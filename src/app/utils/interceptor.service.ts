@@ -64,6 +64,7 @@ export class InterceptorService implements HttpInterceptor {
 
   private handleResponse(res: HttpResponse<any>): HttpResponse<any> {
     if (res.body && res.body.error) {
+      //TODO شاید بد نباشه هندل کردن خطا همینجا انجام بشه حداقل نوتیف میاد و به uncautgh نم یخوریم
       throw new Error(JSON.stringify({error: res.body.error, type: hushaHttpError}));
     }
     return res.clone({body: res.body.response});
