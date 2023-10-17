@@ -54,6 +54,7 @@ export class HushaGridUtilService {
     form.fields.forEach(item => {
       //TODO که دیگه کاری به viewType نداریم  چک و تیک برای وقتی که حلت خلاصه داریم
       if (fetchSummary) {
+        //TODO id  در نمایش ستون ها نباشد
         if (item.name === 'id' || item.name === 'code' || item.name === 'title') {
           colDefs.push({field: item.name, headerName: item.caption})
         }
