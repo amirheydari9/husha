@@ -4,17 +4,40 @@ import {FormControl, NgControl} from "@angular/forms";
 import {IFormField} from "../../models/interface/fetch-form-res.interface";
 import {LookupFormDialogComponent} from "./lookup-form-dialog.component";
 import {CustomDialogModule} from "../custom-dialog/custom-dialog.component";
-import {NgIf} from "@angular/common";
+import {NgClass, NgIf} from "@angular/common";
+import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
+import {InputTextModule} from "primeng/inputtext";
+import {CustomButtonModule} from "../custom-button/custom-button.component";
 
 @Component({
   selector: 'app-custom-lookup-form',
   template: `
-    app-custom-lookup-form
-    <i class="pi pi-table" (click)="showDialog=true"></i>
+    <div class="flex align-items-stretch">
+      <app-custom-button
+        [class]="'ml-2'"
+        [icon]="'pi pi-table'"
+        (onClick)="showDialog = true"
+      ></app-custom-button>
+      <div class="flex-grow-1">
+        <app-input-wrapper [label]="field.caption" [control]="control">
+          <input
+            type="text"
+            readonly
+            #input
+            pInputText
+            [value]="value"
+            [disabled]="disabled"
+            [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
+            [style]="{'width':'100%'}"
+            (blur)="touched()">
+        </app-input-wrapper>
+      </div>
+    </div>
     <app-lookup-form-dialog
       *ngIf="showDialog"
       [(visible)]="showDialog"
       [field]="field"
+      (onHide)="handleOnHide($event)"
     ></app-lookup-form-dialog>
   `,
   styles: [],
@@ -37,13 +60,22 @@ export class CustomLookupFormComponent extends BaseControlValueAccessor<any> imp
     this.control = this.controlDir.control as FormControl
   }
 
+  handleOnHide($event: any) {
+    this.changed($event.id)
+    this.writeValue(`${$event.code} - ${$event.title}`)
+    this.touched()
+  }
 }
 
 @NgModule({
   declarations: [CustomLookupFormComponent, LookupFormDialogComponent],
   imports: [
     CustomDialogModule,
-    NgIf
+    NgIf,
+    NgClass,
+    InputWrapperModule,
+    InputTextModule,
+    CustomButtonModule
   ],
   exports: [CustomLookupFormComponent],
   entryComponents: [LookupFormDialogComponent]

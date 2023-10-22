@@ -15,7 +15,7 @@
     [columnDefs]="columnDefs"
     [gridOptions]="gridOptions"
     (rowDoubleClicked)="handleRowDbClicked($event)"
-    (rowClicked)="selectedRow = $event.data"
+    (rowClicked)="handleRowClicked($event)"
     (paginationChanged)="selectedRow = null"
     (gridReady)="handleGirdReady($event)"
   ></ag-grid-angular>

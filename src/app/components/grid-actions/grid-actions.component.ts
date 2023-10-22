@@ -45,7 +45,7 @@ import {Subscription} from "rxjs";
       </ng-container>
     </div>
     <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">
-      <span #history class="cursor-pointer" (click)="handleClickHistory(item,i)">{{item.title}}-{{item.id}}</span>
+      <span #history class="cursor-pointer" (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}</span>
     </div>
   `,
   styles: []
@@ -102,7 +102,7 @@ export class GridActionsComponent implements OnInit, OnChanges {
           styleClass: "p-button-rounded p-button-warning",
           type: 'import',
           tooltip: "آپلود فایل اکسل"
-        },)
+        })
       }
       if (changes['showCrudActions'].currentValue) {
         const payload = new FetchAccessActionDTO(
@@ -144,7 +144,7 @@ export class GridActionsComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-
+//TODO نمابش کد به جای آی دی در هیستوری
   }
 
   activeHistory(i: number) {

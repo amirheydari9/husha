@@ -4,7 +4,7 @@ import {AgGridModule} from "ag-grid-angular";
 import {Subscription} from "rxjs";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
-import {ColDef, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams} from "ag-grid-community";
+import {ColDef, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams, RowClickedEvent} from "ag-grid-community";
 import {BaseInfoService} from "../../api/base-info.service";
 import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
 import {FORM_KIND} from "../../constants/enums";
@@ -50,7 +50,8 @@ export class BaseInfoGridComponent implements OnInit {
   parentId: number
   selectedRow: any
 
-  @Output() onDbClick: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onRowDoubleClicked: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onRowClicked: EventEmitter<any> = new EventEmitter<any>()
 
   constructor(
     private baseInfoService: BaseInfoService,
@@ -96,7 +97,7 @@ export class BaseInfoGridComponent implements OnInit {
     if (this.form.formKind.id === FORM_KIND.MULTI_LEVEL) {
       this.handleMultiLevelGid(selectedRow)
     } else if (this.form.formKind.id === FORM_KIND.MASTER) {
-      this.onDbClick.emit(selectedRow.id)
+      this.onRowDoubleClicked.emit(selectedRow.id)
     }
   }
 
@@ -133,6 +134,10 @@ export class BaseInfoGridComponent implements OnInit {
     )
   }
 
+  handleRowClicked($event: RowClickedEvent<any>) {
+    this.selectedRow = $event.data
+    this.onRowClicked.emit(this.selectedRow)
+  }
 }
 
 @NgModule({
