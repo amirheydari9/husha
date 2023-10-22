@@ -25,6 +25,7 @@ export class ImportComponent implements OnInit {
     defaultColDef: {
       sortable: true, filter: true, flex: 1
     },
+    overlayNoRowsTemplate:'رکوری جهت نمایش یافت نشد'
   }
   rowData = []
 

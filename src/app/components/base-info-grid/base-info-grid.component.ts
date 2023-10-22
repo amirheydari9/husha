@@ -37,7 +37,8 @@ export class BaseInfoGridComponent implements OnInit {
     // paginationAutoPageSize:true,
     enableRangeSelection: true,
     pagination: true,
-    localeText: AG_GRID_LOCALE_FA
+    localeText: AG_GRID_LOCALE_FA,
+    overlayNoRowsTemplate: 'رکوری جهت نمایش یافت نشد'
   }
 
   @Input() class: string
