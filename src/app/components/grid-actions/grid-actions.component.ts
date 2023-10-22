@@ -65,6 +65,8 @@ export class GridActionsComponent implements OnInit, OnChanges {
 
   @Output() clickHistory: EventEmitter<any> = new EventEmitter<any>()
   @Output() onDelete: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onUpdate: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onCreate: EventEmitter<void> = new EventEmitter<void>()
 
   historyActions = [
     {icon: "pi pi-arrow-up", styleClass: "p-button-rounded", type: 'prev', tooltip: "سطح قبلی"},
@@ -184,10 +186,10 @@ export class GridActionsComponent implements OnInit, OnChanges {
         this.handleClickNex()
         break
       case ACCESS_FORM_ACTION_TYPE.ADD:
-        this.router.navigate([`/form/${this.form.id}/create`])
+        this.onCreate.emit(this.selectedRow)
         break
       case ACCESS_FORM_ACTION_TYPE.UPDATE:
-        this.router.navigate([`/form/${this.form.id}/update/${this.selectedRow.id}`])
+        this.onUpdate.emit(this.selectedRow)
         break
       case 'import':
         this.router.navigate([`/form/${this.form.id}/import`])

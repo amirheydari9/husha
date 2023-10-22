@@ -11,6 +11,7 @@ import {FORM_KIND} from "../../constants/enums";
 import {FetchAllDataPayloadDTO, HushaGridUtilService} from "../../utils/husha-grid-util.service";
 import {AG_GRID_LOCALE_FA} from "../../constants/ag-grid-locale-fa";
 import {CustomCardModule} from "../../ui-kits/custom-card/custom-card.component";
+import {Router} from "@angular/router";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -58,7 +59,8 @@ export class BaseInfoGridComponent implements OnInit {
     private baseInfoService: BaseInfoService,
     private hushaCustomerUtilService: HushaCustomerUtilService,
     private cdr: ChangeDetectorRef,
-    private hushaGridUtilService: HushaGridUtilService
+    private hushaGridUtilService: HushaGridUtilService,
+    private router: Router
   ) {
   }
 
@@ -102,6 +104,11 @@ export class BaseInfoGridComponent implements OnInit {
     }
   }
 
+  handleRowClicked($event: RowClickedEvent<any>) {
+    this.selectedRow = $event.data
+    this.onRowClicked.emit(this.selectedRow)
+  }
+
   handleMultiLevelGid(selectedRow: any) {
     this.parentId = selectedRow.id
     this.gridApi.setDatasource(this.dataSource)
@@ -135,19 +142,30 @@ export class BaseInfoGridComponent implements OnInit {
     )
   }
 
-  handleRowClicked($event: RowClickedEvent<any>) {
-    this.selectedRow = $event.data
-    this.onRowClicked.emit(this.selectedRow)
+  handleUpdate($event: any) {
+    this.router.navigate([`/form/${this.form.id}/update/${$event.id}`], {
+      queryParams: {
+        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
+      }
+    })
+  }
+
+  handleCreate() {
+    this.router.navigate([`/form/${this.form.id}/create`], {
+      queryParams: {
+        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
+      }
+    })
   }
 }
 
 @NgModule({
   declarations: [BaseInfoGridComponent],
-    imports: [
-        GridActionsModule,
-        AgGridModule,
-        CustomCardModule
-    ],
+  imports: [
+    GridActionsModule,
+    AgGridModule,
+    CustomCardModule
+  ],
   exports: [BaseInfoGridComponent]
 })
 export class FormGridModule {

@@ -76,7 +76,7 @@ export class CreateComponent implements AfterViewInit {
       formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.service.id : null,
       formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
       formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
-      // formKindId === FORM_KIND.DETAIL ? form.masterId : null,
+      formKindId === FORM_KIND.DETAIL ? this.activatedRoute.snapshot.queryParams['masterId'] : null,
     )
   }
 }

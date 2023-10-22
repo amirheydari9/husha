@@ -8,6 +8,8 @@
       [selectedRow]="selectedRow"
       (clickHistory)="handleClickHistory($event)"
       (onDelete)="handleDelete($event)"
+      (onUpdate)="handleUpdate($event)"
+      (onCreate)="handleCreate()"
     ></app-grid-actions>
 
     <ag-grid-angular
