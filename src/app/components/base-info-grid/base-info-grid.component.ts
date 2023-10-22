@@ -21,7 +21,7 @@ export class BaseInfoGridComponent implements OnInit {
   subscription: Subscription[] = []
 
   gridApi: any
-  defaultPageSize = 2
+  defaultPageSize = 5
   columnDefs: ColDef[] = []
   gridOptions: GridOptions = {
     defaultColDef: {
