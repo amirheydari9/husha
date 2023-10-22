@@ -10,6 +10,7 @@ import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service"
 import {FORM_KIND} from "../../constants/enums";
 import {FetchAllDataPayloadDTO, HushaGridUtilService} from "../../utils/husha-grid-util.service";
 import {AG_GRID_LOCALE_FA} from "../../constants/ag-grid-locale-fa";
+import {CustomCardModule} from "../../ui-kits/custom-card/custom-card.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -142,10 +143,11 @@ export class BaseInfoGridComponent implements OnInit {
 
 @NgModule({
   declarations: [BaseInfoGridComponent],
-  imports: [
-    GridActionsModule,
-    AgGridModule
-  ],
+    imports: [
+        GridActionsModule,
+        AgGridModule,
+        CustomCardModule
+    ],
   exports: [BaseInfoGridComponent]
 })
 export class FormGridModule {
