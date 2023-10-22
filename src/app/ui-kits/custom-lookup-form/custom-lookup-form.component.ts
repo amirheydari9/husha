@@ -14,6 +14,7 @@ import {CustomButtonModule} from "../custom-button/custom-button.component";
   template: `
     <div class="flex align-items-stretch">
       <app-custom-button
+        type="button"
         [class]="'ml-2'"
         [icon]="'pi pi-table'"
         (onClick)="showDialog = true"

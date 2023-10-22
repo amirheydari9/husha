@@ -29,14 +29,14 @@ import {Subscription} from "rxjs";
     <div class="flex justify-content-end mb-2">
       <ng-container *ngIf="showPrevNext">
         <app-custom-button
-          *ngFor="let action of historyActions" [icon]="action.icon" [styleClass]="action.styleClass"
+          *ngFor="let action of historyActions" type="button" [icon]="action.icon" [styleClass]="action.styleClass"
           [tooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"
           [disabled]="!gridHistory.length || (action.type === 'prev' ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.gridHistory.length - 1)"
         ></app-custom-button>
       </ng-container>
       <ng-container *ngIf="showCrudActions">
         <app-custom-button
-          *ngFor="let action of actions" [icon]="action.icon" [styleClass]="action.styleClass"
+          *ngFor="let action of actions" type="button" [icon]="action.icon" [styleClass]="action.styleClass"
           [disabled]="(action.type === ACCESS_FORM_ACTION_TYPE.UPDATE || action.type === ACCESS_FORM_ACTION_TYPE.DELETE) ? !(!!selectedRow) :false"
           [tooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"
           [confirmationConfig]="action.type=== ACCESS_FORM_ACTION_TYPE.DELETE? {confirmation:true,header:'حذف رکورد'} : null"
