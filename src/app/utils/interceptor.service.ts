@@ -15,6 +15,7 @@ import {environment} from "../../environments/environment";
 import {OauthFacade} from "../data-core/oauth/oauth.facade";
 import {NotificationService} from "../ui-kits/custom-toast/notification.service";
 import {hushaHttpError} from "../constants/keys";
+import {error} from "password-validator/typings/constants";
 
 @Injectable()
 export class InterceptorService implements HttpInterceptor {
@@ -64,8 +65,13 @@ export class InterceptorService implements HttpInterceptor {
 
   private handleResponse(res: HttpResponse<any>): HttpResponse<any> {
     if (res.body && res.body.error) {
-      //TODO شاید بد نباشه هندل کردن خطا همینجا انجام بشه حداقل نوتیف میاد و به uncautgh نم یخوریم
-      throw new Error(JSON.stringify({error: res.body.error, type: hushaHttpError}));
+      const error = res.body.error
+      if (error.message) {
+        this.notificationService.error(error.message);
+      } else if (error.errors?.length) {
+        error.errors.forEach(item => this.notificationService.error(item.summary));
+      }
+      throw new Error(error);
     }
     return res.clone({body: res.body.response});
   }
@@ -81,7 +87,7 @@ export class InterceptorService implements HttpInterceptor {
     } else if (error.status === 404) {
       this.router.navigate(['/error/not-found'])
     } else if (error.status === 500 || error.status === 502 || error.status === 504) {
-      // this.router.navigate(['/error/server-error'])
+      this.router.navigate(['/error/server-error'])
     }
   }
 }
