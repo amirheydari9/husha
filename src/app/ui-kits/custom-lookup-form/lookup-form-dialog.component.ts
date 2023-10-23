@@ -12,11 +12,18 @@ import {IFormField} from "../../models/interface/fetch-form-res.interface";
 import {BaseInfoGridComponent} from "../../components/base-info-grid/base-info-grid.component";
 import {BaseInfoService} from "../../api/base-info.service";
 import {FetchFormDTO} from "../../models/DTOs/fetch-form.DTO";
+import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
+import {Subscription} from "rxjs";
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-lookup-form-dialog',
   template: `
-    <app-custom-dialog header="title" (closed)="handleClosed()" [showDialog]="visible">
+    <app-custom-dialog
+      [header]="field.caption"
+      (closed)="handleClosed()"
+      (confirmed)="handleClosed(true)"
+      [showDialog]="visible">
       <ng-container #container></ng-container>
     </app-custom-dialog>
   `,
@@ -29,7 +36,11 @@ export class LookupFormDialogComponent implements AfterViewInit {
 
   @Input() field: IFormField
   @Input() visible: boolean = false
-  @Output() visibleChange:EventEmitter<boolean> = new EventEmitter<boolean>()
+  @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>()
+  @Output() onHide: EventEmitter<any> = new EventEmitter<any>()
+
+  selectedRow: any
+  subscription: Subscription
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -43,11 +54,14 @@ export class LookupFormDialogComponent implements AfterViewInit {
       comRef.setInput('form', form)
       comRef.setInput('fetchSummary', true)
       comRef.setInput('showCrudActions', false)
+      this.subscription = comRef.instance.onRowClicked.subscribe(data => this.selectedRow = data)
       this.cdr.detectChanges()
+      //TODO بازنویسی با دیالوگ سرویس اگه بستن مهم نیست
     })
   }
 
-  handleClosed() {
+  handleClosed(withData?: boolean) {
     this.visibleChange.emit(false)
+    this.onHide.emit(withData ? this.selectedRow : null)
   }
 }

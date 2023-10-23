@@ -29,14 +29,14 @@ import {Subscription} from "rxjs";
     <div class="flex justify-content-end mb-2">
       <ng-container *ngIf="showPrevNext">
         <app-custom-button
-          *ngFor="let action of historyActions" [icon]="action.icon" [styleClass]="action.styleClass"
+          *ngFor="let action of historyActions" type="button" [icon]="action.icon" [styleClass]="action.styleClass"
           [tooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"
           [disabled]="!gridHistory.length || (action.type === 'prev' ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.gridHistory.length - 1)"
         ></app-custom-button>
       </ng-container>
       <ng-container *ngIf="showCrudActions">
         <app-custom-button
-          *ngFor="let action of actions" [icon]="action.icon" [styleClass]="action.styleClass"
+          *ngFor="let action of actions" type="button" [icon]="action.icon" [styleClass]="action.styleClass"
           [disabled]="(action.type === ACCESS_FORM_ACTION_TYPE.UPDATE || action.type === ACCESS_FORM_ACTION_TYPE.DELETE) ? !(!!selectedRow) :false"
           [tooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"
           [confirmationConfig]="action.type=== ACCESS_FORM_ACTION_TYPE.DELETE? {confirmation:true,header:'حذف رکورد'} : null"
@@ -45,7 +45,7 @@ import {Subscription} from "rxjs";
       </ng-container>
     </div>
     <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">
-      <span #history class="cursor-pointer" (click)="handleClickHistory(item,i)">{{item.title}}-{{item.id}}</span>
+      <span #history class="cursor-pointer" (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}</span>
     </div>
   `,
   styles: []
@@ -65,6 +65,8 @@ export class GridActionsComponent implements OnInit, OnChanges {
 
   @Output() clickHistory: EventEmitter<any> = new EventEmitter<any>()
   @Output() onDelete: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onUpdate: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onCreate: EventEmitter<void> = new EventEmitter<void>()
 
   historyActions = [
     {icon: "pi pi-arrow-up", styleClass: "p-button-rounded", type: 'prev', tooltip: "سطح قبلی"},
@@ -102,7 +104,7 @@ export class GridActionsComponent implements OnInit, OnChanges {
           styleClass: "p-button-rounded p-button-warning",
           type: 'import',
           tooltip: "آپلود فایل اکسل"
-        },)
+        })
       }
       if (changes['showCrudActions'].currentValue) {
         const payload = new FetchAccessActionDTO(
@@ -144,7 +146,7 @@ export class GridActionsComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-
+//TODO نمابش کد به جای آی دی در هیستوری
   }
 
   activeHistory(i: number) {
@@ -184,10 +186,10 @@ export class GridActionsComponent implements OnInit, OnChanges {
         this.handleClickNex()
         break
       case ACCESS_FORM_ACTION_TYPE.ADD:
-        this.router.navigate([`/form/${this.form.id}/create`])
+        this.onCreate.emit(this.selectedRow)
         break
       case ACCESS_FORM_ACTION_TYPE.UPDATE:
-        this.router.navigate([`/form/${this.form.id}/update/${this.selectedRow.id}`])
+        this.onUpdate.emit(this.selectedRow)
         break
       case 'import':
         this.router.navigate([`/form/${this.form.id}/import`])

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {FORM_KIND, INPUT_FIELD_TYPE} from "../constants/enums";
+import {FORM_KIND, INPUT_FIELD_TYPE, VIEW_TYPE} from "../constants/enums";
 import {dynamicField} from "../components/dynamic-form/dynamic-form.component";
 import {BaseInfoService} from "../api/base-info.service";
 import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
@@ -20,26 +20,32 @@ export class HushaFormUtilService {
 
   createModel(form: IFetchFormRes, data?) {
     const model: dynamicField[][] = [];
-    const fields: IFormField[] = form.fields
-    const formFields = this.handleSortByField(fields, 'priority');
-    const groupFields = this.handleGroupByField(formFields, 'groupCode');
-    return new Promise(async (resolve, reject) => {
-      try {
-        for (const group of groupFields) {
-          const modelItem = [];
-          for (const field of group) {
-            if (this.handleShowField(field, data)) {
+    const fields: IFormField[] = this.handleShowFields(form.fields)
+    if (fields.length) {
+      const formFields = this.handleSortByField(fields, 'priority');
+      const groupFields = this.handleGroupByField(formFields, 'groupCode');
+      return new Promise(async (resolve, reject) => {
+        try {
+          for (const group of groupFields) {
+            const modelItem = [];
+            for (const field of group) {
               const dynamicField = await this.handleCreateDynamicField(field, data, form);
               modelItem.push(dynamicField);
             }
+            model.push(modelItem);
           }
-          model.push(modelItem);
+          resolve(model);
+        } catch (error) {
+          reject(error);
         }
-        resolve(model);
-      } catch (error) {
-        reject(error);
-      }
-    });
+      });
+    }
+    return []
+  }
+
+  handleShowFields(fields: IFormField[]) {
+    //TODO بررسی شرط نمایش فیلد ها در حالت ایجاد و ورایش
+    return fields.filter(field => field.viewType === VIEW_TYPE.SHOW_IN_FORM || field.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM)
   }
 
   handleSortByField(array, fieldName) {
@@ -56,11 +62,6 @@ export class HushaFormUtilService {
       groups.get(value).push(item);
     })
     return Array.from(groups.values());
-  }
-
-  handleShowField(field, data) {
-    // return field.viewType === VIEW_TYPE.SHOW_IN_FORM || field.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM
-    return true
   }
 
   async handleCreateDynamicField(field: IFormField, data, form: IFetchFormRes) {

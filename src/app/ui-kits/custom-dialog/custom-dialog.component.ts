@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, NgModule, OnInit, Output} from '@angular
 import {SharedModule} from "primeng/api";
 import {DialogModule} from "primeng/dialog";
 import {ButtonModule} from "primeng/button";
+import {CustomButtonModule} from "../custom-button/custom-button.component";
 
 @Component({
   selector: 'app-custom-dialog',
@@ -9,9 +10,8 @@ import {ButtonModule} from "primeng/button";
     <p-dialog
       appendTo="body"
       [(visible)]="showDialog"
-      [closable]="true"
+      [closable]="false"
       [modal]="true"
-      (onHide)="handleOnHIde()"
       [draggable]="true"
       [rtl]="true"
       [resizable]="false"
@@ -23,11 +23,20 @@ import {ButtonModule} from "primeng/button";
       </ng-template>
       <ng-content></ng-content>
       <ng-template pTemplate="footer">
-        <p-button icon="pi pi-check" label="Ok" styleClass="p-button-text"></p-button>
+        <div class="flex align-items-center flex-row-reverse">
+          <app-custom-button
+            icon="pi pi-times"
+            label="بستن"
+            (onClick)="closed.emit()"
+            styleClass="p-button-danger"
+          ></app-custom-button>
+          <app-custom-button
+            icon="pi pi-check"
+            label="تایید"
+            (onClick)="confirmed.emit()"
+          ></app-custom-button>
+        </div>
       </ng-template>
-      <p-footer>
-        <button type="button" pButton label="Close" (click)="handleOnHIde()"></button>
-      </p-footer>
     </p-dialog>
   `
 })
@@ -40,6 +49,8 @@ export class CustomDialogComponent implements OnInit {
   @Output() deleteSelf = new EventEmitter<any>();
 
   @Output()
+  confirmed: EventEmitter<any> = new EventEmitter<any>();
+  @Output()
   closed: EventEmitter<any> = new EventEmitter<any>();
 
   constructor() {
@@ -48,9 +59,6 @@ export class CustomDialogComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  handleOnHIde(): void {
-    this.closed.emit();
-  }
 }
 
 @NgModule({
@@ -59,6 +67,7 @@ export class CustomDialogComponent implements OnInit {
     SharedModule,
     DialogModule,
     ButtonModule,
+    CustomButtonModule,
   ],
   exports: [CustomDialogComponent]
 })

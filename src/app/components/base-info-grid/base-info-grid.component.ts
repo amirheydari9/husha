@@ -4,12 +4,14 @@ import {AgGridModule} from "ag-grid-angular";
 import {Subscription} from "rxjs";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
-import {ColDef, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams} from "ag-grid-community";
+import {ColDef, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams, RowClickedEvent} from "ag-grid-community";
 import {BaseInfoService} from "../../api/base-info.service";
 import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
 import {FORM_KIND} from "../../constants/enums";
 import {FetchAllDataPayloadDTO, HushaGridUtilService} from "../../utils/husha-grid-util.service";
 import {AG_GRID_LOCALE_FA} from "../../constants/ag-grid-locale-fa";
+import {CustomCardModule} from "../../ui-kits/custom-card/custom-card.component";
+import {Router} from "@angular/router";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -21,7 +23,7 @@ export class BaseInfoGridComponent implements OnInit {
   subscription: Subscription[] = []
 
   gridApi: any
-  defaultPageSize = 2
+  defaultPageSize = 5
   columnDefs: ColDef[] = []
   gridOptions: GridOptions = {
     defaultColDef: {
@@ -35,7 +37,8 @@ export class BaseInfoGridComponent implements OnInit {
     // paginationAutoPageSize:true,
     enableRangeSelection: true,
     pagination: true,
-    localeText: AG_GRID_LOCALE_FA
+    localeText: AG_GRID_LOCALE_FA,
+    overlayNoRowsTemplate: 'رکوری جهت نمایش یافت نشد'
   }
 
   @Input() class: string
@@ -50,13 +53,15 @@ export class BaseInfoGridComponent implements OnInit {
   parentId: number
   selectedRow: any
 
-  @Output() onDbClick: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onRowDoubleClicked: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onRowClicked: EventEmitter<any> = new EventEmitter<any>()
 
   constructor(
     private baseInfoService: BaseInfoService,
     private hushaCustomerUtilService: HushaCustomerUtilService,
     private cdr: ChangeDetectorRef,
-    private hushaGridUtilService: HushaGridUtilService
+    private hushaGridUtilService: HushaGridUtilService,
+    private router: Router
   ) {
   }
 
@@ -96,8 +101,13 @@ export class BaseInfoGridComponent implements OnInit {
     if (this.form.formKind.id === FORM_KIND.MULTI_LEVEL) {
       this.handleMultiLevelGid(selectedRow)
     } else if (this.form.formKind.id === FORM_KIND.MASTER) {
-      this.onDbClick.emit(selectedRow.id)
+      this.onRowDoubleClicked.emit(selectedRow.id)
     }
+  }
+
+  handleRowClicked($event: RowClickedEvent<any>) {
+    this.selectedRow = $event.data
+    this.onRowClicked.emit(this.selectedRow)
   }
 
   handleMultiLevelGid(selectedRow: any) {
@@ -133,13 +143,29 @@ export class BaseInfoGridComponent implements OnInit {
     )
   }
 
+  handleUpdate($event: any) {
+    this.router.navigate([`/form/${this.form.id}/update/${$event.id}`], {
+      queryParams: {
+        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
+      }
+    })
+  }
+
+  handleCreate() {
+    this.router.navigate([`/form/${this.form.id}/create`], {
+      queryParams: {
+        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
+      }
+    })
+  }
 }
 
 @NgModule({
   declarations: [BaseInfoGridComponent],
   imports: [
     GridActionsModule,
-    AgGridModule
+    AgGridModule,
+    CustomCardModule
   ],
   exports: [BaseInfoGridComponent]
 })
