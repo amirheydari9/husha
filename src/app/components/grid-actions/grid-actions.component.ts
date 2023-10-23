@@ -11,7 +11,7 @@ import {
   SimpleChanges,
   ViewChildren
 } from '@angular/core';
-import {NgFor, NgIf} from "@angular/common";
+import {CommonModule, NgFor, NgIf} from "@angular/common";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
 import {ACCESS_FORM_ACTION_TYPE, FORM_KIND} from "../../constants/enums";
 import {Router} from "@angular/router";
@@ -26,7 +26,7 @@ import {Subscription} from "rxjs";
 @Component({
   selector: 'app-grid-actions',
   template: `
-    <div class="flex justify-content-end mb-2">
+    <div class="flex justify-content-end mb-3">
       <ng-container *ngIf="showPrevNext">
         <app-custom-button
           *ngFor="let action of historyActions" type="button" [icon]="action.icon" [styleClass]="action.styleClass"
@@ -44,9 +44,11 @@ import {Subscription} from "rxjs";
         ></app-custom-button>
       </ng-container>
     </div>
-    <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">
-      <span #history class="cursor-pointer" (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}</span>
-    </div>
+   <div class="mb-3 border-2" *ngIf="gridHistory.length">
+     <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">
+       <span #history class="cursor-pointer p-2" [ngClass]="{'border-bottom-2': i !== gridHistory.length-1}" (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}</span>
+     </div>
+   </div>
   `,
   styles: []
 })
@@ -203,7 +205,8 @@ export class GridActionsComponent implements OnInit, OnChanges {
   imports: [
     NgFor,
     NgIf,
-    CustomButtonModule
+    CustomButtonModule,
+    CommonModule
   ],
   exports: [GridActionsComponent]
 })
