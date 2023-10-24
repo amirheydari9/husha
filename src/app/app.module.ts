@@ -13,6 +13,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {NgxUiLoaderConfig, NgxUiLoaderHttpModule, NgxUiLoaderModule, SPINNER,} from "ngx-ui-loader";
 import {CustomToastModule} from "./ui-kits/custom-toast/custom-toast.component";
 import {DialogService} from "primeng/dynamicdialog";
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   fgsType: SPINNER.ballSpinClockwise,
@@ -42,7 +43,13 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     NgxUiLoaderHttpModule.forRoot({
       showForeground: true
     }),
-    CustomToastModule
+    CustomToastModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true},
