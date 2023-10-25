@@ -1,4 +1,4 @@
-import {Component, Input, NgModule, OnInit, Self} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, NgModule, OnInit, Self, ViewChild} from '@angular/core';
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
 import {FormControl, FormsModule, NgControl} from "@angular/forms";
 import {CommonModule, NgClass, NgStyle} from "@angular/common";
@@ -28,13 +28,17 @@ import {NumberToCurrencyPipeModule} from "../../pipes/number-to-currency.pipe";
         [inputStyle]="{'width':'100%'}"
         [suffix]="suffix"
       ></p-inputNumber>
-      <span hint *ngIf="showCurrencyToText && !showFraction" class="text-1 font-xs-regular">{{control.value| numberToCurrency}}</span>
+      <span hint *ngIf="showCurrencyToText && !showFraction"
+            class="text-1 font-xs-regular">{{control.value| numberToCurrency}}</span>
     </app-input-wrapper>
   `,
 })
 export class CustomInputNumberComponent extends BaseControlValueAccessor<number> implements OnInit {
 
   control: FormControl
+
+  @ViewChild("inputNumber") elm;
+
 
   @Input() label: string;
 
@@ -78,11 +82,16 @@ export class CustomInputNumberComponent extends BaseControlValueAccessor<number>
 
   ngOnInit() {
     this.control = this.controlDir.control as FormControl
+    // setTimeout(() => this.elm.input.nativeElement.focus())
   }
 
   onChanged($event: any): void {
     const {value} = $event;
     this.changed(!!value ? value : null);
+  }
+
+  focus() {
+    this.elm.input.nativeElement.focus()
   }
 }
 
