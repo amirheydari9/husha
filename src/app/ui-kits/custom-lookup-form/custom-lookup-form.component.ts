@@ -1,6 +1,6 @@
 import {Component, Input, NgModule, OnInit, Self} from '@angular/core';
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
-import {FormControl, NgControl} from "@angular/forms";
+import {FormControl, FormsModule, NgControl} from "@angular/forms";
 import {IFormField} from "../../models/interface/fetch-form-res.interface";
 import {LookupFormDialogComponent} from "./lookup-form-dialog.component";
 import {CustomDialogModule} from "../custom-dialog/custom-dialog.component";
@@ -26,7 +26,7 @@ import {CustomButtonModule} from "../custom-button/custom-button.component";
             readonly
             #input
             pInputText
-            [value]="value"
+            [(ngModel)]="value"
             [disabled]="disabled"
             [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
             [style]="{'width':'100%'}"
@@ -76,7 +76,8 @@ export class CustomLookupFormComponent extends BaseControlValueAccessor<any> imp
     NgClass,
     InputWrapperModule,
     InputTextModule,
-    CustomButtonModule
+    CustomButtonModule,
+    FormsModule
   ],
   exports: [CustomLookupFormComponent],
   entryComponents: [LookupFormDialogComponent]

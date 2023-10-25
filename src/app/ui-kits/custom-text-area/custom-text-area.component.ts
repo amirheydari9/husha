@@ -3,7 +3,7 @@ import {InputTextareaModule} from "primeng/inputtextarea";
 import {FieldErrorModule} from "../field-error/field-error.component";
 import {ConvertNumberToEnglishDirectiveModule} from "../../directives/convert-number-to-english.directive";
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
-import {FormControl, NgControl, Validators} from "@angular/forms";
+import {FormControl, FormsModule, NgControl, Validators} from "@angular/forms";
 import {CustomValidators} from "../../utils/Custom-Validators";
 import {NgClass, NgStyle} from "@angular/common";
 import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
@@ -16,7 +16,7 @@ import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
         [convertNumberToEnglish]="true"
         pInputTextarea
         [autoResize]="false"
-        [value]="value"
+        [(ngModel)]="value"
         [disabled]="disabled"
         [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
         [ngStyle]="{'width':'100%'}"
@@ -62,7 +62,8 @@ export class CustomTextAreaComponent extends BaseControlValueAccessor<string> im
     ConvertNumberToEnglishDirectiveModule,
     NgClass,
     NgStyle,
-    InputWrapperModule
+    InputWrapperModule,
+    FormsModule
   ],
   exports: [CustomTextAreaComponent]
 })
