@@ -1,6 +1,6 @@
 import {Component, ElementRef, Input, NgModule, OnInit, Self, ViewChild} from '@angular/core';
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
-import {FormControl, NgControl, Validators} from "@angular/forms";
+import {FormControl, FormsModule, NgControl, Validators} from "@angular/forms";
 import {CustomValidators} from "../../utils/Custom-Validators";
 import {ConvertNumberToEnglishDirectiveModule} from "../../directives/convert-number-to-english.directive";
 import {InputTextModule} from "primeng/inputtext";
@@ -16,7 +16,7 @@ import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
         [convertNumberToEnglish]="true"
         #input
         pInputText
-        [value]="value"
+        [(ngModel)]="value"
         [disabled]="disabled"
         [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
         [style]="{'width':'100%'}"
@@ -65,6 +65,7 @@ export class CustomInputTextComponent extends BaseControlValueAccessor<string> i
     ConvertNumberToEnglishDirectiveModule,
     NgClass,
     InputWrapperModule,
+    FormsModule,
   ],
   exports: [
     CustomInputTextComponent
