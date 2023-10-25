@@ -4,7 +4,15 @@ import {AgGridModule} from "ag-grid-angular";
 import {Subscription} from "rxjs";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
-import {ColDef, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams, RowClickedEvent} from "ag-grid-community";
+import {
+  ColDef, ColumnApi, GridApi,
+  GridOptions,
+  GridReadyEvent,
+  IDatasource,
+  IGetRowsParams,
+  RowClickedEvent,
+  SortChangedEvent
+} from "ag-grid-community";
 import {BaseInfoService} from "../../api/base-info.service";
 import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
 import {FORM_KIND} from "../../constants/enums";
@@ -22,7 +30,8 @@ export class BaseInfoGridComponent implements OnInit {
 
   subscription: Subscription[] = []
 
-  gridApi: any
+  gridApi: GridApi
+  colApi: ColumnApi
   defaultPageSize = 5
   columnDefs: ColDef[] = []
   gridOptions: GridOptions = {
@@ -73,6 +82,7 @@ export class BaseInfoGridComponent implements OnInit {
 
   handleGirdReady($event: GridReadyEvent<any>) {
     this.gridApi = $event.api;
+    this.colApi = $event.columnApi;
     this.gridApi.setDatasource(this.dataSource)
   }
 
@@ -159,6 +169,16 @@ export class BaseInfoGridComponent implements OnInit {
         masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
       }
     })
+  }
+
+  handleSortChange($event: SortChangedEvent<any>) {
+    const columnWithSort = this.colApi.getColumnState().find(col => col.sort !== null);
+    if (columnWithSort) {
+      console.log("Column that is sorted right now is " + columnWithSort.colId);
+      console.log("The sort order right now is " + columnWithSort.sort);  // prints "asc" or "desc"
+    } else {
+
+    }
   }
 }
 
