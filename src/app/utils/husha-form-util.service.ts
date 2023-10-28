@@ -103,8 +103,7 @@ export class HushaFormUtilService {
     if (data) {
       return (typeof data[field.name] === 'object' && data[field.name] !== null) ? data[field.name].id : data[field.name]
     } else {
-      //TODO   و اینکه چک بشه فیلد قابل ایجاد هست یا نه شرط کال وب سرویس
-      if (field.isAuto) {
+      if (field.setMaxId) {
         const payload = new FetchMaxIncValueByFieldNameDTO(
           this.hushaCustomerUtilService.customer.id,
           this.hushaCustomerUtilService.serviceTypeId,
@@ -115,12 +114,12 @@ export class HushaFormUtilService {
           form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
           // form.formKind.id === FORM_KIND.DETAIL ? this.hushaCustomerUtilService.period.id : null,
           //TODO هندل کردن masterId
-
         )
         return await this.baseInfoService.fetchMaxIncValue(payload).toPromise();
       } else {
         //TODO فیلد default value در فرم
-        return field.defaultValue
+        if (field.entryType === ENTRY_TYPE.BY_USER) return null
+        else if (field.entryType === ENTRY_TYPE.DEFAULT) return field.defaultValue
       }
     }
   }

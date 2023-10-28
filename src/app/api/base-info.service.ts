@@ -56,9 +56,9 @@ export class BaseInfoService {
 
   fetchMaxIncValue(payload: FetchMaxIncValueByFieldNameDTO): Observable<number> {
     const params = this.httpService.toHttpParam(payload)
-    return of(1234)
+    // return of(1234)
     //TODO active
-    // return this.httpService.post<number>(`baseinfo/data/max-inc-value-by-field-name`,payload)
+    return this.httpService.post<number>(`baseinfo/data/max-inc-value-by-field-name`,payload)
   }
 
   fetchAllSummary(payload: FetchAllFormDataDTO): Observable<IFetchAllSummaryRes[]> {
