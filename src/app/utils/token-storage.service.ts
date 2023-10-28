@@ -14,16 +14,16 @@ export class TokenStorageService {
   }
 
   public signOut(): void {
-    this.storageService.removeSessionStorage(this.TOKEN_KEY)
+    this.storageService.removeLocalStorage(this.TOKEN_KEY)
   }
 
   public saveToken(token: string): void {
-    this.storageService.removeSessionStorage(this.TOKEN_KEY)
-    this.storageService.setSessionStorage(this.TOKEN_KEY, token)
+    this.storageService.removeLocalStorage(this.TOKEN_KEY)
+    this.storageService.setLocalStorage(this.TOKEN_KEY, token)
   }
 
   public getToken(): string | null {
-    return this.storageService.getSessionStorage(this.TOKEN_KEY);
+    return this.storageService.getLocalStorage(this.TOKEN_KEY);
   }
 
   public parseJwt() {
