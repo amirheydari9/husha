@@ -36,7 +36,7 @@ export class BaseInfoGridComponent implements OnInit {
   columnDefs: ColDef[] = []
   gridOptions: GridOptions = {
     defaultColDef: {
-      sortable: true, flex: 1, resizable: true
+      sortable: true, flex: 1, resizable: true, minWidth: 150
     },
     rowModelType: 'infinite',
     enableRtl: true,
