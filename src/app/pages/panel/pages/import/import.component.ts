@@ -7,6 +7,7 @@ import {ActivatedRoute} from "@angular/router";
 import {dynamicField, DynamicFormComponent} from "../../../../components/dynamic-form/dynamic-form.component";
 import {ColDef, GridOptions} from "ag-grid-community";
 import {INPUT_FIELD_TYPE} from "../../../../constants/enums";
+import {HushaFormUtilService} from "../../../../utils/husha-form-util.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -25,7 +26,7 @@ export class ImportComponent implements OnInit {
     defaultColDef: {
       sortable: true, filter: true, flex: 1
     },
-    overlayNoRowsTemplate:'رکوری جهت نمایش یافت نشد'
+    overlayNoRowsTemplate: 'رکوری جهت نمایش یافت نشد'
   }
   rowData = []
 
@@ -34,7 +35,8 @@ export class ImportComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private hushaFormUtilService: HushaFormUtilService
   ) {
   }
 
@@ -48,18 +50,16 @@ export class ImportComponent implements OnInit {
 
     this.subscription.push(
       this.activatedRoute.params.subscribe(() => {
-        const formFields = this.activatedRoute.snapshot.data['data'].fields
+        const formFields = this.hushaFormUtilService.handleShowFields(this.activatedRoute.snapshot.data['data'].fields)
         for (let i in formFields) {
-          if (formFields[i].editable) {
-            const field = formFields[i]
-            const model: dynamicField = {
-              type: INPUT_FIELD_TYPE.DROP_DOWN,
-              name: field.name,
-              label: field.caption,
-              rules: {required: true}
-            }
-            this.model.push(model)
+          const field = formFields[i]
+          const model: dynamicField = {
+            type: INPUT_FIELD_TYPE.DROP_DOWN,
+            name: field.name,
+            label: field.caption,
+            rules: {required: true}
           }
+          this.model.push(model)
         }
       })
     )
