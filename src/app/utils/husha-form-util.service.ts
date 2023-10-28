@@ -68,13 +68,12 @@ export class HushaFormUtilService {
   }
 
   async handleCreateDynamicField(field: IFormField, data, form: IFetchFormRes) {
-    //TODO اگه مقدار فیلد از نوع آبکت بود
     const dynamicField: dynamicField = {
       type: this.handleType(field),
       name: field.name,
       label: field.caption,
       options: await this.handleOptions(field),
-      disabled: !field.editable,
+      disabled: data ? (field.entryType === ENTRY_TYPE.BY_SYSTEM || !field.editable) : false,
       value: await this.handleValue(field, data, form),
       rules: this.handleRules(field),
       meta: this.handleMeta(field, form)
@@ -105,7 +104,7 @@ export class HushaFormUtilService {
       return (typeof data[field.name] === 'object' && data[field.name] !== null) ? data[field.name].id : data[field.name]
     } else {
       //TODO   و اینکه چک بشه فیلد قابل ایجاد هست یا نه شرط کال وب سرویس
-      if (!field.isAuto) {
+      if (field.isAuto) {
         const payload = new FetchMaxIncValueByFieldNameDTO(
           this.hushaCustomerUtilService.customer.id,
           this.hushaCustomerUtilService.serviceTypeId,
