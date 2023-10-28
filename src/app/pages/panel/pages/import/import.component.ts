@@ -51,8 +51,7 @@ export class ImportComponent implements OnInit {
     this.subscription.push(
       this.activatedRoute.params.subscribe(() => {
         const formFields = this.hushaFormUtilService.handleShowFields(this.activatedRoute.snapshot.data['data'].fields)
-        for (let i in formFields) {
-          const field = formFields[i]
+        formFields.forEach(field => {
           const model: dynamicField = {
             type: INPUT_FIELD_TYPE.DROP_DOWN,
             name: field.name,
@@ -60,7 +59,7 @@ export class ImportComponent implements OnInit {
             rules: {required: true}
           }
           this.model.push(model)
-        }
+        })
       })
     )
 
@@ -100,6 +99,7 @@ export class ImportComponent implements OnInit {
   }
 
   handleSubmitForm($event: any) {
+    //TODO در حالت ایجاد دسته ای اینکه فیلد توسط کاربر پر شود یا از دیفالت بخواند توجه شود
     console.log($event)
   }
 }
