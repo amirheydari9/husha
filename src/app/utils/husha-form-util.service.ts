@@ -6,6 +6,7 @@ import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
 import {FetchMaxIncValueByFieldNameDTO} from "../models/DTOs/fetch-max-inc-value-by-field-name.DTO";
 import {HushaCustomerUtilService} from "./husha-customer-util.service";
 import {IFetchFormRes, IFormField} from "../models/interface/fetch-form-res.interface";
+import {ActivatedRoute} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class HushaFormUtilService {
 
   constructor(
     private baseInfoService: BaseInfoService,
-    private hushaCustomerUtilService: HushaCustomerUtilService
+    private hushaCustomerUtilService: HushaCustomerUtilService,
+    private activatedRoute: ActivatedRoute,
   ) {
   }
 
@@ -112,8 +114,8 @@ export class HushaFormUtilService {
           field.name,
           form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
           form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
-          // form.formKind.id === FORM_KIND.DETAIL ? this.hushaCustomerUtilService.period.id : null,
-          //TODO هندل کردن masterId
+          form.formKind.id === FORM_KIND.DETAIL ? this.activatedRoute.snapshot.queryParams['masterId'] : null,
+          //TODO masterId چک کاردن
         )
         return await this.baseInfoService.fetchMaxIncValue(payload).toPromise();
       } else {
