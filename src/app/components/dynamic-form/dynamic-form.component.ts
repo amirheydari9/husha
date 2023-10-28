@@ -167,9 +167,7 @@ export class DynamicFormComponent implements OnInit {
         validators.push(Validators.required)
       } else if (key === 'maxLength') {
         validators.push(Validators.maxLength(+value))
-      } else if (key === 'maxLength') {
-        validators.push(Validators.maxLength(+value))
-      } else if (key === 'minLength') {
+      }  else if (key === 'minLength') {
         validators.push(Validators.minLength(+value))
       } else if (key === 'max') {
         validators.push(Validators.max(+value))

@@ -129,6 +129,12 @@ export class HushaFormUtilService {
     if (field.notNullable) {
       rules = {...rules, required: true}
     }
+    if (field.maxSize) {
+      rules = {...rules, maxLength: true}
+    }
+    if (field.minSize) {
+      rules = {...rules, minLength: true}
+    }
     if (field.fieldType.id === INPUT_FIELD_TYPE.URL) {
       rules = {...rules, url: true}
     }
