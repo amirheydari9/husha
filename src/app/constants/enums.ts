@@ -54,6 +54,12 @@ export enum VIEW_TYPE {
   SHOW_IN_FORM = 3,
 }
 
+export enum ENTRY_TYPE {
+  BY_SYSTEM = 10210001,
+  BY_USER = 10210002,
+  DEFAULT = 10210003,
+}
+
 export enum LOOKUP_VIEW_TYPE {
 
 }

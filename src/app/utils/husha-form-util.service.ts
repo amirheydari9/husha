@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {FORM_KIND, INPUT_FIELD_TYPE, VIEW_TYPE} from "../constants/enums";
+import {ENTRY_TYPE, FORM_KIND, INPUT_FIELD_TYPE, VIEW_TYPE} from "../constants/enums";
 import {dynamicField} from "../components/dynamic-form/dynamic-form.component";
 import {BaseInfoService} from "../api/base-info.service";
 import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
@@ -20,7 +20,7 @@ export class HushaFormUtilService {
 
   createModel(form: IFetchFormRes, data?) {
     const model: dynamicField[][] = [];
-    const fields: IFormField[] = this.handleShowFields(form.fields)
+    const fields: IFormField[] = this.handleShowFields(form.fields, data)
     if (fields.length) {
       const formFields = this.handleSortByField(fields, 'priority');
       const groupFields = this.handleGroupByField(formFields, 'groupCode');
@@ -43,9 +43,12 @@ export class HushaFormUtilService {
     return []
   }
 
-  handleShowFields(fields: IFormField[]) {
-    //TODO بررسی شرط نمایش فیلد ها در حالت ایجاد و ورایش
-    return fields.filter(field => field.viewType === VIEW_TYPE.SHOW_IN_FORM || field.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM)
+  handleShowFields(fields: IFormField[], data?: any) {
+    if (data) {
+      return fields.filter(field => field.viewType === VIEW_TYPE.SHOW_IN_FORM || field.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM)
+    } else {
+      return fields.filter(field => (field.viewType === VIEW_TYPE.SHOW_IN_FORM || field.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM) && field.entryType !== ENTRY_TYPE.BY_SYSTEM)
+    }
   }
 
   handleSortByField(array, fieldName) {

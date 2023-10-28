@@ -1,4 +1,5 @@
 import {
+  ENTRY_TYPE,
   FORM_KIND,
   INPUT_FIELD_TYPE,
   INSERT_TYPE,
@@ -20,13 +21,13 @@ export interface IFormField {
   unique: boolean,
   minSize: number,
   maxSize: number,
-  lookUpForm:number,
+  lookUpForm: number,
   lookUpType: { id: number, title: string, systemDefine: number, isActive: boolean, engTitle: string },
   isActive: boolean,
   viewType: VIEW_TYPE,
   defaultValue: any,
   canUnselect: boolean,
-  // groupCode
+  groupCode: number,
   lookUpViewType: LOOKUP_VIEW_TYPE,
   lookupCaptionCode: string,
   lookupCaptionTitle: string,
@@ -36,8 +37,8 @@ export interface IFormField {
   hasMasterFilter: boolean,
   lookUpIsMultilevel: boolean,
   hasGlobalSearch: boolean,
-  // setMaxId:?
-  entryType: { id: number, title: string, systemDefine: number, typeValueId: number, isActive: boolean, isDefault: boolean, engTitle: string }
+  setMaxId: boolean,
+  entryType: ENTRY_TYPE
 }
 
 export interface IFetchFormRes {
