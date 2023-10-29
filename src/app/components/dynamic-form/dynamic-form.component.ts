@@ -90,6 +90,7 @@ export interface dynamicField {
                 *ngSwitchCase="INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM"
                 [formControlName]="field.name"
                 [field]="field.meta?.field"
+                [form]="field.meta?.form"
               ></app-custom-lookup-form>
               <app-custom-upload-file
                 *ngSwitchCase="INPUT_FIELD_TYPE.IMAGE || INPUT_FIELD_TYPE.FILE"

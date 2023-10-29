@@ -7,6 +7,7 @@ export class FetchFormDataByIdDTO {
     public id: number,
     public uid?: number,
     public pid?: number,
+    public masterId?: number,
   ) {
   }
 }

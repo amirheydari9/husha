@@ -67,6 +67,7 @@ export class UpdateComponent implements AfterViewInit {
       +params['data'],
       form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
       form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
+      form.formKind.id === FORM_KIND.DETAIL ? this.activatedRoute.snapshot.queryParams['masterId'] : null,
     )
   }
 

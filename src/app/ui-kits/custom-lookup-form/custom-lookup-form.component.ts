@@ -1,13 +1,19 @@
 import {Component, Input, NgModule, OnInit, Self} from '@angular/core';
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
 import {FormControl, FormsModule, NgControl} from "@angular/forms";
-import {IFormField} from "../../models/interface/fetch-form-res.interface";
+import {IFetchFormRes, IFormField} from "../../models/interface/fetch-form-res.interface";
 import {LookupFormDialogComponent} from "./lookup-form-dialog.component";
 import {CustomDialogModule} from "../custom-dialog/custom-dialog.component";
 import {NgClass, NgIf} from "@angular/common";
 import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
 import {InputTextModule} from "primeng/inputtext";
 import {CustomButtonModule} from "../custom-button/custom-button.component";
+import {BaseInfoService} from "../../api/base-info.service";
+import {FetchFormDataByIdDTO} from "../../models/DTOs/fetch-form-data-by-id.DTO";
+import {FORM_KIND} from "../../constants/enums";
+import {ActivatedRoute} from "@angular/router";
+import {HushaFormUtilService} from "../../utils/husha-form-util.service";
+import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
 
 @Component({
   selector: 'app-custom-lookup-form',
@@ -49,9 +55,14 @@ export class CustomLookupFormComponent extends BaseControlValueAccessor<any> imp
   showDialog: boolean = false
 
   @Input() public field: IFormField
+  @Input() public form: IFetchFormRes
 
   constructor(
     @Self() public controlDir: NgControl,
+    private activatedRoute: ActivatedRoute,
+    private hushaFormUtilService: HushaFormUtilService,
+    private baseInfoService: BaseInfoService,
+    private hushaCustomerUtilService: HushaCustomerUtilService
   ) {
     super()
     this.controlDir.valueAccessor = this;
@@ -59,6 +70,24 @@ export class CustomLookupFormComponent extends BaseControlValueAccessor<any> imp
 
   ngOnInit() {
     this.control = this.controlDir.control as FormControl
+    if (this.value) {
+      this.baseInfoService.fetchFormData(this.handleCreatePayloadForFetchFormData()).subscribe(data => {
+        this.writeValue(`${data.code} - ${data.title}`)
+      })
+    }
+  }
+
+  handleCreatePayloadForFetchFormData() {
+    return new FetchFormDataByIdDTO(
+      this.hushaCustomerUtilService.customer.id,
+      this.hushaCustomerUtilService.serviceTypeId,
+      this.form.id,
+      this.form.formKind.id,
+      +this.value,
+      this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
+      this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
+      this.form.formKind.id === FORM_KIND.DETAIL ? this.activatedRoute.snapshot.queryParams['masterId'] : null,
+    )
   }
 
   handleOnHide($event: any) {

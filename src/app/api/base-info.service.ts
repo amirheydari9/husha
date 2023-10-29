@@ -5,8 +5,7 @@ import {FetchMenuReqDTO} from "../models/DTOs/fetch-menu-req.DTO";
 import {FetchFormDTO} from "../models/DTOs/fetch-form.DTO";
 import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
 import {FetchAllFormDataDTO} from "../models/DTOs/fetch-all-form-data.DTO";
-import {IFetchFormDataRes} from "../models/interface/fetch-form-data-res.interface";
-import {Observable, of} from "rxjs";
+import {Observable} from "rxjs";
 import {FetchAccessActionDTO} from "../models/DTOs/fetch-access-action.DTO";
 import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
 import {IFetchTypeValuesRes} from "../models/interface/fetch-type-values-res.interface";
@@ -39,12 +38,12 @@ export class BaseInfoService {
     return this.httpService.get<IFetchFormRes>(`baseinfo/form/getById/${payload.formId}`)
   }
 
-  fetchAllFormData(payload: FetchAllFormDataDTO): Observable<IFetchFormDataRes[]> {
-    return this.httpService.post<IFetchFormDataRes[]>(`baseinfo/data/all`, payload)
+  fetchAllFormData(payload: FetchAllFormDataDTO): Observable<any[]> {
+    return this.httpService.post<any[]>(`baseinfo/data/all`, payload)
   }
 
-  fetchFormData(payload: FetchFormDataByIdDTO): Observable<IFetchFormDataRes> {
-    return this.httpService.post<IFetchFormDataRes>(`baseinfo/data/id`, payload)
+  fetchFormData(payload: FetchFormDataByIdDTO): Observable<any> {
+    return this.httpService.post<any>(`baseinfo/data/id`, payload)
   }
 
   accessFormAction(payload: FetchAccessActionDTO): Observable<IFetchAccessActionRes[]> {
