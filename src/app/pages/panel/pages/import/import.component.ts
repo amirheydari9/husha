@@ -6,7 +6,7 @@ import {ReadExcelDirective} from "../../../../directives/read-excel.directive";
 import {ActivatedRoute} from "@angular/router";
 import {dynamicField, DynamicFormComponent} from "../../../../components/dynamic-form/dynamic-form.component";
 import {ColDef, GridOptions} from "ag-grid-community";
-import {FORM_KIND, INPUT_FIELD_TYPE} from "../../../../constants/enums";
+import {ENTRY_TYPE, FORM_KIND, INPUT_FIELD_TYPE} from "../../../../constants/enums";
 import {HushaFormUtilService} from "../../../../utils/husha-form-util.service";
 import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
 import {HushaCustomerUtilService} from "../../../../utils/husha-customer-util.service";
@@ -64,7 +64,7 @@ export class ImportComponent implements OnInit {
             type: INPUT_FIELD_TYPE.DROP_DOWN,
             name: field.name,
             label: field.caption,
-            rules: {required: true}
+            rules: {required: field.notNullable}
           }
           this.model.push(model)
         })
@@ -107,13 +107,21 @@ export class ImportComponent implements OnInit {
   }
 
   handleSubmitForm(formData: any) {
-    //TODO در حالت ایجاد دسته ای اینکه فیلد توسط کاربر پر شود یا از دیفالت بخواند توجه شود
+    //TODO اگه فیلد nullabel بود و در اکسل موجود نبود بر اساس entryType اگه کاربر بود null اگه دیفالت بود مقدار default رو بفرست
     const models = []
     this.rowData.forEach(row => {
       const model = {}
       for (let key in formData) {
-        if (row.hasOwnProperty(formData[key])) {
-          model[key] = row[formData[key]];
+        if (formData[key]) {
+          if (row.hasOwnProperty(formData[key])) {
+            model[key] = row[formData[key]];
+          } else {
+            const field = this.form.fields.find(field => field.name == key)
+            model[key] = field.entryType === ENTRY_TYPE.BY_USER ? null : field.defaultValue
+          }
+        } else {
+          const field = this.form.fields.find(field => field.name == key)
+          model[key] = field.entryType === ENTRY_TYPE.BY_USER ? null : field.defaultValue
         }
       }
       models.push(model)
