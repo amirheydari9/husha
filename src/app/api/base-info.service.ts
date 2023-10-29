@@ -18,6 +18,7 @@ import {IFetchAllSummaryRes} from "../models/interface/fetch-all-summary-res.int
 import {AddFormDataReqDTO} from "../models/DTOs/add-form-data-req.DTO";
 import {UpdateFormDataReqDTO} from "../models/DTOs/update-form-data-req.DTO";
 import {FetchDetailGridFormsReqDTO} from "../models/DTOs/fetch-detail-grid-forms-req-d-t.o";
+import {AddListFormDataReqDTO} from "../models/DTOs/add-list-form-data-req.DTO";
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +68,10 @@ export class BaseInfoService {
 
   addFormData(payload: AddFormDataReqDTO) {
     return this.httpService.post(`baseinfo/data`, payload)
+  }
+
+  addListFormData(payload: AddListFormDataReqDTO) {
+    return this.httpService.post(`baseinfo/data/list`, payload)
   }
 
   updateFormData(payload: UpdateFormDataReqDTO) {

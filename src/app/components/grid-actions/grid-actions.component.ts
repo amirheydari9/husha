@@ -69,6 +69,7 @@ export class GridActionsComponent implements OnInit, OnChanges {
   @Output() onDelete: EventEmitter<any> = new EventEmitter<any>()
   @Output() onUpdate: EventEmitter<any> = new EventEmitter<any>()
   @Output() onCreate: EventEmitter<void> = new EventEmitter<void>()
+  @Output() onImport: EventEmitter<void> = new EventEmitter<void>()
 
   historyActions = [
     {icon: "pi pi-arrow-up", styleClass: "p-button-rounded", type: 'prev', tooltip: "سطح قبلی"},
@@ -194,7 +195,7 @@ export class GridActionsComponent implements OnInit, OnChanges {
         this.onUpdate.emit(this.selectedRow)
         break
       case 'import':
-        this.router.navigate([`/form/${this.form.id}/import`])
+        this.onImport.emit()
         break
     }
   }

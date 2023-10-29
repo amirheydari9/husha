@@ -28,7 +28,7 @@ const routes: Routes = [
         resolve: {data: FormResolver}
       },
       {
-        path: 'form/:id/import',
+        path: 'form/:id/import-excel',
         loadChildren: () => import('./pages/import/import.module').then(m => m.ImportModule),
         resolve: {data: FormResolver}
       },

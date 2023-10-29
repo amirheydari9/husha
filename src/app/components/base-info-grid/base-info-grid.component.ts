@@ -180,6 +180,14 @@ export class BaseInfoGridComponent implements OnInit {
 
     }
   }
+
+  handleImport() {
+    this.router.navigate([`/form/${this.form.id}/import-excel`], {
+      queryParams: {
+        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
+      }
+    })
+  }
 }
 
 @NgModule({

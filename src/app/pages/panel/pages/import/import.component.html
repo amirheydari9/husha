@@ -1,4 +1,4 @@
-<form [formGroup]="form" class="flex align-items-center">
+<form [formGroup]="importExcelForm" class="flex align-items-center">
   <div class="col-3">
     <input type="file" formControlName="file" appReadExcel (onSheetsReady)="sheetOptions = $event" #readExcel>
   </div>

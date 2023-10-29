@@ -6,8 +6,12 @@ import {ReadExcelDirective} from "../../../../directives/read-excel.directive";
 import {ActivatedRoute} from "@angular/router";
 import {dynamicField, DynamicFormComponent} from "../../../../components/dynamic-form/dynamic-form.component";
 import {ColDef, GridOptions} from "ag-grid-community";
-import {INPUT_FIELD_TYPE} from "../../../../constants/enums";
+import {FORM_KIND, INPUT_FIELD_TYPE} from "../../../../constants/enums";
 import {HushaFormUtilService} from "../../../../utils/husha-form-util.service";
+import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
+import {HushaCustomerUtilService} from "../../../../utils/husha-customer-util.service";
+import {AddListFormDataReqDTO} from "../../../../models/DTOs/add-list-form-data-req.DTO";
+import {BaseInfoService} from "../../../../api/base-info.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -18,7 +22,7 @@ import {HushaFormUtilService} from "../../../../utils/husha-form-util.service";
 export class ImportComponent implements OnInit {
 
   subscription: Subscription[] = []
-  form: FormGroup
+  importExcelForm: FormGroup
   sheetOptions = []
   model: dynamicField[] = []
   columnDefs: ColDef[] = []
@@ -29,6 +33,7 @@ export class ImportComponent implements OnInit {
     overlayNoRowsTemplate: 'رکوری جهت نمایش یافت نشد'
   }
   rowData = []
+  form: IFetchFormRes
 
   @ViewChild('readExcel', {read: ReadExcelDirective}) readExcel: ReadExcelDirective
   @ViewChild('dynamicForm') dynamicForm: DynamicFormComponent
@@ -36,21 +41,24 @@ export class ImportComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private hushaFormUtilService: HushaFormUtilService
+    private hushaFormUtilService: HushaFormUtilService,
+    private hushaCustomerUtilService: HushaCustomerUtilService,
+    private baseInfoService: BaseInfoService
   ) {
   }
 
 
   ngOnInit(): void {
 
-    this.form = this.fb.group({
+    this.importExcelForm = this.fb.group({
       file: this.fb.control(null),
       sheets: this.fb.control(null)
     })
 
     this.subscription.push(
       this.activatedRoute.params.subscribe(() => {
-        const formFields = this.hushaFormUtilService.handleShowFields(this.activatedRoute.snapshot.data['data'].fields)
+        this.form = this.activatedRoute.snapshot.data['data']
+        const formFields = this.hushaFormUtilService.handleShowFields(this.form.fields)
         formFields.forEach(field => {
           const model: dynamicField = {
             type: INPUT_FIELD_TYPE.DROP_DOWN,
@@ -64,7 +72,7 @@ export class ImportComponent implements OnInit {
     )
 
     this.subscription.push(
-      this.form.controls['sheets'].valueChanges.subscribe(data => {
+      this.importExcelForm.controls['sheets'].valueChanges.subscribe(data => {
         this.columnDefs = []
         this.rowData = []
         this.model.map(item => {
@@ -77,8 +85,8 @@ export class ImportComponent implements OnInit {
     )
 
     this.subscription.push(
-      this.form.controls['file'].valueChanges.subscribe(data => {
-        this.form.controls['sheets'].setValue(null)
+      this.importExcelForm.controls['file'].valueChanges.subscribe(data => {
+        this.importExcelForm.controls['sheets'].setValue(null)
       })
     )
 
@@ -98,8 +106,32 @@ export class ImportComponent implements OnInit {
     })
   }
 
-  handleSubmitForm($event: any) {
+  handleSubmitForm(formData: any) {
     //TODO در حالت ایجاد دسته ای اینکه فیلد توسط کاربر پر شود یا از دیفالت بخواند توجه شود
-    console.log($event)
+    const models = []
+    this.rowData.forEach(row => {
+      const model = {}
+      for (let key in formData) {
+        if (row.hasOwnProperty(formData[key])) {
+          model[key] = row[formData[key]];
+        }
+      }
+      models.push(model)
+    })
+    const formKindId = this.form.formKind.id
+    const payload = new AddListFormDataReqDTO(
+      this.form.id,
+      formKindId,
+      models,
+      formKindId === FORM_KIND.DETAIL ? null : this.hushaCustomerUtilService.customer.id,
+      formKindId === FORM_KIND.MULTI_LEVEL || formKindId === FORM_KIND.FLAT ? this.hushaCustomerUtilService.serviceTypeId : null,
+      formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.service.id : null,
+      formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
+      formKindId === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
+      formKindId === FORM_KIND.DETAIL ? this.activatedRoute.snapshot.queryParams['masterId'] : null,
+    )
+    this.baseInfoService.addListFormData(payload).subscribe(data => {
+      console.log(data)
+    })
   }
 }
