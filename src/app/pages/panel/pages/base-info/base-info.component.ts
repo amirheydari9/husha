@@ -15,7 +15,6 @@ import {BaseInfoService} from "../../../../api/base-info.service";
 import {FetchAllFormDataDTO} from "../../../../models/DTOs/fetch-all-form-data.DTO";
 import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
-import {IFetchFormDataRes} from "../../../../models/interface/fetch-form-data-res.interface";
 import {AgGridAngular} from "ag-grid-angular";
 import {GridActionsComponent} from "../../../../components/grid-actions/grid-actions.component";
 import {DeleteFormDataDTO} from "../../../../models/DTOs/delete-form-data.DTO";
@@ -156,7 +155,7 @@ export class BaseInfoComponent implements OnInit, AfterViewInit {
     }
   }
 
-  createGrid(rowData: IFetchFormDataRes[]) {
+  createGrid(rowData: any[]) {
     const colDefs: ColDef[] = []
     this.form.fields.forEach(item => {
       if (item.isActive && (item.viewType == VIEW_TYPE.SHOW_IN_GRID || item.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM)) {

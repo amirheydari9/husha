@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {FetchAllFormDataDTO} from "../models/DTOs/fetch-all-form-data.DTO";
 import {CRITERIA_OPERATION_TYPE, FORM_KIND, VIEW_TYPE} from "../constants/enums";
-import {IFetchFormDataRes} from "../models/interface/fetch-form-data-res.interface";
 import {ColDef} from "ag-grid-community";
 import {HushaCustomerUtilService} from "./husha-customer-util.service";
 import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
@@ -56,7 +55,7 @@ export class HushaGridUtilService {
     )
   }
 
-  createGrid(rowData: IFetchFormDataRes[], form: IFetchFormRes, fetchSummary: boolean) {
+  createGrid(rowData: any[], form: IFetchFormRes, fetchSummary: boolean) {
     const colDefs: ColDef[] = []
     form.fields.forEach(item => {
       //TODO که دیگه کاری به viewType نداریم  چک و تیک برای وقتی که حلت خلاصه داریم

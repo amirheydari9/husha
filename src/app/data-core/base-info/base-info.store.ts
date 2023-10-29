@@ -2,12 +2,11 @@ import {Injectable, NgModule} from '@angular/core';
 import {Action, NgxsModule, Selector, State, StateContext} from '@ngxs/store';
 import {IMenuRes} from "../../models/interface/menu-res.interface";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
-import {IFetchFormDataRes} from "../../models/interface/fetch-form-data-res.interface";
 
 export interface BaseInfoStateModel {
   menu: IMenuRes[],
   form: IFetchFormRes,
-  formData: IFetchFormDataRes
+  formData: any
 }
 
 export class FetchMenuAction {
@@ -32,7 +31,7 @@ export class FetchFormDataAction {
   static readonly type = '[BASE_INFO] fetch form data';
 
   constructor(
-    public payload: IFetchFormDataRes
+    public payload: any
   ) {
   }
 }
@@ -60,7 +59,7 @@ export class BaseInfoState {
   }
 
   @Selector()
-  public static formData(state: BaseInfoStateModel): IFetchFormDataRes {
+  public static formData(state: BaseInfoStateModel): any {
     return state.formData
   }
 
