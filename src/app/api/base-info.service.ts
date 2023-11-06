@@ -89,6 +89,7 @@ export class BaseInfoService {
     return this.httpService.get(`baseinfo/form/${payload.masterFormId}/getDetails`)
   }
 
+  //TODO صحبت با آقای عبدالهی در مورد position و signNumber
   sign(payload: SignReqDTO) {
     return this.httpService.put(`baseinfo/signing/sign`, payload)
   }
