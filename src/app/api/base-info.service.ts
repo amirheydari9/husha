@@ -18,6 +18,9 @@ import {AddFormDataReqDTO} from "../models/DTOs/add-form-data-req.DTO";
 import {UpdateFormDataReqDTO} from "../models/DTOs/update-form-data-req.DTO";
 import {FetchDetailGridFormsReqDTO} from "../models/DTOs/fetch-detail-grid-forms-req-d-t.o";
 import {AddListFormDataReqDTO} from "../models/DTOs/add-list-form-data-req.DTO";
+import {SignReqDTO} from "../models/DTOs/sign-req.DTO";
+import {AttachmentReqDTO} from "../models/DTOs/attachment-req.DTO";
+import {AttachmentRes} from "../models/interface/attachment-res.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +61,7 @@ export class BaseInfoService {
     const params = this.httpService.toHttpParam(payload)
     // return of(1234)
     //TODO active
-    return this.httpService.post<number>(`baseinfo/data/max-inc-value-by-field-name`,payload)
+    return this.httpService.post<number>(`baseinfo/data/max-inc-value-by-field-name`, payload)
   }
 
   fetchAllSummary(payload: FetchAllFormDataDTO): Observable<IFetchAllSummaryRes[]> {
@@ -84,6 +87,34 @@ export class BaseInfoService {
 
   fetchDetailGridForms(payload: FetchDetailGridFormsReqDTO): Observable<IFetchFormRes[]> {
     return this.httpService.get(`baseinfo/form/${payload.masterFormId}/getDetails`)
+  }
+
+  sign(payload: SignReqDTO) {
+    return this.httpService.put(`baseinfo/signing/sign`, payload)
+  }
+
+  returnSign(payload: SignReqDTO) {
+    return this.httpService.put(`baseinfo/signing/return-sign`, payload)
+  }
+
+  getAllAttachments(payload: AttachmentReqDTO): Observable<AttachmentRes[]> {
+    return this.httpService.post(`baseinfo/attachment/all`, payload)
+  }
+
+  addAttachment(payload: AttachmentReqDTO): Observable<AttachmentRes> {
+    return this.httpService.post(`baseinfo/attachment/add`, payload)
+  }
+
+  updateAttachment(payload: AttachmentReqDTO): Observable<AttachmentRes> {
+    return this.httpService.put(`baseinfo/attachment`, payload)
+  }
+
+  removeAttachment(payload: AttachmentReqDTO): Observable<boolean> {
+    return this.httpService.delete(`baseinfo/attachment`, payload)
+  }
+
+  removeAllAttachment(payload: AttachmentReqDTO): Observable<boolean> {
+    return this.httpService.delete(`baseinfo/attachment/remove-all`, payload)
   }
 
 
