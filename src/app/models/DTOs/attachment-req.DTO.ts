@@ -14,7 +14,7 @@ export class AttachmentReqDTO {
     public formId: number,
     public formKind: number,
     public ownId: number,
-    public attachment: DocumentModelDTO,
+    public attachment?: DocumentModelDTO,
     public documentId?: string
   ) {
   }

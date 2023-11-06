@@ -23,6 +23,11 @@ const routes: Routes = [
         resolve: {data: FormResolver}
       },
       {
+        path: 'form/:id/attachment/:ownId',
+        loadChildren: () => import('./pages/attachment/attachment.module').then(m => m.AttachmentModule),
+        resolve: {data: FormResolver}
+      },
+      {
         path: 'base-info/:id',
         loadChildren: () => import('./pages/base-form/base-form.module').then(m => m.BaseFormModule),
         resolve: {data: FormResolver}

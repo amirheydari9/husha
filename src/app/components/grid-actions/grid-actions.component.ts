@@ -37,18 +37,19 @@ import {Subscription} from "rxjs";
       <ng-container *ngIf="showCrudActions">
         <app-custom-button
           *ngFor="let action of actions" type="button" [icon]="action.icon" [styleClass]="action.styleClass"
-          [disabled]="(action.type === ACCESS_FORM_ACTION_TYPE.UPDATE || action.type === ACCESS_FORM_ACTION_TYPE.DELETE) ? !(!!selectedRow) :false"
+          [disabled]="handleDisableIcon(action.type)"
           [tooltip]="action.tooltip" class="mr-1" (onClick)="handleClickAction(action.type)"
           [confirmationConfig]="action.type=== ACCESS_FORM_ACTION_TYPE.DELETE? {confirmation:true,header:'حذف رکورد'} : null"
           (confirm)="onDelete.emit(this.selectedRow)"
         ></app-custom-button>
       </ng-container>
     </div>
-   <div class="mb-3 border-2" *ngIf="gridHistory.length">
-     <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">
-       <span #history class="cursor-pointer p-2" [ngClass]="{'border-bottom-2': i !== gridHistory.length-1}" (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}</span>
-     </div>
-   </div>
+    <div class="mb-3 border-2" *ngIf="gridHistory.length">
+      <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">
+        <span #history class="cursor-pointer p-2" [ngClass]="{'border-bottom-2': i !== gridHistory.length-1}"
+              (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}</span>
+      </div>
+    </div>
   `,
   styles: []
 })
@@ -97,6 +98,10 @@ export class GridActionsComponent implements OnInit, OnChanges {
     return ACCESS_FORM_ACTION_TYPE
   }
 
+  handleDisableIcon(actionType){
+     return (actionType === ACCESS_FORM_ACTION_TYPE.UPDATE || actionType === ACCESS_FORM_ACTION_TYPE.DELETE || actionType === 'attachment') ? !(!!this.selectedRow) :false
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['form']?.currentValue) {
       const form: IFetchFormRes = changes['form'].currentValue
@@ -107,6 +112,14 @@ export class GridActionsComponent implements OnInit, OnChanges {
           styleClass: "p-button-rounded p-button-warning",
           type: 'import',
           tooltip: "آپلود فایل اکسل"
+        })
+      }
+      if (form.formKind.id === FORM_KIND.MASTER) {
+        this.actions.push({
+          icon: "pi pi-file",
+          styleClass: "p-button-rounded p-button-success",
+          type: 'attachment',
+          tooltip: "ضمیمه ها"
         })
       }
       if (changes['showCrudActions'].currentValue) {
@@ -196,6 +209,9 @@ export class GridActionsComponent implements OnInit, OnChanges {
         break
       case 'import':
         this.onImport.emit()
+        break
+      case 'attachment':
+        this.router.navigate([`/form/${this.form.id}/attachment/${this.selectedRow.id}`])
         break
     }
   }

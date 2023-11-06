@@ -1,0 +1,32 @@
+<form [formGroup]="documentForm">
+
+  <div class="flex align-items-end">
+
+    <div class="col-6">
+      <app-custom-input-text
+        label="نام فایل"
+        formControlName="name"
+      ></app-custom-input-text>
+    </div>
+
+    <div class="col-6">
+      <app-custom-upload-file
+        formControlName="attachmentFile"
+      ></app-custom-upload-file>
+    </div>
+
+  </div>
+
+  <div class="col-12">
+    <app-custom-text-area
+      label="توضیحات"
+      formControlName="desc"
+    ></app-custom-text-area>
+  </div>
+
+  <app-custom-button
+    [disabled]="documentForm.invalid"
+    label="ثبت"
+  ></app-custom-button>
+
+</form>
