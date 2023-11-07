@@ -116,7 +116,7 @@ export class GridActionsComponent implements OnInit, OnChanges {
       }
       if (form.formKind.id === FORM_KIND.MASTER) {
         this.actions.push({
-          icon: "pi pi-file",
+          icon: "pi pi-paperclip",
           styleClass: "p-button-rounded p-button-success",
           type: 'attachment',
           tooltip: "ضمیمه ها"
