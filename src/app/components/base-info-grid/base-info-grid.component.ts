@@ -5,7 +5,9 @@ import {Subscription} from "rxjs";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
 import {
-  ColDef, ColumnApi, GridApi,
+  ColDef,
+  ColumnApi,
+  GridApi,
   GridOptions,
   GridReadyEvent,
   IDatasource,
@@ -15,7 +17,7 @@ import {
 } from "ag-grid-community";
 import {BaseInfoService} from "../../api/base-info.service";
 import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
-import {FORM_KIND} from "../../constants/enums";
+import {ACCESS_FORM_ACTION_TYPE, FORM_KIND} from "../../constants/enums";
 import {FetchAllDataPayloadDTO, HushaGridUtilService} from "../../utils/husha-grid-util.service";
 import {AG_GRID_LOCALE_FA} from "../../constants/ag-grid-locale-fa";
 import {CustomCardModule} from "../../ui-kits/custom-card/custom-card.component";
@@ -51,6 +53,7 @@ export class BaseInfoGridComponent implements OnInit {
     domLayout: 'autoHeight',
     // alwaysShowHorizontalScroll:false
   }
+  accessFormActions: ACCESS_FORM_ACTION_TYPE[] = []
 
   @Input() class: string
   @Input() form: IFetchFormRes
@@ -76,8 +79,8 @@ export class BaseInfoGridComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
-
+  async ngOnInit(): Promise<void> {
+    this.accessFormActions = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.showCrudActions)
   }
 
   handleGirdReady($event: GridReadyEvent<any>) {
@@ -142,35 +145,6 @@ export class BaseInfoGridComponent implements OnInit {
     this.gridApi.setDatasource(this.dataSource)
   }
 
-  handleDelete($event: any) {
-    //TODO تست حذف در حالت مستر دیتیل
-    this.subscription.push(
-      this.baseInfoService.deleteFormData(this.hushaGridUtilService.handleCreatePayloadForDeleteRow(
-        this.form,
-        $event.id,
-        this.masterId
-      )).subscribe(data => {
-        this.gridApi.setDatasource(this.dataSource)
-      })
-    )
-  }
-
-  handleUpdate($event: any) {
-    this.router.navigate([`/form/${this.form.id}/update/${$event.id}`], {
-      queryParams: {
-        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
-      }
-    })
-  }
-
-  handleCreate() {
-    this.router.navigate([`/form/${this.form.id}/create`], {
-      queryParams: {
-        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
-      }
-    })
-  }
-
   handleSortChange($event: SortChangedEvent<any>) {
     const columnWithSort = this.colApi.getColumnState().find(col => col.sort !== null);
     if (columnWithSort) {
@@ -181,12 +155,39 @@ export class BaseInfoGridComponent implements OnInit {
     }
   }
 
-  handleImport() {
-    this.router.navigate([`/form/${this.form.id}/import-excel`], {
-      queryParams: {
-        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
-      }
-    })
+  handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
+    if ($event === ACCESS_FORM_ACTION_TYPE.ADD) {
+      this.router.navigate([`/form/${this.form.id}/create`], {
+        queryParams: {
+          masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
+        }
+      })
+    } else if ($event === ACCESS_FORM_ACTION_TYPE.UPDATE) {
+      this.router.navigate([`/form/${this.form.id}/update/${this.selectedRow.id}`], {
+        queryParams: {
+          masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
+        }
+      })
+    } else if ($event === ACCESS_FORM_ACTION_TYPE.DELETE) {
+      //TODO تست حذف در حالت مستر دیتیل
+      this.subscription.push(
+        this.baseInfoService.deleteFormData(this.hushaGridUtilService.handleCreatePayloadForDeleteRow(
+          this.form,
+          this.selectedRow.id,
+          this.masterId
+        )).subscribe(data => {
+          this.gridApi.setDatasource(this.dataSource)
+        })
+      )
+    } else if ($event === ACCESS_FORM_ACTION_TYPE.ATTACHMENTS) {
+      this.router.navigate([`/form/${this.form.id}/attachment/${this.selectedRow.id}`])
+    } else if ($event === ACCESS_FORM_ACTION_TYPE.IMPORT) {
+      this.router.navigate([`/form/${this.form.id}/import-excel`], {
+        queryParams: {
+          masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
+        }
+      })
+    }
   }
 }
 

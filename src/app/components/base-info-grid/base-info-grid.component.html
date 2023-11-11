@@ -3,14 +3,10 @@
     <app-grid-actions
       #gridActions
       [gridHistory]="gridHistory"
-      [form]="form"
-      [showCrudActions]="showCrudActions"
+      [accessFormActions]="accessFormActions"
       [selectedRow]="selectedRow"
       (clickHistory)="handleClickHistory($event)"
-      (onDelete)="handleDelete($event)"
-      (onUpdate)="handleUpdate($event)"
-      (onCreate)="handleCreate()"
-      (onImport)="handleImport()"
+      (onAction)="handleOnAction($event)"
     ></app-grid-actions>
 
     <ag-grid-angular

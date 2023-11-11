@@ -10,6 +10,15 @@ export enum ACCESS_FORM_ACTION_TYPE {
   GET = 'get',
   UPDATE = 'update',
   DELETE = 'delete',
+  IMPORT = 'import',
+  EXPORT = 'export',
+  ATTACHMENTS = 'attachments',
+  SIGN = 'sign',
+  PERV = 'perv',
+  NEXT = 'next',
+  CONFIRM_DOC = 'confirmDoc',
+  ALL = 'all',
+  DELETE_ALL='deleteAll'
 }
 
 export enum FORM_KIND {

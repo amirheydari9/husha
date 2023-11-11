@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {FetchAllFormDataDTO} from "../models/DTOs/fetch-all-form-data.DTO";
-import {CRITERIA_OPERATION_TYPE, FORM_KIND, VIEW_TYPE} from "../constants/enums";
+import {ACCESS_FORM_ACTION_TYPE, CRITERIA_OPERATION_TYPE, FORM_KIND, VIEW_TYPE} from "../constants/enums";
 import {ColDef} from "ag-grid-community";
 import {HushaCustomerUtilService} from "./husha-customer-util.service";
 import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
 import {DeleteFormDataDTO} from "../models/DTOs/delete-form-data.DTO";
 import {BaseInfoService} from "../api/base-info.service";
+import {FetchAccessActionDTO} from "../models/DTOs/fetch-access-action.DTO";
 
 export class FetchAllDataPayloadDTO {
   constructor(
@@ -28,6 +29,39 @@ export class HushaGridUtilService {
     private hushaCustomerUtilService: HushaCustomerUtilService,
     private baseInfoService: BaseInfoService
   ) {
+  }
+
+  async handleGridAccessActions(form: IFetchFormRes, hasCrud: boolean): Promise<ACCESS_FORM_ACTION_TYPE[]> {
+    const actions = []
+    if (form.formKind.id === FORM_KIND.MULTI_LEVEL) {
+      actions.push(ACCESS_FORM_ACTION_TYPE.PERV)
+      actions.push(ACCESS_FORM_ACTION_TYPE.NEXT)
+    }
+    if (hasCrud) {
+      if (form.hasFormImport) {
+        actions.push(ACCESS_FORM_ACTION_TYPE.IMPORT)
+      }
+      if (form.formKind.id === FORM_KIND.MASTER) {
+        actions.push(ACCESS_FORM_ACTION_TYPE.ATTACHMENTS)
+      }
+      const payload = new FetchAccessActionDTO(
+        this.hushaCustomerUtilService.customer.id,
+        this.hushaCustomerUtilService.service.id,
+        this.hushaCustomerUtilService.unit.id,
+        form.id,
+      )
+      const data = await this.baseInfoService.accessFormAction(payload).toPromise()
+      data.forEach(item => {
+        if (item.action === ACCESS_FORM_ACTION_TYPE.ADD) {
+          actions.unshift(ACCESS_FORM_ACTION_TYPE.ADD)
+        } else if (item.action === ACCESS_FORM_ACTION_TYPE.UPDATE) {
+          actions.unshift(ACCESS_FORM_ACTION_TYPE.UPDATE)
+        } else if (item.action === ACCESS_FORM_ACTION_TYPE.DELETE) {
+          actions.unshift(ACCESS_FORM_ACTION_TYPE.DELETE)
+        }
+      })
+    }
+    return actions
   }
 
   handleCreatePayloadForFetchAllData(payload: FetchAllDataPayloadDTO) {
