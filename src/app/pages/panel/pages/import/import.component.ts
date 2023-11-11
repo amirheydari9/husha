@@ -4,7 +4,7 @@ import {Subscription} from "rxjs";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {ReadExcelDirective} from "../../../../directives/read-excel.directive";
 import {ActivatedRoute} from "@angular/router";
-import {dynamicField, DynamicFormComponent} from "../../../../components/dynamic-form/dynamic-form.component";
+import {dynamicField} from "../../../../components/dynamic-form/dynamic-form.component";
 import {ColDef, GridOptions} from "ag-grid-community";
 import {ENTRY_TYPE, FORM_KIND, INPUT_FIELD_TYPE} from "../../../../constants/enums";
 import {HushaFormUtilService} from "../../../../utils/husha-form-util.service";
@@ -12,6 +12,7 @@ import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interfa
 import {HushaCustomerUtilService} from "../../../../utils/husha-customer-util.service";
 import {AddListFormDataReqDTO} from "../../../../models/DTOs/add-list-form-data-req.DTO";
 import {BaseInfoService} from "../../../../api/base-info.service";
+import {GeneralFormComponent} from "../../../../components/general-form/general-form.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -36,7 +37,7 @@ export class ImportComponent implements OnInit {
   form: IFetchFormRes
 
   @ViewChild('readExcel', {read: ReadExcelDirective}) readExcel: ReadExcelDirective
-  @ViewChild('dynamicForm') dynamicForm: DynamicFormComponent
+  @ViewChild('generalForm', {read: GeneralFormComponent}) generalForm: GeneralFormComponent
 
   constructor(
     private fb: FormBuilder,
@@ -79,7 +80,7 @@ export class ImportComponent implements OnInit {
           item.options = []
           return item
         })
-        this.dynamicForm.resetForm()
+        this.generalForm.handleResetForm()
         if (data) this.readSheet(data)
       })
     )

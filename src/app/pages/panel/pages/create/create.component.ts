@@ -2,12 +2,12 @@ import {AfterViewInit, Component, ViewChild, ViewContainerRef} from '@angular/co
 import {Subscription} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {HushaFormUtilService} from "../../../../utils/husha-form-util.service";
-import {DynamicFormComponent} from "../../../../components/dynamic-form/dynamic-form.component";
 import {BaseInfoService} from "../../../../api/base-info.service";
 import {AddFormDataReqDTO} from "../../../../models/DTOs/add-form-data-req.DTO";
 import {HushaCustomerUtilService} from "../../../../utils/husha-customer-util.service";
 import {FORM_KIND} from "../../../../constants/enums";
 import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
+import {GeneralFormComponent} from "../../../../components/general-form/general-form.component";
 
 @Component({
   selector: 'app-create',
@@ -48,7 +48,7 @@ export class CreateComponent implements AfterViewInit {
         try {
           const form: IFetchFormRes = this.activatedRoute.snapshot.data['data']
           const model = await this.hushaFormUtilService.createModel(form);
-          const comRef = this.containerRef.createComponent(DynamicFormComponent)
+          const comRef = this.containerRef.createComponent(GeneralFormComponent)
           comRef.setInput('model', model)
           this.subscription.push(
             comRef.instance.onSubmit.subscribe(formValue => {

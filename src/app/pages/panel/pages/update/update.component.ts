@@ -7,9 +7,9 @@ import {BaseInfoService} from "../../../../api/base-info.service";
 import {FetchFormDataByIdDTO} from "../../../../models/DTOs/fetch-form-data-by-id.DTO";
 import {HushaCustomerUtilService} from "../../../../utils/husha-customer-util.service";
 import {FORM_KIND} from "../../../../constants/enums";
-import {DynamicFormComponent} from "../../../../components/dynamic-form/dynamic-form.component";
 import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
 import {UpdateFormDataReqDTO} from "../../../../models/DTOs/update-form-data-req.DTO";
+import {GeneralFormComponent} from "../../../../components/general-form/general-form.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -41,7 +41,7 @@ export class UpdateComponent implements AfterViewInit {
           const form: IFetchFormRes = this.activatedRoute.snapshot.data['data']
           this.baseInfoService.fetchFormData(this.handleCreatePayloadForFetchFormData(form, params)).subscribe(async data => {
             const model = await this.hushaFormUtilService.createModel(this.activatedRoute.snapshot.data['data'], data);
-            const comRef = this.containerRef.createComponent(DynamicFormComponent)
+            const comRef = this.containerRef.createComponent(GeneralFormComponent)
             comRef.setInput('model', model)
             this.subscription.push(
               comRef.instance.onSubmit.subscribe(formValue => {

@@ -38,9 +38,9 @@ export class AttachmentComponent implements OnInit {
       this.activatedRoute.params.subscribe(params => {
         const form: IFetchFormRes = this.activatedRoute.snapshot.data['data']
         this.subscription.push(
-          // this.baseInfoService.getAllAttachments(this.handleAttachmentPayload(form)).subscribe(attachments => {
-          //   console.log(attachments)
-          // })
+          this.baseInfoService.getAllAttachments(this.handleAttachmentPayload(form)).subscribe(attachments => {
+            console.log(attachments)
+          })
         )
       })
     )
