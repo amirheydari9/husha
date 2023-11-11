@@ -1,9 +1,9 @@
-class DocumentModelDTO {
+export class DocumentModelDTO {
   constructor(
-    public data: string,
     public name: string,
     public desc: string,
     public masterDocumentId: string,
+    public data: string,
   ) {
   }
 }

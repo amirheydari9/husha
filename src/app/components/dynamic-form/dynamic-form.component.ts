@@ -176,9 +176,8 @@ export class DynamicFormComponent implements OnInit {
     switch (type) {
       case INPUT_FIELD_TYPE.TEXT_AREA :
         return 'col-12'
-      case INPUT_FIELD_TYPE.IMAGE :
       case INPUT_FIELD_TYPE.FILE :
-        return 'col-6'
+        return 'col-3'
       default :
         return 'col-3'
     }
