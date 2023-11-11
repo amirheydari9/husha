@@ -9,6 +9,7 @@ import {CustomUploadFileModule} from "../../../../ui-kits/custom-upload-file/cus
 import {CustomButtonModule} from "../../../../ui-kits/custom-button/custom-button.component";
 import {GeneralFormModule} from "../../../../components/general-form/general-form.component";
 import {AgGridModule} from "ag-grid-angular";
+import {GridActionsModule} from "../../../../components/grid-actions/grid-actions.component";
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import {AgGridModule} from "ag-grid-angular";
     CustomButtonModule,
     GeneralFormModule,
     AgGridModule,
+    GridActionsModule,
   ],
 })
 export class AttachmentModule {

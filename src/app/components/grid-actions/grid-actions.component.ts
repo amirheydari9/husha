@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   EventEmitter,
@@ -40,7 +41,8 @@ import {Subscription} from "rxjs";
       </div>
     </div>
   `,
-  styles: []
+  styles: [],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GridActionsComponent implements OnInit {
 

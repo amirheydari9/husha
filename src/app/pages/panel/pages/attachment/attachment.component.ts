@@ -6,7 +6,7 @@ import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
 import {AttachmentReqDTO, DocumentModelDTO} from "../../../../models/DTOs/attachment-req.DTO";
 import {dynamicField} from "../../../../components/dynamic-form/dynamic-form.component";
-import {INPUT_FIELD_TYPE} from "../../../../constants/enums";
+import {ACCESS_FORM_ACTION_TYPE, INPUT_FIELD_TYPE} from "../../../../constants/enums";
 import {ColDef, GridOptions, RowSelectedEvent} from "ag-grid-community";
 import {AttachmentRes} from "../../../../models/interface/attachment-res.interface";
 
@@ -19,6 +19,7 @@ import {AttachmentRes} from "../../../../models/interface/attachment-res.interfa
 export class AttachmentComponent implements OnInit {
 
   subscription: Subscription [] = []
+  accessFormActions = [ACCESS_FORM_ACTION_TYPE.ADD, ACCESS_FORM_ACTION_TYPE.UPDATE, ACCESS_FORM_ACTION_TYPE.DELETE, ACCESS_FORM_ACTION_TYPE.DELETE_ALL];
   form: IFetchFormRes
   model: dynamicField[] = [
     {
@@ -127,5 +128,9 @@ export class AttachmentComponent implements OnInit {
       return model
     })
     console.log(this.model)
+  }
+
+  handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
+
   }
 }
