@@ -33,7 +33,7 @@ export interface dynamicField {
   selector: 'app-dynamic-form',
   template: `
     <form [formGroup]="dynamicFormGroup" (ngSubmit)="onSubmit.emit(dynamicFormGroup.getRawValue())">
-      <div class="flex flex-row flex-wrap justify-content-start align-items-center"
+      <div class="flex flex-row flex-wrap justify-content-start align-items-end"
            *ngFor="let group of groups;let index = index">
         <div [class]="handleCalculateCol(field.type)" *ngFor="let field of group">
           <ng-container [ngSwitch]="field.type">
@@ -85,7 +85,7 @@ export interface dynamicField {
               [form]="field.meta?.form"
             ></app-custom-lookup-form>
             <app-custom-upload-file
-              *ngSwitchCase="INPUT_FIELD_TYPE.IMAGE || INPUT_FIELD_TYPE.FILE"
+              *ngSwitchCase="INPUT_FIELD_TYPE.FILE"
               [formControlName]="field.name"
             ></app-custom-upload-file>
           </ng-container>
@@ -176,7 +176,8 @@ export class DynamicFormComponent implements OnInit {
     switch (type) {
       case INPUT_FIELD_TYPE.TEXT_AREA :
         return 'col-12'
-      case INPUT_FIELD_TYPE.IMAGE || INPUT_FIELD_TYPE.FILE :
+      case INPUT_FIELD_TYPE.IMAGE :
+      case INPUT_FIELD_TYPE.FILE :
         return 'col-6'
       default :
         return 'col-3'

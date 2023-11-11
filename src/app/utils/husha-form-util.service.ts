@@ -96,6 +96,8 @@ export class HushaFormUtilService {
         return INPUT_FIELD_TYPE.JALALI_DATE_PICKER
       case INPUT_FIELD_TYPE.GEORGIAN_DATE_PICKER_WITH_TIME:
         return INPUT_FIELD_TYPE.GEORGIAN_DATE_PICKER
+      case INPUT_FIELD_TYPE.IMAGE:
+        return INPUT_FIELD_TYPE.FILE
       default:
         return field.fieldType.id
     }

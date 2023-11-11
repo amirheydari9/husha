@@ -16,6 +16,7 @@ import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.comp
           label="ثیت"
           icon="pi pi-check"
           [disabled]="dynamicForm.dynamicFormGroup.invalid"
+          (onClick)="onSubmit.emit(dynamicForm.dynamicFormGroup.getRawValue())"
         ></app-custom-button>
       </div>
     </app-custom-card>
