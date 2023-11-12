@@ -10,7 +10,7 @@ import {CustomButtonModule} from "../custom-button/custom-button.component";
     <p-dialog
       appendTo="body"
       [(visible)]="showDialog"
-      [closable]="false"
+      [closable]="closable"
       [modal]="true"
       [draggable]="true"
       [rtl]="true"
@@ -34,6 +34,7 @@ import {CustomButtonModule} from "../custom-button/custom-button.component";
             icon="pi pi-check"
             label="تایید"
             (onClick)="confirmed.emit()"
+            [disabled]="disabled"
           ></app-custom-button>
         </div>
       </ng-template>
@@ -43,6 +44,8 @@ import {CustomButtonModule} from "../custom-button/custom-button.component";
 export class CustomDialogComponent implements OnInit {
 
   @Input() showDialog: boolean;
+  @Input() disabled: boolean = false;
+  @Input() closable: boolean;
   @Input() header: string;
   @Input() width: string = '65vw';
   @Input() height: string = 'auto';

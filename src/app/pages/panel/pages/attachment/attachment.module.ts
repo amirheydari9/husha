@@ -7,9 +7,9 @@ import {CustomInputTextModule} from "../../../../ui-kits/custom-input-text/custo
 import {CustomTextAreaModule} from "../../../../ui-kits/custom-text-area/custom-text-area.component";
 import {CustomUploadFileModule} from "../../../../ui-kits/custom-upload-file/custom-upload-file.component";
 import {CustomButtonModule} from "../../../../ui-kits/custom-button/custom-button.component";
-import {GeneralFormModule} from "../../../../components/general-form/general-form.component";
 import {AgGridModule} from "ag-grid-angular";
 import {GridActionsModule} from "../../../../components/grid-actions/grid-actions.component";
+import {AttachmentDialogModule} from "../../../../components/dialog/attachment-dialog/attachment-dialog.component";
 
 
 @NgModule({
@@ -24,9 +24,9 @@ import {GridActionsModule} from "../../../../components/grid-actions/grid-action
     CustomTextAreaModule,
     CustomUploadFileModule,
     CustomButtonModule,
-    GeneralFormModule,
     AgGridModule,
     GridActionsModule,
+    AttachmentDialogModule,
   ],
 })
 export class AttachmentModule {

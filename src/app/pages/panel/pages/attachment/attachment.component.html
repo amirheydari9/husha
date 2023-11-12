@@ -1,21 +1,24 @@
-<app-general-form [model]="[model]" (onSubmit)="handleSubmitForm($event)"></app-general-form>
+<app-grid-actions
+  [accessFormActions]="accessFormActions"
+  [selectedRow]="selectedRow"
+  (onAction)="handleOnAction($event)"
+></app-grid-actions>
+<ag-grid-angular
+  style="width:100%;height: 310px"
+  class="ag-theme-alpine"
+  [columnDefs]="columnDefs"
+  [rowData]="rowData"
+  [enableRtl]="true"
+  [gridOptions]="gridOptions"
+  [pagination]="true"
+  [paginationPageSize]="5"
+  (rowClicked)="handleRowSelected($event)"
+></ag-grid-angular>
 
-
-<div class="mt-3">
-  <app-grid-actions
-    [accessFormActions]="accessFormActions"
-    [selectedRow]="selectedRow"
-    (onAction)="handleOnAction($event)"
-  ></app-grid-actions>
-  <ag-grid-angular
-    style="width:100%;height: 310px"
-    class="ag-theme-alpine"
-    [columnDefs]="columnDefs"
-    [rowData]="rowData"
-    [enableRtl]="true"
-    [gridOptions]="gridOptions"
-    [pagination]="true"
-    [paginationPageSize]="5"
-    (rowSelected)="handleRowSelected($event)"
-  ></ag-grid-angular>
-</div>
+<app-attachment-dialog
+  *ngIf="showDialog"
+  [(visible)]="showDialog"
+  [form]="form"
+  [attachment]="attachment"
+  (onHide)="handleOnHideDialog($event)"
+></app-attachment-dialog>

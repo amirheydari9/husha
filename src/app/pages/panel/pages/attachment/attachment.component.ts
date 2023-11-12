@@ -5,9 +5,8 @@ import {Subscription} from "rxjs";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
 import {AttachmentReqDTO, DocumentModelDTO} from "../../../../models/DTOs/attachment-req.DTO";
-import {dynamicField} from "../../../../components/dynamic-form/dynamic-form.component";
-import {ACCESS_FORM_ACTION_TYPE, INPUT_FIELD_TYPE} from "../../../../constants/enums";
-import {ColDef, GridOptions, RowSelectedEvent} from "ag-grid-community";
+import {ACCESS_FORM_ACTION_TYPE} from "../../../../constants/enums";
+import {ColDef, GridOptions, RowClickedEvent} from "ag-grid-community";
 import {AttachmentRes} from "../../../../models/interface/attachment-res.interface";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
@@ -21,26 +20,6 @@ export class AttachmentComponent implements OnInit {
   subscription: Subscription [] = []
   accessFormActions = [ACCESS_FORM_ACTION_TYPE.ADD, ACCESS_FORM_ACTION_TYPE.UPDATE, ACCESS_FORM_ACTION_TYPE.DELETE, ACCESS_FORM_ACTION_TYPE.DELETE_ALL];
   form: IFetchFormRes
-  model: dynamicField[] = [
-    {
-      label: 'نام فایل',
-      name: 'name',
-      type: INPUT_FIELD_TYPE.TEXT,
-      rules: {required: true}
-    },
-    {
-      label: 'فایل',
-      name: 'data',
-      type: INPUT_FIELD_TYPE.FILE,
-      rules: {required: true}
-    },
-    {
-      label: 'توضیحات',
-      name: 'desc',
-      type: INPUT_FIELD_TYPE.TEXT_AREA,
-    }
-  ]
-
   gridOptions: GridOptions = {
     defaultColDef: {
       sortable: true, filter: true, flex: 1
@@ -57,6 +36,8 @@ export class AttachmentComponent implements OnInit {
   ]
   rowData = []
   selectedRow: any
+  showDialog: boolean = false
+  attachment: AttachmentRes
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -88,21 +69,7 @@ export class AttachmentComponent implements OnInit {
     )
   }
 
-  handleSubmitForm($event: any, data?: AttachmentRes) {
-    const attachment = new DocumentModelDTO(
-      $event['name'],
-      $event['desc'],
-      this.rowData.length ? this.rowData[0].id : null,
-      $event['data'],
-    )
-    this.subscription.push(
-      this.baseInfoService.addAttachment(this.handleAttachmentPayload(attachment)).subscribe(data => {
-        this.rowData = [...this.rowData, data]
-      })
-    )
-  }
-
-  handleRowSelected($event: RowSelectedEvent<any>) {
+  handleRowSelected($event: RowClickedEvent<any>) {
     this.selectedRow = $event.data
   }
 
@@ -122,15 +89,45 @@ export class AttachmentComponent implements OnInit {
     )
   }
 
-  handleUpdateAttachment() {
-    this.model = this.model.map(model => {
-      model.value = this.selectedRow[model.name]
-      return model
-    })
-    console.log(this.model)
+  handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
+    switch ($event) {
+      case ACCESS_FORM_ACTION_TYPE.ADD:
+        this.attachment = null
+        this.showDialog = true
+        break
+      case ACCESS_FORM_ACTION_TYPE.UPDATE:
+        this.attachment = this.selectedRow
+        this.showDialog = true
+        break;
+      case ACCESS_FORM_ACTION_TYPE.DELETE:
+        this.handleDeleteAttachment()
+        break
+      case ACCESS_FORM_ACTION_TYPE.DELETE_ALL:
+        this.handleDeleteAllAttachment()
+    }
   }
 
-  handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
+  handleOnHideDialog($event: any) {
+    if ($event) {
+      const attachment = new DocumentModelDTO(
+        $event['name'],
+        $event['desc'],
+        this.rowData.length ? this.rowData[0].id : null,
+        $event['data'],
+      )
+      if (this.attachment) {
+        this.baseInfoService.updateAttachment(this.handleAttachmentPayload(attachment, this.attachment.id)).subscribe(data => {
+          this.rowData = this.rowData.map(item => {
+            if (item.id === data.id) item.name = data
+            return item
+          })
+        })
+      } else {
+        this.baseInfoService.addAttachment(this.handleAttachmentPayload(attachment)).subscribe(data => {
+          this.rowData = [...this.rowData, data]
+        })
+      }
+    }
 
   }
 }
