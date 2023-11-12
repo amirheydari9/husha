@@ -8,7 +8,7 @@ import {
   CustomJalaliDatePickerModule
 } from "../../ui-kits/custom-jalali-date-picker/custom-jalali-date-picker.component";
 import {CustomValidators} from "../../utils/Custom-Validators";
-import {INPUT_FIELD_TYPE} from "../../constants/enums";
+import {DYNAMIC_FORM_RULES, INPUT_FIELD_TYPE} from "../../constants/enums";
 import {CustomSwitchModule} from "../../ui-kits/custom-switch/custom-switch.component";
 import {CustomTextAreaModule} from "../../ui-kits/custom-text-area/custom-text-area.component";
 import {
@@ -27,7 +27,7 @@ export interface dynamicField {
   value?: any,
   disabled?: boolean,
   options?: any[];
-  rules?: {},
+  rules?: { [key in DYNAMIC_FORM_RULES]?: any },
   meta?: {}
 }
 
@@ -155,23 +155,25 @@ export class DynamicFormComponent implements OnInit {
     }
     const validators = []
     for (const [key, value] of Object.entries(rules)) {
-      if (key === 'required') {
+      if (key === DYNAMIC_FORM_RULES.REQUIRED) {
         validators.push(Validators.required)
-      } else if (key === 'maxLength') {
+      } else if (key === DYNAMIC_FORM_RULES.MAX_LENGTH) {
         validators.push(Validators.maxLength(+value))
-      } else if (key === 'minLength') {
+      } else if (key === DYNAMIC_FORM_RULES.MIN_LENGTH) {
         validators.push(Validators.minLength(+value))
-      } else if (key === 'max') {
+      } else if (key === DYNAMIC_FORM_RULES.MAX) {
         validators.push(Validators.max(+value))
-      } else if (key === 'min') {
+      } else if (key === DYNAMIC_FORM_RULES.MIN) {
         validators.push(Validators.min(+value))
-      } else if (key === 'email') {
+      } else if (key === DYNAMIC_FORM_RULES.EMAIL) {
         validators.push(Validators.email)
-      } else if (key === 'url') {
+      } else if (key === DYNAMIC_FORM_RULES.URL) {
         validators.push(CustomValidators.url)
-      } else if (key === 'acceptedFileType') {
+      } else if (key === DYNAMIC_FORM_RULES.ACCEPTED_FILE_TYPE) {
         // TODO بر اساس نوع فابل آرگومان پر شود
         validators.push(CustomValidators.acceptedFileType([]))
+      } else if (key === DYNAMIC_FORM_RULES.ACCEPTED_FILE_SIZE) {
+        // TODO پیاده سازی در customValidators
       }
     }
     return validators

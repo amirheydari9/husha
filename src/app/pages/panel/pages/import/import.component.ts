@@ -6,7 +6,7 @@ import {ReadExcelDirective} from "../../../../directives/read-excel.directive";
 import {ActivatedRoute} from "@angular/router";
 import {dynamicField} from "../../../../components/dynamic-form/dynamic-form.component";
 import {ColDef, GridOptions} from "ag-grid-community";
-import {ENTRY_TYPE, FORM_KIND, INPUT_FIELD_TYPE} from "../../../../constants/enums";
+import {DYNAMIC_FORM_RULES, ENTRY_TYPE, FORM_KIND, INPUT_FIELD_TYPE} from "../../../../constants/enums";
 import {HushaFormUtilService} from "../../../../utils/husha-form-util.service";
 import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
 import {HushaCustomerUtilService} from "../../../../utils/husha-customer-util.service";
@@ -65,7 +65,7 @@ export class ImportComponent implements OnInit {
             type: INPUT_FIELD_TYPE.DROP_DOWN,
             name: field.name,
             label: field.caption,
-            rules: {required: field.notNullable}
+            rules: {[DYNAMIC_FORM_RULES.REQUIRED]: field.notNullable}
           }
           this.model.push(model)
         })

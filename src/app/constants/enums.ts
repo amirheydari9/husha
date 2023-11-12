@@ -18,7 +18,7 @@ export enum ACCESS_FORM_ACTION_TYPE {
   NEXT = 'next',
   CONFIRM_DOC = 'confirmDoc',
   ALL = 'all',
-  DELETE_ALL='deleteAll'
+  DELETE_ALL = 'deleteAll'
 }
 
 export enum FORM_KIND {
@@ -88,4 +88,16 @@ export enum CRITERIA_OPERATION_TYPE {
   EMPTY = "EMPTY",
   NOT_EMPTY = "NOT_EMPTY",
   IN = "IN"
+}
+
+export enum DYNAMIC_FORM_RULES {
+  REQUIRED = 'REQUIRED',
+  MAX_LENGTH = 'MAX_LENGTH',
+  MIN_LENGTH = 'MIN_LENGTH',
+  MAX = 'MAX',
+  MIN = 'MIN',
+  EMAIL = 'EMAIL',
+  URL = 'URL',
+  ACCEPTED_FILE_TYPE = 'ACCEPTED_FILE_TYPE',
+  ACCEPTED_FILE_SIZE = 'ACCEPTED_FILE_SIZE',
 }

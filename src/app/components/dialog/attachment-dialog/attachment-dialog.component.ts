@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, NgModule, Output} from '@angular/core';
 import {dynamicField, DynamicFormModule} from "../../dynamic-form/dynamic-form.component";
-import {INPUT_FIELD_TYPE} from "../../../constants/enums";
+import {DYNAMIC_FORM_RULES, INPUT_FIELD_TYPE} from "../../../constants/enums";
 import {CustomDialogModule} from "../../../ui-kits/custom-dialog/custom-dialog.component";
 import {IFetchFormRes} from "../../../models/interface/fetch-form-res.interface";
 import {AttachmentRes} from "../../../models/interface/attachment-res.interface";
@@ -40,20 +40,21 @@ export class AttachmentDialogComponent {
         label: 'نام فایل',
         name: 'name',
         type: INPUT_FIELD_TYPE.TEXT,
-        rules: {required: true}
+        rules: {[DYNAMIC_FORM_RULES.REQUIRED]: true}
       },
       {
         value: data ? data['data'] : null,
         label: 'فایل',
         name: 'data',
         type: INPUT_FIELD_TYPE.FILE,
-        rules: {required: true}
+        rules: {[DYNAMIC_FORM_RULES.REQUIRED]: true}
       },
       {
         value: data ? data['desc'] : null,
         label: 'توضیحات',
         name: 'desc',
         type: INPUT_FIELD_TYPE.TEXT_AREA,
+        rules:{[DYNAMIC_FORM_RULES.MAX_LENGTH]:300}
       }
     ]
     this._attachment = data

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {ENTRY_TYPE, FORM_KIND, INPUT_FIELD_TYPE, VIEW_TYPE} from "../constants/enums";
+import {DYNAMIC_FORM_RULES, ENTRY_TYPE, FORM_KIND, INPUT_FIELD_TYPE, VIEW_TYPE} from "../constants/enums";
 import {dynamicField} from "../components/dynamic-form/dynamic-form.component";
 import {BaseInfoService} from "../api/base-info.service";
 import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
@@ -132,19 +132,19 @@ export class HushaFormUtilService {
     //TODO min and max
     let rules = null
     if (field.notNullable) {
-      rules = {...rules, required: true}
+      rules = {...rules, [DYNAMIC_FORM_RULES.REQUIRED]: true}
     }
     if (field.maxSize) {
-      rules = {...rules, maxLength: true}
+      rules = {...rules, [DYNAMIC_FORM_RULES.MAX_LENGTH]: field.maxSize}
     }
     if (field.minSize) {
-      rules = {...rules, minLength: true}
+      rules = {...rules, [DYNAMIC_FORM_RULES.MAX_LENGTH]: field.minSize}
     }
     if (field.fieldType.id === INPUT_FIELD_TYPE.URL) {
-      rules = {...rules, url: true}
+      rules = {...rules, [DYNAMIC_FORM_RULES.URL]: true}
     }
     if (field.fieldType.id === INPUT_FIELD_TYPE.EMAIL) {
-      rules = {...rules, email: true}
+      rules = {...rules, [DYNAMIC_FORM_RULES.EMAIL]: true}
     }
     return rules
   }
