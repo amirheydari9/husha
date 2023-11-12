@@ -130,7 +130,7 @@ export class GridActionsComponent implements OnInit {
       tooltip: "ضمیمه ها"
     },
     {
-      icon: "pi pi-paperclip",
+      icon: "pi pi-trash",
       styleClass: "p-button-rounded p-button-success",
       type: ACCESS_FORM_ACTION_TYPE.DELETE_ALL,
       tooltip: "حذف همه"
@@ -153,7 +153,7 @@ export class GridActionsComponent implements OnInit {
 
   handleConfirmationConfig(type: ACCESS_FORM_ACTION_TYPE) {
     if (type === ACCESS_FORM_ACTION_TYPE.DELETE || type === ACCESS_FORM_ACTION_TYPE.DELETE_ALL) {
-      return {confirmation: true, header: ACCESS_FORM_ACTION_TYPE.DELETE ? 'حذف رکورد' : 'حذف همه'}
+      return {confirmation: true, header: type === ACCESS_FORM_ACTION_TYPE.DELETE ? 'حذف رکورد' : 'حذف همه رکورد ها'}
     }
     return null
   }
