@@ -17,6 +17,8 @@ import {
 import {CustomLookupFormModule} from "../../ui-kits/custom-lookup-form/custom-lookup-form.component";
 import {CustomUploadFileModule} from "../../ui-kits/custom-upload-file/custom-upload-file.component";
 import {DividerModule} from "primeng/divider";
+import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
+import {Subscription} from "rxjs";
 
 export interface dynamicField {
   type: INPUT_FIELD_TYPE;
@@ -29,6 +31,7 @@ export interface dynamicField {
   meta?: {}
 }
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-dynamic-form',
   template: `
@@ -99,10 +102,12 @@ export interface dynamicField {
 export class DynamicFormComponent implements OnInit {
 
 
+  subscription: Subscription
   @Input() model: dynamicField[][] = [];
   @ViewChild(FormGroupDirective) formRef: FormGroupDirective;
 
   @Output() onSubmit: EventEmitter<any> = new EventEmitter<any>()
+  @Output() onValid: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   dynamicFormGroup: FormGroup;
   groups = [];
@@ -114,6 +119,10 @@ export class DynamicFormComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
+    this.onValid.emit(this.dynamicFormGroup.valid)
+    this.subscription = this.dynamicFormGroup.valueChanges.subscribe(() => {
+      this.onValid.emit(this.dynamicFormGroup.valid)
+    })
   }
 
   get INPUT_FIELD_TYPE(): typeof INPUT_FIELD_TYPE {
@@ -176,8 +185,6 @@ export class DynamicFormComponent implements OnInit {
     switch (type) {
       case INPUT_FIELD_TYPE.TEXT_AREA :
         return 'col-12'
-      case INPUT_FIELD_TYPE.FILE :
-        return 'col-3'
       default :
         return 'col-3'
     }

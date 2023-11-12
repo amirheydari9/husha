@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, NgModule, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, NgModule, Output} from '@angular/core';
 import {dynamicField, DynamicFormModule} from "../../dynamic-form/dynamic-form.component";
 import {INPUT_FIELD_TYPE} from "../../../constants/enums";
 import {CustomDialogModule} from "../../../ui-kits/custom-dialog/custom-dialog.component";
@@ -10,12 +10,16 @@ import {AttachmentRes} from "../../../models/interface/attachment-res.interface"
   template: `
     <app-custom-dialog
       [header]="attachment ? 'ویرایش ضمیمه' :'ضمیمه جدید'"
-      [closable]="true"
       (closed)="handleClosed()"
       (confirmed)="handleClosed(dynamicForm.dynamicFormGroup.getRawValue())"
-      [disabled]="dynamicForm ? dynamicForm?.dynamicFormGroup?.invalid : true"
+      [disabled]="disabled"
       [showDialog]="visible">
-      <app-dynamic-form #dynamicForm [model]="[model]" (onSubmit)="handleClosed($event)"></app-dynamic-form>
+      <app-dynamic-form
+        (onValid)="disabled= !$event;cdr.detectChanges()"
+        #dynamicForm
+        [model]="[model]"
+        (onSubmit)="handleClosed($event)"
+      ></app-dynamic-form>
     </app-custom-dialog>`,
 })
 export class AttachmentDialogComponent {
@@ -26,6 +30,7 @@ export class AttachmentDialogComponent {
   @Output() onHide: EventEmitter<any> = new EventEmitter<any>()
 
   model: dynamicField[] = []
+  disabled: boolean
 
   private _attachment: AttachmentRes;
   @Input() set attachment(data: AttachmentRes) {
@@ -58,7 +63,9 @@ export class AttachmentDialogComponent {
     return this._attachment
   }
 
-  constructor() {
+  constructor(
+    public cdr: ChangeDetectorRef
+  ) {
   }
 
   handleClosed(data?: any) {
