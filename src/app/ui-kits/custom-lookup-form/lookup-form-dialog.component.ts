@@ -23,6 +23,7 @@ import {Subscription} from "rxjs";
       [header]="field.caption"
       (closed)="handleClosed()"
       (confirmed)="handleClosed(true)"
+      [disabled]="!selectedRow"
       [showDialog]="visible">
       <ng-container #container></ng-container>
     </app-custom-dialog>
