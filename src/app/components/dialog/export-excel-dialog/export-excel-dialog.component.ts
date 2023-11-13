@@ -1,6 +1,5 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnInit, Output} from '@angular/core';
 import {CustomDialogModule} from "../../../ui-kits/custom-dialog/custom-dialog.component";
-import {CustomPickListModule} from "../../../ui-kits/custom-pick-list/custom-pick-list.component";
 import {dynamicField, DynamicFormModule} from "../../dynamic-form/dynamic-form.component";
 import {DYNAMIC_FORM_RULES, INPUT_FIELD_TYPE} from "../../../constants/enums";
 
@@ -58,7 +57,6 @@ export class ExportExcelDialogComponent implements OnInit {
   declarations: [ExportExcelDialogComponent],
   imports: [
     CustomDialogModule,
-    CustomPickListModule,
     DynamicFormModule
   ],
   exports: [ExportExcelDialogComponent]

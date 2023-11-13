@@ -202,6 +202,6 @@ export class BaseInfoGridComponent implements OnInit {
   ],
   exports: [BaseInfoGridComponent]
 })
-export class FormGridModule {
+export class BaseInfoGridModule {
 
 }

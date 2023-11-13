@@ -41,12 +41,12 @@ import {ExportExcelDialogModule} from "../dialog/export-excel-dialog/export-exce
                   (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}</span>
       </div>
     </div>
-    <ng-container *ngIf="showExportExcelDialog">
-      <app-export-excel-dialog
-        [visible]="showExportExcelDialog"
-        [source]="exportExcelSource"
-      ></app-export-excel-dialog>
-    </ng-container>
+<!--    <ng-container *ngIf="showExportExcelDialog">-->
+<!--      <app-export-excel-dialog-->
+<!--        [visible]="showExportExcelDialog"-->
+<!--        [source]="exportExcelSource"-->
+<!--      ></app-export-excel-dialog>-->
+<!--    </ng-container>-->
 
   `,
   styles: [],
@@ -246,7 +246,7 @@ export class GridActionsComponent implements OnInit {
     NgClass,
     NgIf,
     CustomButtonModule,
-    ExportExcelDialogModule,
+    // ExportExcelDialogModule,
   ],
   exports: [GridActionsComponent]
 })
