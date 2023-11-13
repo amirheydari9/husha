@@ -41,13 +41,11 @@ import {ExportExcelDialogModule} from "../dialog/export-excel-dialog/export-exce
                   (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}</span>
       </div>
     </div>
-<!--    <ng-container *ngIf="showExportExcelDialog">-->
-<!--      <app-export-excel-dialog-->
-<!--        [visible]="showExportExcelDialog"-->
-<!--        [source]="exportExcelSource"-->
-<!--      ></app-export-excel-dialog>-->
-<!--    </ng-container>-->
-
+    <app-export-excel-dialog
+      *ngIf="showExportExcelDialog"
+      [(visible)]="showExportExcelDialog"
+      [source]="exportExcelSource"
+    ></app-export-excel-dialog>
   `,
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -212,10 +210,6 @@ export class GridActionsComponent implements OnInit {
     this.clickHistory.emit(this.gridHistory[this.currentHistoryIndex])
   }
 
-  handleExportExcel() {
-    this.showExportExcelDialog = true
-  }
-
   handleClickAction(type) {
     switch (type) {
       case ACCESS_FORM_ACTION_TYPE.PERV :
@@ -233,7 +227,7 @@ export class GridActionsComponent implements OnInit {
         this.onAction.emit(type)
         break
       case ACCESS_FORM_ACTION_TYPE.EXPORT:
-        this.handleExportExcel()
+        this.showExportExcelDialog = true
         break
     }
   }
@@ -246,7 +240,7 @@ export class GridActionsComponent implements OnInit {
     NgClass,
     NgIf,
     CustomButtonModule,
-    // ExportExcelDialogModule,
+    ExportExcelDialogModule,
   ],
   exports: [GridActionsComponent]
 })
