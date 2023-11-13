@@ -109,13 +109,12 @@ export class AttachmentComponent implements OnInit {
 
   handleOnHideDialog($event: any) {
     if ($event) {
-      const attachment = new DocumentModelDTO(
-        $event['name'],
-        $event['desc'],
-        this.rowData.length ? this.rowData[0].id : null,
-        $event['data'],
-      )
       if (this.attachment) {
+        const attachment = new DocumentModelDTO(
+          $event['name'],
+          $event['desc'],
+          this.rowData.length > 1 ? this.rowData[0].id : null,
+        )
         this.baseInfoService.updateAttachment(this.handleAttachmentPayload(attachment, this.attachment.id)).subscribe(data => {
           this.rowData = this.rowData.map(item => {
             if (item.id === data.id) item.name = data
@@ -123,6 +122,12 @@ export class AttachmentComponent implements OnInit {
           })
         })
       } else {
+        const attachment = new DocumentModelDTO(
+          $event['name'],
+          $event['desc'],
+          this.rowData.length > 1 ? this.rowData[0].id : null,
+          $event['data'],
+        )
         this.baseInfoService.addAttachment(this.handleAttachmentPayload(attachment)).subscribe(data => {
           this.rowData = [...this.rowData, data]
         })

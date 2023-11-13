@@ -43,20 +43,26 @@ export class AttachmentDialogComponent {
         rules: {[DYNAMIC_FORM_RULES.REQUIRED]: true}
       },
       {
-        value: data ? data['data'] : null,
-        label: 'فایل',
-        name: 'data',
-        type: INPUT_FIELD_TYPE.FILE,
-        rules: {[DYNAMIC_FORM_RULES.REQUIRED]: true}
-      },
-      {
         value: data ? data['desc'] : null,
         label: 'توضیحات',
         name: 'desc',
         type: INPUT_FIELD_TYPE.TEXT_AREA,
-        rules:{[DYNAMIC_FORM_RULES.MAX_LENGTH]:300}
+        rules: {[DYNAMIC_FORM_RULES.MAX_LENGTH]: 300}
       }
     ]
+    if (!data) {
+      this.model = [
+        this.model[0],
+        {
+          value: data ? data['data'] : null,
+          label: 'فایل',
+          name: 'data',
+          type: INPUT_FIELD_TYPE.FILE,
+          rules: {[DYNAMIC_FORM_RULES.REQUIRED]: true}
+        },
+        this.model[1]
+      ]
+    }
     this._attachment = data
   }
 

@@ -3,7 +3,7 @@ export class DocumentModelDTO {
     public name: string,
     public desc: string,
     public masterDocumentId: string,
-    public data: string,
+    public data?: string,
   ) {
   }
 }
