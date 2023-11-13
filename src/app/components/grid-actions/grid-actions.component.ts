@@ -10,11 +10,12 @@ import {
   QueryList,
   ViewChildren
 } from '@angular/core';
-import {CommonModule, NgFor} from "@angular/common";
+import {NgClass, NgFor, NgIf} from "@angular/common";
 import {ACCESS_FORM_ACTION_TYPE} from "../../constants/enums";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
+import {ExportExcelDialogModule} from "../dialog/export-excel-dialog/export-excel-dialog.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -40,6 +41,13 @@ import {Subscription} from "rxjs";
                   (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}</span>
       </div>
     </div>
+    <ng-container *ngIf="showExportExcelDialog">
+      <app-export-excel-dialog
+        [visible]="showExportExcelDialog"
+        [source]="exportExcelSource"
+      ></app-export-excel-dialog>
+    </ng-container>
+
   `,
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -52,6 +60,8 @@ export class GridActionsComponent implements OnInit {
   currentHistoryIndex: number
   @Input() selectedRow: any
   @Input() gridHistory = []
+  @Input() exportExcelSource = []
+  showExportExcelDialog = false
 
   @Input() set accessFormActions(data: ACCESS_FORM_ACTION_TYPE[]) {
     if (data.length) {
@@ -190,6 +200,10 @@ export class GridActionsComponent implements OnInit {
     this.clickHistory.emit(this.gridHistory[this.currentHistoryIndex])
   }
 
+  handleExportExcel() {
+    this.showExportExcelDialog = true
+  }
+
   handleClickAction(type) {
     switch (type) {
       case ACCESS_FORM_ACTION_TYPE.PERV :
@@ -206,6 +220,9 @@ export class GridActionsComponent implements OnInit {
       case ACCESS_FORM_ACTION_TYPE.DELETE_ALL:
         this.onAction.emit(type)
         break
+      case ACCESS_FORM_ACTION_TYPE.EXPORT:
+        this.handleExportExcel()
+        break
     }
   }
 }
@@ -214,8 +231,10 @@ export class GridActionsComponent implements OnInit {
   declarations: [GridActionsComponent],
   imports: [
     NgFor,
+    NgClass,
+    NgIf,
     CustomButtonModule,
-    CommonModule
+    ExportExcelDialogModule,
   ],
   exports: [GridActionsComponent]
 })

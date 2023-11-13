@@ -14,6 +14,7 @@ import {NgxUiLoaderConfig, NgxUiLoaderHttpModule, NgxUiLoaderModule, SPINNER,} f
 import {CustomToastModule} from "./ui-kits/custom-toast/custom-toast.component";
 import {DialogService} from "primeng/dynamicdialog";
 import { ServiceWorkerModule } from '@angular/service-worker';
+import {ReactiveFormsModule} from "@angular/forms";
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   fgsType: SPINNER.ballSpinClockwise,
@@ -49,7 +50,8 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
-    })
+    }),
+    ReactiveFormsModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true},

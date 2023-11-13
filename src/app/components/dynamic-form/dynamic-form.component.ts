@@ -19,11 +19,12 @@ import {CustomUploadFileModule} from "../../ui-kits/custom-upload-file/custom-up
 import {DividerModule} from "primeng/divider";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
+import {CustomPickListModule} from "../../ui-kits/custom-pick-list/custom-pick-list.component";
 
 export interface dynamicField {
   type: INPUT_FIELD_TYPE;
   name: string;
-  label: string;
+  label?: string;
   value?: any,
   disabled?: boolean,
   options?: any[];
@@ -91,6 +92,11 @@ export interface dynamicField {
               *ngSwitchCase="INPUT_FIELD_TYPE.FILE"
               [formControlName]="field.name"
             ></app-custom-upload-file>
+            <app-custom-pick-list
+              *ngSwitchCase="INPUT_FIELD_TYPE.PICKLIST"
+              [formControlName]="field.name"
+              [source]="field.meta?.source"
+            ></app-custom-pick-list>
           </ng-container>
         </div>
         <p-divider class="w-full" *ngIf="groups.length -1 !== index"></p-divider>
@@ -186,6 +192,7 @@ export class DynamicFormComponent implements OnInit {
   handleCalculateCol(type) {
     switch (type) {
       case INPUT_FIELD_TYPE.TEXT_AREA :
+      case INPUT_FIELD_TYPE.PICKLIST :
         return 'col-12'
       default :
         return 'col-3'
@@ -211,7 +218,8 @@ export class DynamicFormComponent implements OnInit {
     CustomGeorgianDatePickerModule,
     CustomLookupFormModule,
     CustomUploadFileModule,
-    DividerModule
+    DividerModule,
+    CustomPickListModule
   ],
   exports: [DynamicFormComponent]
 })
