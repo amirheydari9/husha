@@ -81,12 +81,14 @@ export class BaseInfoGridComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.accessFormActions = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.fetchSummary)
+    if (!this.fetchSummary) {
+      this.exportExcelSource = this.colApi['columnModel'].columnDefs
+    }
   }
 
   handleGirdReady($event: GridReadyEvent<any>) {
     this.gridApi = $event.api;
     this.colApi = $event.columnApi;
-    this.exportExcelSource = this.colApi['columnModel'].columnDefs
     this.gridApi.setDatasource(this.dataSource)
   }
 
