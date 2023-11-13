@@ -53,7 +53,6 @@ export class LookupFormDialogComponent implements AfterViewInit {
       const comRef = this.container.createComponent(BaseInfoGridComponent)
       comRef.setInput('form', form)
       comRef.setInput('fetchSummary', true)
-      comRef.setInput('showCrudActions', false)
       this.subscription = comRef.instance.onRowClicked.subscribe(data => this.selectedRow = data)
       this.cdr.detectChanges()
       //TODO بازنویسی با دیالوگ سرویس اگه بستن مهم نیست

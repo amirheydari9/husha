@@ -91,8 +91,10 @@ export class CustomLookupFormComponent extends BaseControlValueAccessor<any> imp
   }
 
   handleOnHide($event: any) {
-    this.changed($event.id)
-    this.writeValue(`${$event.code} - ${$event.title}`)
+    if ($event) {
+      this.changed($event.id)
+      this.writeValue(`${$event.code} - ${$event.title}`)
+    }
     this.touched()
   }
 }

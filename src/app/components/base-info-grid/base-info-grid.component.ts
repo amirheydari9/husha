@@ -59,7 +59,6 @@ export class BaseInfoGridComponent implements OnInit {
   @Input() form: IFetchFormRes
   @Input() masterId: number
   @Input() fetchSummary: boolean = false
-  @Input() showCrudActions: boolean = true
 
   @ViewChild('gridActions') gridActions: GridActionsComponent
 
@@ -81,13 +80,13 @@ export class BaseInfoGridComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.accessFormActions = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.showCrudActions)
-    this.exportExcelSource = this.colApi['columnModel'].columnDefs
+    this.accessFormActions = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.fetchSummary)
   }
 
   handleGirdReady($event: GridReadyEvent<any>) {
     this.gridApi = $event.api;
     this.colApi = $event.columnApi;
+    this.exportExcelSource = this.colApi['columnModel'].columnDefs
     this.gridApi.setDatasource(this.dataSource)
   }
 
