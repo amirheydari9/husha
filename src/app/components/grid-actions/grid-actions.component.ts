@@ -70,6 +70,7 @@ export class GridActionsComponent implements OnInit {
           if (action.type === item) this.totalAccessFormActions.push(action)
         })
       })
+      this.totalAccessFormActions.sort((a, b) => a['order'] - b['order'])
     }
   }
 
@@ -78,72 +79,83 @@ export class GridActionsComponent implements OnInit {
   @Output() clickHistory: EventEmitter<any> = new EventEmitter<any>()
   @Output() onAction: EventEmitter<ACCESS_FORM_ACTION_TYPE> = new EventEmitter<ACCESS_FORM_ACTION_TYPE>()
 
+  //TODO صحبت با آقای عبدالهی برای ترتیب آیکون ها
   allAccessFormActions = [
     {
       icon: "pi pi-arrow-up",
       styleClass: "p-button-rounded",
       type: ACCESS_FORM_ACTION_TYPE.PERV,
-      tooltip: "سطح قبلی"
+      tooltip: "سطح قبلی",
+      order: 0
     },
     {
       icon: "pi pi-arrow-down",
       styleClass: "p-button-rounded",
       type: ACCESS_FORM_ACTION_TYPE.NEXT,
-      tooltip: "سطح بعدی"
+      tooltip: "سطح بعدی",
+      order: 1
     },
     {
       icon: "pi pi-plus",
       styleClass: "p-button-rounded",
       type: ACCESS_FORM_ACTION_TYPE.ADD,
-      tooltip: "ایجاد رکورد جدید"
+      tooltip: "ایجاد رکورد جدید",
+      order: 2
     },
     {
       icon: "pi pi-pencil",
       styleClass: "p-button-rounded p-button-secondary",
       type: ACCESS_FORM_ACTION_TYPE.UPDATE,
-      tooltip: "ویرایش"
+      tooltip: "ویرایش",
+      order: 3
     },
     {
       icon: "pi pi-trash",
       styleClass: "p-button-rounded p-button-danger",
       type: ACCESS_FORM_ACTION_TYPE.DELETE,
-      tooltip: "حذف"
+      tooltip: "حذف", order: 4
     },
     {
       icon: "pi pi-download",
       styleClass: "p-button-rounded p-button-success",
       type: ACCESS_FORM_ACTION_TYPE.EXPORT,
-      tooltip: "دانلود فایل اکسل"
+      tooltip: "دانلود فایل اکسل",
+      order: 5
     },
     {
       icon: "pi pi-upload",
       styleClass: "p-button-rounded p-button-warning",
       type: ACCESS_FORM_ACTION_TYPE.IMPORT,
-      tooltip: "آپلود فایل اکسل"
+      tooltip: "آپلود فایل اکسل",
+      order: 6
     },
     {
       icon: "pi pi-paperclip",
       styleClass: "p-button-rounded p-button-success",
       type: ACCESS_FORM_ACTION_TYPE.ATTACHMENTS,
-      tooltip: "ضمیمه ها"
+      tooltip: "ضمیمه ها",
+      order: 7
     },
     {
       icon: "pi pi-paperclip",
       styleClass: "p-button-rounded p-button-success",
       type: ACCESS_FORM_ACTION_TYPE.CONFIRM_DOC,
-      tooltip: "ضمیمه ها"
+      tooltip: "ضمیمه ها",
+      order: 8
     },
     {
       icon: "pi pi-paperclip",
       styleClass: "p-button-rounded p-button-success",
       type: ACCESS_FORM_ACTION_TYPE.ALL,
-      tooltip: "ضمیمه ها"
+      tooltip: "ضمیمه ها",
+      order: 9
     },
     {
       icon: "pi pi-trash",
       styleClass: "p-button-rounded p-button-success",
       type: ACCESS_FORM_ACTION_TYPE.DELETE_ALL,
-      tooltip: "حذف همه"
+      tooltip: "حذف همه",
+      order: 10
     }
   ]
 
