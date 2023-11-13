@@ -16,7 +16,7 @@ import {FormControl, NgControl} from "@angular/forms";
       [target]="value"
       filterBy="headerName"
       sourceHeader="لیست ستون ها"
-      targetHeader="اتتخاب شده"
+      targetHeader="انتخاب شده"
       [dragdrop]="true"
       [responsive]="false"
       [sourceStyle]="{ height: '20rem' }"
