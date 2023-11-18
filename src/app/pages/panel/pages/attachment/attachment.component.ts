@@ -8,6 +8,7 @@ import {AttachmentReqDTO, DocumentModelDTO} from "../../../../models/DTOs/attach
 import {ACCESS_FORM_ACTION_TYPE} from "../../../../constants/enums";
 import {ColDef, GridOptions, RowClickedEvent} from "ag-grid-community";
 import {AttachmentRes} from "../../../../models/interface/attachment-res.interface";
+import {DateService} from "../../../../utils/date.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -41,7 +42,8 @@ export class AttachmentComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private baseInfoService: BaseInfoService
+    private baseInfoService: BaseInfoService,
+    private dateService: DateService
   ) {
   }
 
