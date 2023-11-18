@@ -11,7 +11,8 @@ import {CustomButtonModule} from "../custom-button/custom-button.component";
   template: `
     <div class="flex align-items-center wrapper background-white p-2"
          [ngClass]="[control.invalid &&( control.dirty || control.touched) ? 'error-border' :'border-2']">
-      <app-custom-button type="button" label="Choose file" (onClick)="touched();input.click()" icon="pi pi-plus"></app-custom-button>
+      <app-custom-button type="button" label="Choose file" (onClick)="touched();input.click()"
+                         icon="pi pi-plus"></app-custom-button>
       <span class="font-sm-regular mr-2">{{selectedFile ? selectedFile.name : 'or drag and drop file here' }}</span>
       <img *ngIf="value" [src]="value" width="75" height="75" style="border-radius: 50%" class="mr-2"/>
       <input #input class="hidden" type="file">
@@ -51,7 +52,7 @@ export class CustomUploadFileComponent extends BaseControlValueAccessor<string> 
     this.selectedFile = fileList && fileList.item(0);
     let fileToBase64: string = null
     if (this.selectedFile) fileToBase64 = await this.fileService.convertFileToBase64(this.selectedFile)
-    this.changed(fileToBase64);
+    this.changed(fileToBase64.split(',')[1]);
   }
 }
 
