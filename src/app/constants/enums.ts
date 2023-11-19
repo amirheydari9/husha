@@ -18,7 +18,8 @@ export enum ACCESS_FORM_ACTION_TYPE {
   NEXT = 'next',
   CONFIRM_DOC = 'confirmDoc',
   ALL = 'all',
-  DELETE_ALL = 'deleteAll'
+  DELETE_ALL = 'deleteAll',
+  DOWNLOAD_FILE = 'downloadFile'
 }
 
 export enum FORM_KIND {

@@ -9,6 +9,7 @@ import {ACCESS_FORM_ACTION_TYPE} from "../../../../constants/enums";
 import {ColDef, GridOptions, RowClickedEvent} from "ag-grid-community";
 import {AttachmentRes} from "../../../../models/interface/attachment-res.interface";
 import {DateService} from "../../../../utils/date.service";
+import {FileService} from "../../../../utils/file.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -19,7 +20,13 @@ import {DateService} from "../../../../utils/date.service";
 export class AttachmentComponent implements OnInit {
 
   subscription: Subscription [] = []
-  accessFormActions = [ACCESS_FORM_ACTION_TYPE.ADD, ACCESS_FORM_ACTION_TYPE.UPDATE, ACCESS_FORM_ACTION_TYPE.DELETE, ACCESS_FORM_ACTION_TYPE.DELETE_ALL];
+  accessFormActions = [
+    ACCESS_FORM_ACTION_TYPE.ADD,
+    ACCESS_FORM_ACTION_TYPE.UPDATE,
+    ACCESS_FORM_ACTION_TYPE.DELETE,
+    ACCESS_FORM_ACTION_TYPE.DELETE_ALL,
+    ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE
+  ];
   form: IFetchFormRes
   gridOptions: GridOptions = {
     defaultColDef: {
@@ -30,10 +37,14 @@ export class AttachmentComponent implements OnInit {
   }
   columnDefs: ColDef[] = [
     {headerName: 'نام فایل', field: 'name'},
-    {headerName: 'ایجاد توسط', field: 'createBy'},
-    {headerName: 'تاریخ ایجاد', field: 'createAt'},
+    {headerName: 'نام', field: 'createBy.name'},
+    {headerName: 'نام خانوادگی', field: 'createBy.family'},
+    {
+      headerName: 'تاریخ ایجاد',
+      field: 'createAt',
+      cellRenderer: data => this.dateService.timestampToJalali(data.value)
+    },
     {headerName: 'توضیحات', field: 'desc'},
-    {headerName: 'دانلود فایل', field: 'data'},
   ]
   rowData = []
   selectedRow: any
@@ -43,7 +54,8 @@ export class AttachmentComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private baseInfoService: BaseInfoService,
-    private dateService: DateService
+    private dateService: DateService,
+    private fileService: FileService
   ) {
   }
 
@@ -106,6 +118,9 @@ export class AttachmentComponent implements OnInit {
         break
       case ACCESS_FORM_ACTION_TYPE.DELETE_ALL:
         this.handleDeleteAllAttachment()
+        break
+      case ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE:
+        this.fileService.downloadBase64(this.selectedRow.data, this.selectedRow.name)
     }
   }
 
@@ -118,14 +133,18 @@ export class AttachmentComponent implements OnInit {
         this.attachment ? null : $event['data'],
       )
       if (this.attachment) {
-        this.baseInfoService.updateAttachment(this.handleAttachmentPayload(attachment, this.attachment.id)).subscribe(data => {
-          this.rowData = this.rowData.map(item => {
-            if (item.id === data.id) item = data
-            return item
+        this.subscription.push(
+          this.baseInfoService.updateAttachment(this.handleAttachmentPayload(attachment, this.attachment.id)).subscribe(data => {
+            this.rowData = this.rowData.map(item => {
+              if (item.id === data.id) item = data
+              return item
+            })
           })
-        })
+        )
       } else {
-        this.baseInfoService.addAttachment(this.handleAttachmentPayload(attachment)).subscribe(data => this.rowData = [...this.rowData, data])
+        this.subscription.push(
+          this.baseInfoService.addAttachment(this.handleAttachmentPayload(attachment)).subscribe(data => this.rowData = [...this.rowData, data])
+        )
       }
     }
   }

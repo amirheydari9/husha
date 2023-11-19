@@ -1,4 +1,4 @@
-import {ElementRef, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import imageCompression from "browser-image-compression";
 
 @Injectable({
@@ -50,5 +50,22 @@ export class FileService {
       useWebWorker: true
     }
     return await imageCompression(file, options);
+  }
+
+  downloadBase64(data, name) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', data, true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const databaseArray = new Uint8Array(xhr.response);
+        const blob = new Blob([databaseArray], {type: 'application/octet-stream'});
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = name
+        link.click();
+      }
+    };
+    xhr.send();
   }
 }
