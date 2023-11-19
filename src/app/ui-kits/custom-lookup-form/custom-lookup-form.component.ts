@@ -4,7 +4,7 @@ import {FormControl, FormsModule, NgControl} from "@angular/forms";
 import {IFetchFormRes, IFormField} from "../../models/interface/fetch-form-res.interface";
 import {LookupFormDialogComponent} from "./lookup-form-dialog.component";
 import {CustomDialogModule} from "../custom-dialog/custom-dialog.component";
-import {NgClass, NgIf} from "@angular/common";
+import {CommonModule, NgClass, NgIf} from "@angular/common";
 import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
 import {InputTextModule} from "primeng/inputtext";
 import {CustomButtonModule} from "../custom-button/custom-button.component";
@@ -21,7 +21,6 @@ import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service"
     <div class="flex align-items-stretch">
       <app-custom-button
         type="button"
-        [class]="'ml-2'"
         [icon]="'pi pi-table'"
         (onClick)="showDialog = true"
       ></app-custom-button>
@@ -35,7 +34,7 @@ import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service"
             [(ngModel)]="value"
             [disabled]="disabled"
             [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
-            [style]="{'width':'100%'}"
+            [style]="{'width':'100%','border-right':'0','border-top-right-radius':'0','border-bottom-right-radius':'0'}"
             (blur)="touched()">
         </app-input-wrapper>
       </div>
@@ -47,7 +46,14 @@ import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service"
       (onHide)="handleOnHide($event)"
     ></app-lookup-form-dialog>
   `,
-  styles: [],
+  styles: [`
+    :host ::ng-deep {
+      .p-button {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+  `],
 })
 export class CustomLookupFormComponent extends BaseControlValueAccessor<any> implements OnInit {
 
@@ -108,7 +114,8 @@ export class CustomLookupFormComponent extends BaseControlValueAccessor<any> imp
     InputWrapperModule,
     InputTextModule,
     CustomButtonModule,
-    FormsModule
+    FormsModule,
+    CommonModule
   ],
   exports: [CustomLookupFormComponent],
   entryComponents: [LookupFormDialogComponent]
