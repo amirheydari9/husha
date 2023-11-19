@@ -64,13 +64,14 @@ export class InterceptorService implements HttpInterceptor {
 
   private handleResponse(res: HttpResponse<any>, req: HttpRequest<any>): HttpResponse<any> {
     if (res.body && res.body.error) {
-      const error = res.body.error
-      if (error.message) {
-        this.notificationService.error(error.message);
-      } else if (error.errors?.length) {
-        error.errors.forEach(item => this.notificationService.error(item.summary));
-      }
-      throw new Error(error);
+      // const error = res.body.error
+      // if (error.message) {
+      //   this.notificationService.error(error.message);
+      // } else if (error.errors?.length) {
+      //   error.errors.forEach(item => this.notificationService.error(item.summary));
+      // }
+      // throw new Error(error);
+      throw new HttpErrorResponse({status: 400, error: res.body.error})
     }
     if (['PUT', 'PATCH', 'DELETE'].indexOf(req.method) !== -1 || req.headers.get(showNotification)) {
       this.notificationService.success('موفق', 'عملیات موردنظر با موفقیت انجام شد')
@@ -81,6 +82,11 @@ export class InterceptorService implements HttpInterceptor {
   private errorHandler(error: HttpErrorResponse) {
     if (error.status === 400) {
       // show snackbar
+      if (error.error.message) {
+        this.notificationService.error(error.error.message);
+      } else if (error.error.errors?.length) {
+        error.error.errors.forEach(item => this.notificationService.error(item.summary));
+      }
     } else if (error.status === 401) {
       // خروج به استثنا زمانی که داره لاگین میکنه
       this.oauthFacade.logout()
