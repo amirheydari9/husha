@@ -4,3 +4,4 @@ export const selectedUnitKey = 'selectedUnitKey';
 export const selectedPeriodKey = 'selectedPeriodKey';
 
 export const hushaHttpError = 'hushaHttpError'
+export const showNotification = 'showNotification'

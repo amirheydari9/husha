@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {showNotification} from "../constants/keys";
 
 @Injectable({
   providedIn: 'root'
@@ -48,5 +49,9 @@ export class HttpService {
       if (value !== null && value !== undefined) params = params.append(key, value);
     }
     return params
+  }
+
+  showNotificationHeader(): HttpHeaders {
+    return new HttpHeaders().set(showNotification, 'true')
   }
 }

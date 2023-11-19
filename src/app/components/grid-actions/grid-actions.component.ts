@@ -154,6 +154,13 @@ export class GridActionsComponent implements OnInit {
       type: ACCESS_FORM_ACTION_TYPE.DELETE_ALL,
       tooltip: "حذف همه",
       order: 10
+    },
+    {
+      icon: "pi pi-file-export",
+      styleClass: "p-button-rounded p-button-success",
+      type: ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE,
+      tooltip: "دانلود فایل",
+      order: 11
     }
   ]
 
@@ -168,7 +175,12 @@ export class GridActionsComponent implements OnInit {
     if (actionType === ACCESS_FORM_ACTION_TYPE.PERV || actionType === ACCESS_FORM_ACTION_TYPE.NEXT) {
       return !this.gridHistory.length || (actionType === ACCESS_FORM_ACTION_TYPE.PERV ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.gridHistory.length - 1)
     }
-    return (actionType === ACCESS_FORM_ACTION_TYPE.UPDATE || actionType === ACCESS_FORM_ACTION_TYPE.DELETE || actionType === ACCESS_FORM_ACTION_TYPE.ATTACHMENTS) ? !(!!this.selectedRow) : false
+    return (
+      actionType === ACCESS_FORM_ACTION_TYPE.UPDATE ||
+      actionType === ACCESS_FORM_ACTION_TYPE.DELETE ||
+      actionType === ACCESS_FORM_ACTION_TYPE.ATTACHMENTS ||
+      actionType === ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE
+    ) ? !(!!this.selectedRow) : false
   }
 
   handleConfirmationConfig(type: ACCESS_FORM_ACTION_TYPE) {
@@ -224,6 +236,7 @@ export class GridActionsComponent implements OnInit {
       case ACCESS_FORM_ACTION_TYPE.ATTACHMENTS:
       case ACCESS_FORM_ACTION_TYPE.DELETE:
       case ACCESS_FORM_ACTION_TYPE.DELETE_ALL:
+      case ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE:
         this.onAction.emit(type)
         break
       case ACCESS_FORM_ACTION_TYPE.EXPORT:

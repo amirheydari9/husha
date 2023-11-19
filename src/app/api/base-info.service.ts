@@ -58,9 +58,6 @@ export class BaseInfoService {
   }
 
   fetchMaxIncValue(payload: FetchMaxIncValueByFieldNameDTO): Observable<number> {
-    const params = this.httpService.toHttpParam(payload)
-    // return of(1234)
-    //TODO active
     return this.httpService.post<number>(`baseinfo/data/max-inc-value-by-field-name`, payload)
   }
 
@@ -69,11 +66,11 @@ export class BaseInfoService {
   }
 
   addFormData(payload: AddFormDataReqDTO) {
-    return this.httpService.post(`baseinfo/data`, payload)
+    return this.httpService.post(`baseinfo/data`, payload, null, this.httpService.showNotificationHeader())
   }
 
   addListFormData(payload: AddListFormDataReqDTO) {
-    return this.httpService.post(`baseinfo/data/list`, payload)
+    return this.httpService.post(`baseinfo/data/list`, payload, null, this.httpService.showNotificationHeader())
   }
 
   updateFormData(payload: UpdateFormDataReqDTO) {
@@ -81,7 +78,6 @@ export class BaseInfoService {
   }
 
   deleteFormData(payload: DeleteFormDataDTO): Observable<boolean> {
-    // return of({"response": true, "error": null}).pipe(delay(1000))
     return this.httpService.delete<boolean>(`baseinfo/data`, payload)
   }
 
@@ -103,7 +99,7 @@ export class BaseInfoService {
   }
 
   addAttachment(payload: AttachmentReqDTO): Observable<AttachmentRes> {
-    return this.httpService.post(`baseinfo/attachment/add`, payload)
+    return this.httpService.post(`baseinfo/attachment/add`, payload, null, this.httpService.showNotificationHeader())
   }
 
   updateAttachment(payload: AttachmentReqDTO): Observable<AttachmentRes> {
