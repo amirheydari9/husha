@@ -15,7 +15,7 @@ import {ACCESS_FORM_ACTION_TYPE} from "../../constants/enums";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
-import {ExportExcelDialogModule} from "../dialog/export-excel-dialog/export-excel-dialog.component";
+// import {ExportExcelDialogModule} from "../dialog/export-excel-dialog/export-excel-dialog.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -41,11 +41,11 @@ import {ExportExcelDialogModule} from "../dialog/export-excel-dialog/export-exce
                   (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}</span>
       </div>
     </div>
-    <app-export-excel-dialog
-      *ngIf="showExportExcelDialog"
-      [(visible)]="showExportExcelDialog"
-      [source]="exportExcelSource"
-    ></app-export-excel-dialog>
+<!--    <app-export-excel-dialog-->
+<!--      *ngIf="showExportExcelDialog"-->
+<!--      [(visible)]="showExportExcelDialog"-->
+<!--      [source]="exportExcelSource"-->
+<!--    ></app-export-excel-dialog>-->
   `,
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -253,7 +253,7 @@ export class GridActionsComponent implements OnInit {
     NgClass,
     NgIf,
     CustomButtonModule,
-    ExportExcelDialogModule,
+    // ExportExcelDialogModule,
   ],
   exports: [GridActionsComponent]
 })
