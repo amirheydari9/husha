@@ -3,13 +3,8 @@ import {CommonModule} from '@angular/common';
 import {RouterModule} from "@angular/router";
 import {AttachmentComponent} from './attachment.component';
 import {ReactiveFormsModule} from "@angular/forms";
-import {CustomInputTextModule} from "../../../../ui-kits/custom-input-text/custom-input-text.component";
-import {CustomTextAreaModule} from "../../../../ui-kits/custom-text-area/custom-text-area.component";
-import {CustomUploadFileModule} from "../../../../ui-kits/custom-upload-file/custom-upload-file.component";
-import {CustomButtonModule} from "../../../../ui-kits/custom-button/custom-button.component";
 import {AgGridModule} from "ag-grid-angular";
 import {GridActionsModule} from "../../../../components/grid-actions/grid-actions.component";
-import {AttachmentDialogModule} from "../../../../components/dialog/attachment-dialog/attachment-dialog.component";
 
 
 @NgModule({
@@ -20,13 +15,8 @@ import {AttachmentDialogModule} from "../../../../components/dialog/attachment-d
     CommonModule,
     RouterModule.forChild([{path: '', component: AttachmentComponent}]),
     ReactiveFormsModule,
-    CustomInputTextModule,
-    CustomTextAreaModule,
-    CustomUploadFileModule,
-    CustomButtonModule,
     AgGridModule,
     GridActionsModule,
-    AttachmentDialogModule,
   ],
 })
 export class AttachmentModule {

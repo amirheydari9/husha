@@ -22,7 +22,7 @@ import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.comp
   `,
   styles: []
 })
-export class DynamicDialogActionsComponent implements OnInit {
+export class DynamicDialogActionsComponent{
 
   @Input() disabled: boolean = false;
 
@@ -32,9 +32,6 @@ export class DynamicDialogActionsComponent implements OnInit {
   closed: EventEmitter<any> = new EventEmitter<any>();
 
   constructor() {
-  }
-
-  ngOnInit(): void {
   }
 
 }

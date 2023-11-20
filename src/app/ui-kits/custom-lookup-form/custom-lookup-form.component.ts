@@ -51,6 +51,7 @@ import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service"
       .p-button {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
+        height: 44px;
       }
     }
   `],
