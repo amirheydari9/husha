@@ -10,6 +10,8 @@ import {ColDef, GridOptions, RowClickedEvent} from "ag-grid-community";
 import {AttachmentRes} from "../../../../models/interface/attachment-res.interface";
 import {DateService} from "../../../../utils/date.service";
 import {FileService} from "../../../../utils/file.service";
+import {DialogManagementService} from "../../../../utils/dialog-management.service";
+import {AttachmentDialogComponent} from "../../../../components/dialog/attachment-dialog/attachment-dialog.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -55,7 +57,8 @@ export class AttachmentComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private baseInfoService: BaseInfoService,
     private dateService: DateService,
-    private fileService: FileService
+    private fileService: FileService,
+    private dialogManagementService: DialogManagementService
   ) {
   }
 
@@ -107,11 +110,11 @@ export class AttachmentComponent implements OnInit {
     switch ($event) {
       case ACCESS_FORM_ACTION_TYPE.ADD:
         this.attachment = null
-        this.showDialog = true
+        this.openDialog()
         break
       case ACCESS_FORM_ACTION_TYPE.UPDATE:
         this.attachment = this.selectedRow
-        this.showDialog = true
+        this.openDialog()
         break;
       case ACCESS_FORM_ACTION_TYPE.DELETE:
         this.handleDeleteAttachment()
@@ -124,28 +127,33 @@ export class AttachmentComponent implements OnInit {
     }
   }
 
-  handleOnHideDialog($event: any) {
-    if ($event) {
-      const attachment = new DocumentModelDTO(
-        $event['name'],
-        $event['desc'],
-        this.rowData.length > 1 ? this.rowData[0].id : null,
-        this.attachment ? null : $event['data'],
-      )
-      if (this.attachment) {
-        this.subscription.push(
-          this.baseInfoService.updateAttachment(this.handleAttachmentPayload(attachment, this.attachment.id)).subscribe(data => {
-            this.rowData = this.rowData.map(item => {
-              if (item.id === data.id) item = data
-              return item
+
+  openDialog() {
+    this.dialogManagementService.openDialog(AttachmentDialogComponent, {
+      data: {form: this.form, attachment: this.attachment},
+    }).subscribe(data => {
+      if (data) {
+        const attachment = new DocumentModelDTO(
+          data['name'],
+          data['desc'],
+          this.rowData.length > 1 ? this.rowData[0].id : null,
+          this.attachment ? null : data['data'],
+        )
+        if (this.attachment) {
+          this.subscription.push(
+            this.baseInfoService.updateAttachment(this.handleAttachmentPayload(attachment, this.attachment.id)).subscribe(data => {
+              this.rowData = this.rowData.map(item => {
+                if (item.id === data.id) item = data
+                return item
+              })
             })
-          })
-        )
-      } else {
-        this.subscription.push(
-          this.baseInfoService.addAttachment(this.handleAttachmentPayload(attachment)).subscribe(data => this.rowData = [...this.rowData, data])
-        )
+          )
+        } else {
+          this.subscription.push(
+            this.baseInfoService.addAttachment(this.handleAttachmentPayload(attachment)).subscribe(data => this.rowData = [...this.rowData, data])
+          )
+        }
       }
-    }
+    })
   }
 }

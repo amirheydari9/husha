@@ -14,11 +14,3 @@
   [paginationPageSize]="5"
   (rowClicked)="handleRowSelected($event)"
 ></ag-grid-angular>
-
-<app-attachment-dialog
-  *ngIf="showDialog"
-  [(visible)]="showDialog"
-  [form]="form"
-  [attachment]="attachment"
-  (onHide)="handleOnHideDialog($event)"
-></app-attachment-dialog>

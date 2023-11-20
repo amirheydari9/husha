@@ -5,6 +5,7 @@ import {AttachmentComponent} from './attachment.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {AgGridModule} from "ag-grid-angular";
 import {GridActionsModule} from "../../../../components/grid-actions/grid-actions.component";
+import {AttachmentDialogModule} from "../../../../components/dialog/attachment-dialog/attachment-dialog.component";
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import {GridActionsModule} from "../../../../components/grid-actions/grid-action
     ReactiveFormsModule,
     AgGridModule,
     GridActionsModule,
+    AttachmentDialogModule
   ],
 })
 export class AttachmentModule {

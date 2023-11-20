@@ -15,7 +15,10 @@ import {ACCESS_FORM_ACTION_TYPE} from "../../constants/enums";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
-import {ExportExcelDialogComponent} from "../dialog/export-excel-dialog/export-excel-dialog.component";
+import {
+  ExportExcelDialogComponent,
+  ExportExcelDialogModule
+} from "../dialog/export-excel-dialog/export-excel-dialog.component";
 import {DialogManagementService} from "../../utils/dialog-management.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
@@ -257,6 +260,7 @@ export class GridActionsComponent implements OnInit {
     NgClass,
     NgIf,
     CustomButtonModule,
+    ExportExcelDialogModule
   ],
   exports: [GridActionsComponent]
 })
