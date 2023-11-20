@@ -113,7 +113,7 @@ export class DynamicFormComponent implements OnInit {
   @ViewChild(FormGroupDirective) formRef: FormGroupDirective;
 
   @Output() onSubmit: EventEmitter<any> = new EventEmitter<any>()
-  @Output() onValid: EventEmitter<boolean> = new EventEmitter<boolean>()
+  // @Output() onValid: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   dynamicFormGroup: FormGroup;
   groups = [];
@@ -125,10 +125,10 @@ export class DynamicFormComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
-    this.onValid.emit(this.dynamicFormGroup.valid)
-    this.subscription = this.dynamicFormGroup.valueChanges.subscribe(() => {
-      this.onValid.emit(this.dynamicFormGroup.valid)
-    })
+    // this.onValid.emit(this.dynamicFormGroup.valid)
+    // this.subscription = this.dynamicFormGroup.valueChanges.subscribe(() => {
+    //   this.onValid.emit(this.dynamicFormGroup.valid)
+    // })
   }
 
   get INPUT_FIELD_TYPE(): typeof INPUT_FIELD_TYPE {
