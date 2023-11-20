@@ -15,7 +15,8 @@ import {ACCESS_FORM_ACTION_TYPE} from "../../constants/enums";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
-// import {ExportExcelDialogModule} from "../dialog/export-excel-dialog/export-excel-dialog.component";
+import {ExportExcelDialogComponent} from "../dialog/export-excel-dialog/export-excel-dialog.component";
+import {DialogManagementService} from "../../utils/dialog-management.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -37,15 +38,14 @@ import {Subscription} from "rxjs";
     </div>
     <div class="mb-3 border-2" *ngIf="gridHistory.length">
       <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">
-            <span #history class="cursor-pointer p-2" [ngClass]="{'border-bottom-2': i !== gridHistory.length-1}"
-                  (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}</span>
+        <span
+          #history
+          class="cursor-pointer p-2"
+          [ngClass]="{'border-bottom-2': i !== gridHistory.length-1}"
+          (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}
+        </span>
       </div>
     </div>
-<!--    <app-export-excel-dialog-->
-<!--      *ngIf="showExportExcelDialog"-->
-<!--      [(visible)]="showExportExcelDialog"-->
-<!--      [source]="exportExcelSource"-->
-<!--    ></app-export-excel-dialog>-->
   `,
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -59,7 +59,6 @@ export class GridActionsComponent implements OnInit {
   @Input() selectedRow: any
   @Input() gridHistory = []
   @Input() exportExcelSource = []
-  showExportExcelDialog = false
 
   @Input() set accessFormActions(data: ACCESS_FORM_ACTION_TYPE[]) {
     if (data.length) {
@@ -164,7 +163,9 @@ export class GridActionsComponent implements OnInit {
     }
   ]
 
-  constructor() {
+  constructor(
+    private dialogManagementService: DialogManagementService
+  ) {
   }
 
   get ACCESS_FORM_ACTION_TYPE(): typeof ACCESS_FORM_ACTION_TYPE {
@@ -240,7 +241,10 @@ export class GridActionsComponent implements OnInit {
         this.onAction.emit(type)
         break
       case ACCESS_FORM_ACTION_TYPE.EXPORT:
-        this.showExportExcelDialog = true
+        this.dialogManagementService.openDialog(ExportExcelDialogComponent, {
+          data: {source: this.exportExcelSource},
+          header: 'خروجی اکسل'
+        })
         break
     }
   }
@@ -253,7 +257,6 @@ export class GridActionsComponent implements OnInit {
     NgClass,
     NgIf,
     CustomButtonModule,
-    // ExportExcelDialogModule,
   ],
   exports: [GridActionsComponent]
 })

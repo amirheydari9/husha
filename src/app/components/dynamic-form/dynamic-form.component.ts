@@ -185,6 +185,14 @@ export class DynamicFormComponent implements OnInit {
     return validators
   }
 
+  get value() {
+    return this.dynamicFormGroup.getRawValue()
+  }
+
+  get valid(): boolean {
+    return this.dynamicFormGroup.valid
+  }
+
   resetForm() {
     this.formRef.reset()
   }

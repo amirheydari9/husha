@@ -19,7 +19,7 @@ export class DialogManagementService {
     resizable: true,
     modal: true,
     width: '50vw',
-    height: '50vh',
+    height: 'auto',
     // closable: false,
     // closeOnEscape: false
   }

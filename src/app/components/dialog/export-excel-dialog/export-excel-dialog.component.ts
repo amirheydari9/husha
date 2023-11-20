@@ -1,46 +1,38 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnInit, Output} from '@angular/core';
+import {Component, NgModule, OnInit} from '@angular/core';
 import {CustomDialogModule} from "../../../ui-kits/custom-dialog/custom-dialog.component";
 import {dynamicField, DynamicFormModule} from "../../dynamic-form/dynamic-form.component";
 import {DYNAMIC_FORM_RULES, INPUT_FIELD_TYPE} from "../../../constants/enums";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {DynamicDialogActionsModule} from "../../dynamic-dilaog-actions/dynamic-dialog-actions.component";
 
 @Component({
   selector: 'app-export-excel-dialog',
   template: `
-    <app-custom-dialog
-      header="خروجی اکسل"
-      (closed)="visibleChange.emit(false)"
-      (confirmed)="handleConfirm(dynamicForm.dynamicFormGroup.getRawValue())"
-      [disabled]="disabled"
-      [showDialog]="visible">
-      <app-dynamic-form
-        (onValid)="disabled= !$event;cdr.detectChanges()"
-        #dynamicForm [model]="[model]"></app-dynamic-form>
-    </app-custom-dialog>
+    <app-dynamic-form #dynamicForm [model]="[model]"></app-dynamic-form>
+    <app-dynamic-dialog-actions
+      [disabled]="!dynamicForm.valid"
+      (confirmed)="handleConfirm(dynamicForm.value)"
+      (closed)="ref.close()"
+    ></app-dynamic-dialog-actions>
   `,
 })
 export class ExportExcelDialogComponent implements OnInit {
 
   model: dynamicField[] = []
-  disabled: boolean
 
-  @Input() set source(data) {
+  constructor(
+    private dynamicDialogConfig: DynamicDialogConfig,
+    public ref: DynamicDialogRef,
+  ) {
     this.model = [
       {
         type: INPUT_FIELD_TYPE.PICKLIST,
         value: [],
         name: 'picklist',
         rules: {[DYNAMIC_FORM_RULES.REQUIRED]: true},
-        meta: {source: data}
+        meta: {source: dynamicDialogConfig.data.source}
       }
     ]
-  }
-
-  @Input() visible: boolean = false
-  @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>()
-
-  constructor(
-    public cdr: ChangeDetectorRef
-  ) {
   }
 
 
@@ -48,8 +40,8 @@ export class ExportExcelDialogComponent implements OnInit {
 
   }
 
-  handleConfirm($event) {
-    console.log($event)
+  handleConfirm(value: any) {
+    console.log(value)
   }
 }
 
@@ -57,7 +49,8 @@ export class ExportExcelDialogComponent implements OnInit {
   declarations: [ExportExcelDialogComponent],
   imports: [
     CustomDialogModule,
-    DynamicFormModule
+    DynamicFormModule,
+    DynamicDialogActionsModule
   ],
   exports: [ExportExcelDialogComponent]
 })
