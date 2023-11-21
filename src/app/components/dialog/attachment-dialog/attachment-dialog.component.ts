@@ -1,66 +1,76 @@
-import {Component, NgModule} from '@angular/core';
-import {dynamicField, DynamicFormModule} from "../../dynamic-form/dynamic-form.component";
-import {DYNAMIC_FORM_RULES, INPUT_FIELD_TYPE} from "../../../constants/enums";
+import {Component, NgModule, OnInit} from '@angular/core';
+import {dynamicField} from "../../dynamic-form/dynamic-form.component";
 import {DynamicDialogActionsModule} from "../../dynamic-dilaog-actions/dynamic-dialog-actions.component";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {CustomInputTextModule} from "../../../ui-kits/custom-input-text/custom-input-text.component";
+import {CustomUploadFileModule} from "../../../ui-kits/custom-upload-file/custom-upload-file.component";
+import {CustomTextAreaModule} from "../../../ui-kits/custom-text-area/custom-text-area.component";
+import {AttachmentRes} from "../../../models/interface/attachment-res.interface";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-attachment-dialog',
   template: `
-    <app-dynamic-form #dynamicForm [model]="[model]"></app-dynamic-form>
+    <form [formGroup]="form" class="flex align-items-end flex-wrap">
+      <div class="col-4">
+        <app-custom-input-text
+          formControlName="name"
+          label="نام فایل"
+        ></app-custom-input-text>
+      </div>
+      <div class="col-4" *ngIf="!attachment">
+        <app-custom-upload-file
+          formControlName="data"
+        ></app-custom-upload-file>
+      </div>
+      <div class="col-12">
+        <app-custom-text-area
+          formControlName="desc"
+          label="توضیحات"
+        ></app-custom-text-area>
+      </div>
+    </form>
     <app-dynamic-dialog-actions
-      [disabled]="!dynamicForm?.valid"
-      (confirmed)="ref.close(dynamicForm?.value)"
+      [disabled]="form.invalid"
+      (confirmed)="ref.close(form.value)"
       (closed)="ref.close()"
     ></app-dynamic-dialog-actions>
   `,
 })
-export class AttachmentDialogComponent {
+export class AttachmentDialogComponent implements OnInit {
 
   model: dynamicField[] = []
+  form: FormGroup
+  attachment: AttachmentRes
 
   constructor(
-    private dynamicDialogConfig: DynamicDialogConfig,
+    public dynamicDialogConfig: DynamicDialogConfig,
     public ref: DynamicDialogRef,
+    private fb: FormBuilder
   ) {
-    const attachment = dynamicDialogConfig.data.attachment
-    this.model = [
-      {
-        value: attachment ? attachment['name'] : null,
-        label: 'نام فایل',
-        name: 'name',
-        type: INPUT_FIELD_TYPE.TEXT,
-        rules: {[DYNAMIC_FORM_RULES.REQUIRED]: true}
-      },
-      {
-        value: attachment ? attachment['desc'] : null,
-        label: 'توضیحات',
-        name: 'desc',
-        type: INPUT_FIELD_TYPE.TEXT_AREA,
-        rules: {[DYNAMIC_FORM_RULES.MAX_LENGTH]: 300}
-      }
-    ]
-    if (!attachment) {
-      this.model = [
-        this.model[0],
-        {
-          value: null,
-          label: 'فایل',
-          name: 'data',
-          type: INPUT_FIELD_TYPE.FILE,
-          rules: {[DYNAMIC_FORM_RULES.REQUIRED]: true}
-        },
-        this.model[1]
-      ]
-    }
+
+  }
+
+  ngOnInit() {
+    this.attachment = this.dynamicDialogConfig.data.attachment
+    this.form = this.fb.group({
+      name: this.fb.control(this.attachment ? this.attachment.name : null, [Validators.required]),
+      data: this.fb.control(null, !this.attachment ? Validators.required : null),
+      desc: this.fb.control(this.attachment ? this.attachment.desc : null, [Validators.maxLength(300)]),
+    })
   }
 }
 
 @NgModule({
   declarations: [AttachmentDialogComponent],
   imports: [
-    DynamicFormModule,
-    DynamicDialogActionsModule
+    DynamicDialogActionsModule,
+    ReactiveFormsModule,
+    CustomInputTextModule,
+    CustomUploadFileModule,
+    CustomTextAreaModule,
+    CommonModule,
   ],
   exports: [AttachmentDialogComponent]
 })

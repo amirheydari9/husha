@@ -52,7 +52,7 @@ export class CustomUploadFileComponent extends BaseControlValueAccessor<string> 
     this.selectedFile = fileList && fileList.item(0);
     let fileToBase64: string = null
     if (this.selectedFile) fileToBase64 = await this.fileService.convertFileToBase64(this.selectedFile)
-    this.changed(fileToBase64.split(',')[1]);
+    this.changed(fileToBase64?.split(',')[1]);
   }
 }
 
