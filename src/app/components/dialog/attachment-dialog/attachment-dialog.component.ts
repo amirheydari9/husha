@@ -1,7 +1,6 @@
-import {Component, Input, NgModule} from '@angular/core';
+import {Component, NgModule} from '@angular/core';
 import {dynamicField, DynamicFormModule} from "../../dynamic-form/dynamic-form.component";
 import {DYNAMIC_FORM_RULES, INPUT_FIELD_TYPE} from "../../../constants/enums";
-import {AttachmentRes} from "../../../models/interface/attachment-res.interface";
 import {DynamicDialogActionsModule} from "../../dynamic-dilaog-actions/dynamic-dialog-actions.component";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 
@@ -19,44 +18,6 @@ import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 export class AttachmentDialogComponent {
 
   model: dynamicField[] = []
-
-  private _attachment: AttachmentRes;
-  @Input() set attachment(data: AttachmentRes) {
-    this.model = [
-      {
-        value: data ? data['name'] : null,
-        label: 'نام فایل',
-        name: 'name',
-        type: INPUT_FIELD_TYPE.TEXT,
-        rules: {[DYNAMIC_FORM_RULES.REQUIRED]: true}
-      },
-      {
-        value: data ? data['desc'] : null,
-        label: 'توضیحات',
-        name: 'desc',
-        type: INPUT_FIELD_TYPE.TEXT_AREA,
-        rules: {[DYNAMIC_FORM_RULES.MAX_LENGTH]: 300}
-      }
-    ]
-    if (!data) {
-      this.model = [
-        this.model[0],
-        {
-          value: data ? data['data'] : null,
-          label: 'فایل',
-          name: 'data',
-          type: INPUT_FIELD_TYPE.FILE,
-          rules: {[DYNAMIC_FORM_RULES.REQUIRED]: true}
-        },
-        this.model[1]
-      ]
-    }
-    this._attachment = data
-  }
-
-  get attachment(): AttachmentRes {
-    return this._attachment
-  }
 
   constructor(
     private dynamicDialogConfig: DynamicDialogConfig,
