@@ -1,4 +1,4 @@
-import {Component, HostListener, NgModule, OnInit, Self} from '@angular/core';
+import {Component, HostListener, Input, NgModule, OnInit, Self} from '@angular/core';
 import {FormControl, NgControl} from "@angular/forms";
 import {FieldErrorModule} from "../field-error/field-error.component";
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
@@ -9,24 +9,34 @@ import {CustomButtonModule} from "../custom-button/custom-button.component";
 @Component({
   selector: 'app-custom-upload-file',
   template: `
-    <div class="flex align-items-center wrapper background-white p-2"
-         [ngClass]="[control.invalid &&( control.dirty || control.touched) ? 'error-border' :'border-2']">
-      <app-custom-button type="button" label="Choose file" (onClick)="touched();input.click()"
-                         icon="pi pi-plus"></app-custom-button>
-      <span class="font-sm-regular mr-2">{{selectedFile ? selectedFile.name : 'or drag and drop file here' }}</span>
-      <img *ngIf="value" [src]="value" width="75" height="75" style="border-radius: 50%" class="mr-2"/>
-      <input #input class="hidden" type="file">
-    </div>
-    <div style="height: 20px">
-      <app-field-error [formField]="control"></app-field-error>
+    <div class="fle flex-column" [ngClass]="class">
+      <div class="flex align-items-stretch">
+        <app-custom-button type="button" label="Choose file" (onClick)="touched(); input.click()"
+                           icon="pi pi-plus"></app-custom-button>
+        <input #input class="hidden" type="file">
+        <div class="flex align-items-center flex-grow-1 file"
+             [ngClass]="[control.invalid &&( control.dirty || control.touched) ? 'error-border' :'border-2']">
+          <span class="font-sm-regular mr-2">{{selectedFile ? selectedFile.name : ''}}</span>
+        </div>
+      </div>
+      <div style="height:20px">
+        <app-field-error [formField]="control"></app-field-error>
+      </div>
     </div>
   `,
   styles: [`
     @import "../../../scss/variabels";
 
-    .wrapper {
-      border-radius: 8px;
-      height: 90px;
+    .file {
+      border: 1px solid;
+      border-radius: 6px 0 0 6px;
+      border-right: unset
+    }
+
+    :host ::ng-deep {
+      .p-button {
+        border-radius: 0 6px 6px 0;
+      }
     }
   `]
 })
@@ -34,6 +44,8 @@ export class CustomUploadFileComponent extends BaseControlValueAccessor<string> 
 
   control: FormControl
   selectedFile: File
+
+  @Input() class
 
   constructor(
     @Self() public controlDir: NgControl,
