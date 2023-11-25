@@ -10,6 +10,7 @@ import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.comp
         label="بستن"
         (onClick)="closed.emit()"
         styleClass="p-button-danger"
+        type="button"
       ></app-custom-button>
       <app-custom-button
         class="ml-1"
