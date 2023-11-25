@@ -30,7 +30,7 @@ import {CustomButtonModule} from "../custom-button/custom-button.component";
     .file {
       border: 1px solid;
       border-radius: 6px 0 0 6px;
-      border-right: unset
+      border-right: unset !important;
     }
 
     :host ::ng-deep {

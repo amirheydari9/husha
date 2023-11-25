@@ -4,10 +4,9 @@ import {ImportComponent} from './import.component';
 import {RouterModule} from '@angular/router';
 import {ReactiveFormsModule} from "@angular/forms";
 import {CustomDropdownModule} from "../../../../ui-kits/custom-dropdown/custom-dropdown.component";
-import {ReadExcelDirectiveModule} from "../../../../directives/read-excel.directive";
-import {CustomButtonModule} from "../../../../ui-kits/custom-button/custom-button.component";
 import {AgGridModule} from "ag-grid-angular";
 import {GeneralFormModule} from "../../../../components/general-form/general-form.component";
+import {CustomImportExcelModule} from "../../../../ui-kits/custom-import-excel/custom-import-excel.component";
 
 
 @NgModule({
@@ -19,10 +18,9 @@ import {GeneralFormModule} from "../../../../components/general-form/general-for
     RouterModule.forChild([{path: '', component: ImportComponent}]),
     ReactiveFormsModule,
     CustomDropdownModule,
-    ReadExcelDirectiveModule,
-    CustomButtonModule,
     AgGridModule,
-    GeneralFormModule
+    GeneralFormModule,
+    CustomImportExcelModule
   ]
 })
 export class ImportModule {

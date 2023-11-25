@@ -17,8 +17,10 @@ export class ReadExcelDirective {
   @HostListener('change', ['$event.target'])
   onChange(target: HTMLInputElement) {
     this.file = target.files[0];
-    this.excelSheetsObservable = new Observable((subscriber: Subscriber<any>) => this.readWorkBook(subscriber));
-    this.excelSheetsObservable.subscribe(d => this.onSheetsReady.emit(d));
+    if (this.file) {
+      this.excelSheetsObservable = new Observable((subscriber: Subscriber<any>) => this.readWorkBook(subscriber));
+      this.excelSheetsObservable.subscribe(d => this.onSheetsReady.emit(d));
+    }
   }
 
   readWorkBook(subscriber: Subscriber<any>) {
@@ -32,7 +34,7 @@ export class ReadExcelDirective {
     }
   }
 
-  readSheet(sheetName: string) {
+  readSheet(sheetName: string): Observable<any> {
     return new Observable((subscriber: Subscriber<any>) => {
       const fileReader = new FileReader();
       fileReader.readAsArrayBuffer(this.file);

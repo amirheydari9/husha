@@ -1,8 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Subscription} from "rxjs";
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
-import {ReadExcelDirective} from "../../../../directives/read-excel.directive";
 import {ActivatedRoute} from "@angular/router";
 import {dynamicField} from "../../../../components/dynamic-form/dynamic-form.component";
 import {ColDef, GridOptions} from "ag-grid-community";
@@ -13,6 +12,7 @@ import {HushaCustomerUtilService} from "../../../../utils/husha-customer-util.se
 import {AddListFormDataReqDTO} from "../../../../models/DTOs/add-list-form-data-req.DTO";
 import {BaseInfoService} from "../../../../api/base-info.service";
 import {GeneralFormComponent} from "../../../../components/general-form/general-form.component";
+import {CustomImportExcelComponent} from "../../../../ui-kits/custom-import-excel/custom-import-excel.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -36,7 +36,7 @@ export class ImportComponent implements OnInit {
   rowData = []
   form: IFetchFormRes
 
-  @ViewChild('readExcel', {read: ReadExcelDirective}) readExcel: ReadExcelDirective
+  @ViewChild(CustomImportExcelComponent, {read: CustomImportExcelComponent}) importExcelComp: CustomImportExcelComponent
   @ViewChild('generalForm', {read: GeneralFormComponent}) generalForm: GeneralFormComponent
 
   constructor(
@@ -52,8 +52,8 @@ export class ImportComponent implements OnInit {
   ngOnInit(): void {
 
     this.importExcelForm = this.fb.group({
-      file: this.fb.control(null),
-      sheets: this.fb.control(null)
+      file: this.fb.control(null, [Validators.required]),
+      sheets: this.fb.control(null, [Validators.required])
     })
 
     this.subscription.push(
@@ -95,7 +95,7 @@ export class ImportComponent implements OnInit {
 
 
   readSheet(selectedSheetName: string) {
-    this.readExcel.readSheet(selectedSheetName).subscribe(data => {
+    this.importExcelComp.handleReadExcel(selectedSheetName).subscribe(data => {
       this.model.map(item => {
         item.options = data.header
         return item
