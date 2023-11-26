@@ -18,7 +18,7 @@ import {Observable} from "rxjs";
           (onClick)="touched();
           readExcel.click()"
           icon="pi pi-file-excel"></app-custom-button>
-        <input appReadExcel (onSheetsReady)="onSheetsReady.emit($event)" #readExcel class="hidden" type="file">
+        <input appReadExcel (onSheetsReady)="onSheetsReady.emit($event)" #readExcel class="hidden" type="file" accept=".xlsx, .csv, .xls">
         <div class="flex align-items-center flex-grow-1 file"
              [ngClass]="[control.invalid &&( control.dirty || control.touched) ? 'error-border' :'border-2']">
           <span class="font-sm-regular mr-2">{{selectedFile ? selectedFile.name : ''}}</span>
