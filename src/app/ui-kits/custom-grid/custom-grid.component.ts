@@ -7,14 +7,11 @@ import {AgGridModule} from "ag-grid-angular";
   selector: 'app-custom-grid',
   template: `
     <ag-grid-angular
-      style="width:100%;height: 310px"
+      style="width:100%"
       class="ag-theme-alpine"
       [columnDefs]="columnDefs"
       [rowData]="rowData"
-      [enableRtl]="true"
       [gridOptions]="gridOptions"
-      [pagination]="pagination"
-      [paginationPageSize]="5"
       (rowClicked)="rowClicked.emit($event)"
     ></ag-grid-angular>
   `,
@@ -22,18 +19,34 @@ import {AgGridModule} from "ag-grid-angular";
 })
 export class CustomGridComponent implements OnInit {
 
-  gridOptions: GridOptions = {
+  @Input() columnDefs: ColDef[] = []
+  @Input() rowData: any[] = []
+
+  private _gridOptions: GridOptions = {
     defaultColDef: {
-      sortable: true, filter: true, flex: 1
+      sortable: true, filter: true, flex: 1, minWidth: 150, resizable: true
     },
     overlayNoRowsTemplate: 'رکوری جهت نمایش یافت نشد',
     rowSelection: 'single',
-    localeText: AG_GRID_LOCALE_FA
+    localeText: AG_GRID_LOCALE_FA,
+    domLayout: 'autoHeight',
+    enableRtl: true,
+    pagination: true,
+    paginationPageSize: 5,
+  }
+  @Input() set gridOptions(data: GridOptions) {
+    if (data) {
+      this._gridOptions = {
+        ...this._gridOptions,
+        ...data,
+        defaultColDef: {...this._gridOptions.defaultColDef, ...data.defaultColDef},
+      }
+    }
   }
 
-  @Input() columnDefs: ColDef[] = []
-  @Input() rowData: any[] = []
-  @Input() pagination: boolean = true
+  get gridOptions(): GridOptions {
+    return this._gridOptions
+  }
 
   @Output() rowClicked: EventEmitter<RowClickedEvent<any>> = new EventEmitter<RowClickedEvent<any>>()
 
