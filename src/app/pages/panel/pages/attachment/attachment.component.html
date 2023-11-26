@@ -3,14 +3,8 @@
   [selectedRow]="selectedRow"
   (onAction)="handleOnAction($event)"
 ></app-grid-actions>
-<ag-grid-angular
-  style="width:100%;height: 310px"
-  class="ag-theme-alpine"
+<app-custom-grid
   [columnDefs]="columnDefs"
   [rowData]="rowData"
-  [enableRtl]="true"
-  [gridOptions]="gridOptions"
-  [pagination]="true"
-  [paginationPageSize]="5"
   (rowClicked)="handleRowSelected($event)"
-></ag-grid-angular>
+></app-custom-grid>

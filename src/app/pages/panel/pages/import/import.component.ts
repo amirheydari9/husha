@@ -27,12 +27,6 @@ export class ImportComponent implements OnInit {
   sheetOptions = []
   model: dynamicField[] = []
   columnDefs: ColDef[] = []
-  gridOptions: GridOptions = {
-    defaultColDef: {
-      sortable: true, filter: true, flex: 1
-    },
-    overlayNoRowsTemplate: 'رکوری جهت نمایش یافت نشد'
-  }
   rowData = []
   form: IFetchFormRes
 

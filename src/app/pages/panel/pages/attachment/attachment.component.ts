@@ -6,7 +6,7 @@ import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
 import {AttachmentReqDTO, DocumentModelDTO} from "../../../../models/DTOs/attachment-req.DTO";
 import {ACCESS_FORM_ACTION_TYPE} from "../../../../constants/enums";
-import {ColDef, GridOptions, RowClickedEvent} from "ag-grid-community";
+import {ColDef, RowClickedEvent} from "ag-grid-community";
 import {AttachmentRes} from "../../../../models/interface/attachment-res.interface";
 import {DateService} from "../../../../utils/date.service";
 import {FileService} from "../../../../utils/file.service";
@@ -30,13 +30,6 @@ export class AttachmentComponent implements OnInit {
     ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE
   ];
   form: IFetchFormRes
-  gridOptions: GridOptions = {
-    defaultColDef: {
-      sortable: true, filter: true, flex: 1
-    },
-    overlayNoRowsTemplate: 'رکوری جهت نمایش یافت نشد',
-    rowSelection: 'single'
-  }
   columnDefs: ColDef[] = [
     {headerName: 'نام فایل', field: 'name'},
     {headerName: 'نام', field: 'createBy.name'},
