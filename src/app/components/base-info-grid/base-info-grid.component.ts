@@ -65,7 +65,7 @@ export class BaseInfoGridComponent implements OnInit {
   gridHistory = []
   parentId: number
   selectedRow: any
-  exportExcelSource = []
+  exportExcelSource = null
 
   @Output() onRowDoubleClicked: EventEmitter<any> = new EventEmitter<any>()
   @Output() onRowClicked: EventEmitter<any> = new EventEmitter<any>()
@@ -82,7 +82,9 @@ export class BaseInfoGridComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.accessFormActions = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.fetchSummary)
     if (!this.fetchSummary) {
-      this.exportExcelSource = this.colApi['columnModel'].columnDefs
+      const data = []
+      this.gridApi.getRenderedNodes().forEach(row => data.push(row.data))
+      this.exportExcelSource = {cols: this.colApi['columnModel'].columnDefs, data}
     }
   }
 

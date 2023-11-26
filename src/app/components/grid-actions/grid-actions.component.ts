@@ -61,7 +61,7 @@ export class GridActionsComponent implements OnInit {
   currentHistoryIndex: number
   @Input() selectedRow: any
   @Input() gridHistory = []
-  @Input() exportExcelSource = []
+  @Input() exportExcelSource= null
 
   @Input() set accessFormActions(data: ACCESS_FORM_ACTION_TYPE[]) {
     if (data.length) {
