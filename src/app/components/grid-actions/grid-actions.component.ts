@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   ElementRef,
   EventEmitter,
@@ -51,7 +50,6 @@ import {DialogManagementService} from "../../utils/dialog-management.service";
     </div>
   `,
   styles: [],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GridActionsComponent implements OnInit {
 
@@ -61,7 +59,7 @@ export class GridActionsComponent implements OnInit {
   currentHistoryIndex: number
   @Input() selectedRow: any
   @Input() gridHistory = []
-  @Input() exportExcelSource= null
+  @Input() exportExcelSource = null
 
   @Input() set accessFormActions(data: ACCESS_FORM_ACTION_TYPE[]) {
     if (data.length) {
