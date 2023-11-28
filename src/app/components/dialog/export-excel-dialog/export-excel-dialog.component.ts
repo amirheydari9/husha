@@ -2,14 +2,29 @@ import {Component, NgModule, OnInit} from '@angular/core';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {DynamicDialogActionsModule} from "../../dynamic-dilaog-actions/dynamic-dialog-actions.component";
 import {CustomPickListModule} from "../../../ui-kits/custom-pick-list/custom-pick-list.component";
-import {FormBuilder, FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {CustomGridModule} from "../../../ui-kits/custom-grid/custom-grid.component";
 import {ColDef, GridOptions} from "ag-grid-community";
+import {CustomDropdownModule} from "../../../ui-kits/custom-dropdown/custom-dropdown.component";
+import {Subscription} from "rxjs";
+import {AutoUnsubscribe} from "../../../decorators/AutoUnSubscribe";
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-export-excel-dialog',
   template: `
-    <app-custom-pick-list [formControl]="control" [source]="dynamicDialogConfig.data.source.cols"></app-custom-pick-list>
+    <form [formGroup]="form">
+      <div class="col-4">
+        <app-custom-dropdown
+          formControlName="type"
+          [options]="[]"
+          label="نوع خروجی"
+        ></app-custom-dropdown>
+      </div>
+      <app-custom-pick-list
+        formControlName="pickList"
+        [source]="dynamicDialogConfig.data.source.cols"></app-custom-pick-list>
+    </form>
     <div class="mt-5">
       <app-custom-grid
         [columnDefs]="colDefs"
@@ -18,7 +33,7 @@ import {ColDef, GridOptions} from "ag-grid-community";
       ></app-custom-grid>
     </div>
     <app-dynamic-dialog-actions
-      [disabled]="control.invalid"
+      [disabled]="form.invalid"
       (confirmed)="handleConfirm()"
       (closed)="ref.close()"
     ></app-dynamic-dialog-actions>
@@ -26,7 +41,8 @@ import {ColDef, GridOptions} from "ag-grid-community";
 })
 export class ExportExcelDialogComponent implements OnInit {
 
-  control: FormControl
+  form: FormGroup
+  subscription: Subscription
 
   colDefs: ColDef[] = []
   gridOptions: GridOptions = {
@@ -42,12 +58,16 @@ export class ExportExcelDialogComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.control = this.fb.control([], [Validators.required])
-    this.control.valueChanges.subscribe(data => this.colDefs = [...data])
+
+    this.form = this.fb.group({
+      type: this.fb.control(null, [Validators.required]),
+      pickList: this.fb.control([], [Validators.required])
+    })
+    this.subscription = this.form.controls['pickList'].valueChanges.subscribe(data => this.colDefs = [...data])
   }
 
   handleConfirm() {
-    console.log(this.control.value)
+    console.log(this.form.value)
   }
 }
 
@@ -57,7 +77,8 @@ export class ExportExcelDialogComponent implements OnInit {
     DynamicDialogActionsModule,
     CustomPickListModule,
     ReactiveFormsModule,
-    CustomGridModule
+    CustomGridModule,
+    CustomDropdownModule
   ],
   exports: [ExportExcelDialogComponent]
 })

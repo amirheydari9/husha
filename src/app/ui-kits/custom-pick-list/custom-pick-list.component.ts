@@ -19,8 +19,8 @@ import {FormControl, NgControl} from "@angular/forms";
       targetHeader="انتخاب شده"
       [dragdrop]="true"
       [responsive]="false"
-      [sourceStyle]="{ height: '20rem' }"
-      [targetStyle]="{ height: '20rem' }"
+      [sourceStyle]="{ height: '10rem' }"
+      [targetStyle]="{ height: '10rem' }"
       breakpoint="1400px">
       <ng-template let-column pTemplate="item">
         {{column['headerName']}}
