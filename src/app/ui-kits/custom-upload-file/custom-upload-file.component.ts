@@ -38,6 +38,10 @@ import {CustomButtonModule} from "../custom-button/custom-button.component";
         border-radius: 0 6px 6px 0;
       }
     }
+
+    .error-border {
+      border: 1px solid $forbidden;
+    }
   `]
 })
 export class CustomUploadFileComponent extends BaseControlValueAccessor<string> implements OnInit {
