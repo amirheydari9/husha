@@ -139,7 +139,7 @@ export class AttachmentListDialogComponent implements OnInit {
           data['name'],
           data['desc'],
           this.rowData.length > 1 ? this.rowData[0].id : null,
-          this.attachment ? null : data['data'],
+          data['data'],
         )
         if (this.attachment) {
           this.subscription.push(

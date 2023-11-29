@@ -2,7 +2,6 @@ import {Component, HostListener, Input, NgModule, OnInit, Self} from '@angular/c
 import {FormControl, NgControl} from "@angular/forms";
 import {FieldErrorModule} from "../field-error/field-error.component";
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
-import {FileService} from "../../utils/file.service";
 import {NgClass, NgIf} from "@angular/common";
 import {CustomButtonModule} from "../custom-button/custom-button.component";
 
@@ -44,7 +43,7 @@ import {CustomButtonModule} from "../custom-button/custom-button.component";
     }
   `]
 })
-export class CustomUploadFileComponent extends BaseControlValueAccessor<string> implements OnInit {
+export class CustomUploadFileComponent extends BaseControlValueAccessor<File> implements OnInit {
 
   control: FormControl
   selectedFile: File
@@ -53,7 +52,6 @@ export class CustomUploadFileComponent extends BaseControlValueAccessor<string> 
 
   constructor(
     @Self() public controlDir: NgControl,
-    private fileService: FileService
   ) {
     super()
     this.controlDir.valueAccessor = this;
@@ -66,9 +64,9 @@ export class CustomUploadFileComponent extends BaseControlValueAccessor<string> 
   @HostListener('change', ['$event.target.files'])
   async changeFiles(fileList: FileList) {
     this.selectedFile = fileList && fileList.item(0);
-    let fileToBase64: string = null
-    if (this.selectedFile) fileToBase64 = await this.fileService.convertFileToBase64(this.selectedFile)
-    this.changed(fileToBase64?.split(',')[1]);
+    // let fileToBase64: string = null
+    // if (this.selectedFile) fileToBase64 = await this.fileService.convertFileToBase64(this.selectedFile)
+    this.changed(this.selectedFile);
   }
 }
 
