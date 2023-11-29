@@ -131,6 +131,8 @@ export class AttachmentListDialogComponent implements OnInit {
   openDialog() {
     this.dialogManagementService.openDialog(AttachmentDialogComponent, {
       data: {form: this.form, attachment: this.attachment},
+      width: '25vw',
+      header: this.attachment ? 'ویرایش ضمیمه' : 'ضمیمه جدید'
     }).subscribe(data => {
       if (data) {
         const attachment = new DocumentModelDTO(

@@ -13,16 +13,16 @@ import {CommonModule} from "@angular/common";
   selector: 'app-attachment-dialog',
   template: `
     <form [formGroup]="form" class="flex align-items-end flex-wrap">
-      <div class="col-4">
+      <div class="col-12">
+        <app-custom-upload-file
+          formControlName="data"
+        ></app-custom-upload-file>
+      </div>
+      <div class="col-12">
         <app-custom-input-text
           formControlName="name"
           label="نام فایل"
         ></app-custom-input-text>
-      </div>
-      <div class="col-4" *ngIf="!attachment">
-        <app-custom-upload-file
-          formControlName="data"
-        ></app-custom-upload-file>
       </div>
       <div class="col-12">
         <app-custom-text-area

@@ -190,7 +190,8 @@ export class BaseInfoGridComponent implements OnInit {
     } else if ($event === ACCESS_FORM_ACTION_TYPE.ATTACHMENTS) {
       // this.router.navigate([`/form/${this.form.id}/attachment/${this.selectedRow.id}`])
       this.dialogManagementService.openDialog(AttachmentListDialogComponent, {
-        data: {form: this.form, ownId: this.selectedRow.id}
+        data: {form: this.form, ownId: this.selectedRow.id},
+        header: 'لیست ضمیمه ها'
       })
     } else if ($event === ACCESS_FORM_ACTION_TYPE.IMPORT) {
       this.router.navigate([`/form/${this.form.id}/import-excel`], {
