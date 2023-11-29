@@ -1,25 +1,36 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {BaseInfoService} from "../../../../api/base-info.service";
+import {Component, NgModule, OnInit} from '@angular/core';
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {GridActionsModule} from "../../grid-actions/grid-actions.component";
+import {CustomGridModule} from "../../../ui-kits/custom-grid/custom-grid.component";
 import {Subscription} from "rxjs";
-import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
-import {IFetchFormRes} from "../../../../models/interface/fetch-form-res.interface";
-import {AttachmentReqDTO, DocumentModelDTO} from "../../../../models/DTOs/attachment-req.DTO";
-import {ACCESS_FORM_ACTION_TYPE} from "../../../../constants/enums";
+import {ACCESS_FORM_ACTION_TYPE} from "../../../constants/enums";
+import {IFetchFormRes} from "../../../models/interface/fetch-form-res.interface";
 import {ColDef, RowClickedEvent} from "ag-grid-community";
-import {AttachmentRes} from "../../../../models/interface/attachment-res.interface";
-import {DateService} from "../../../../utils/date.service";
-import {FileService} from "../../../../utils/file.service";
-import {DialogManagementService} from "../../../../utils/dialog-management.service";
-import {AttachmentDialogComponent} from "../../../../components/dialog/attachment-dialog/attachment-dialog.component";
+import {AttachmentRes} from "../../../models/interface/attachment-res.interface";
+import {BaseInfoService} from "../../../api/base-info.service";
+import {DateService} from "../../../utils/date.service";
+import {FileService} from "../../../utils/file.service";
+import {DialogManagementService} from "../../../utils/dialog-management.service";
+import {AttachmentReqDTO, DocumentModelDTO} from "../../../models/DTOs/attachment-req.DTO";
+import {AttachmentDialogComponent} from "../attachment-dialog/attachment-dialog.component";
 
-@AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
-  selector: 'app-attachment',
-  templateUrl: './attachment.component.html',
-  styleUrls: ['./attachment.component.scss']
+  selector: 'app-attachment-list-dialog',
+  template: `
+    <app-grid-actions
+      [accessFormActions]="accessFormActions"
+      [selectedRow]="selectedRow"
+      (onAction)="handleOnAction($event)"
+    ></app-grid-actions>
+    <app-custom-grid
+      [columnDefs]="columnDefs"
+      [rowData]="rowData"
+      (rowClicked)="handleRowSelected($event)"
+    ></app-custom-grid>
+  `,
+  styles: []
 })
-export class AttachmentComponent implements OnInit {
+export class AttachmentListDialogComponent implements OnInit {
 
   subscription: Subscription [] = []
   accessFormActions = [
@@ -46,8 +57,10 @@ export class AttachmentComponent implements OnInit {
   showDialog: boolean = false
   attachment: AttachmentRes
 
+
   constructor(
-    private activatedRoute: ActivatedRoute,
+    public dynamicDialogConfig: DynamicDialogConfig,
+    public ref: DynamicDialogRef,
     private baseInfoService: BaseInfoService,
     private dateService: DateService,
     private fileService: FileService,
@@ -56,15 +69,10 @@ export class AttachmentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.form = this.dynamicDialogConfig.data.form
     this.subscription.push(
-      this.activatedRoute.params.subscribe(params => {
-        this.form = this.activatedRoute.snapshot.data['data']
-        this.subscription.push(
-          this.baseInfoService.getAllAttachments(this.handleAttachmentPayload()).subscribe(attachments => {
-            this.rowData = attachments
-          })
-        )
+      this.baseInfoService.getAllAttachments(this.handleAttachmentPayload()).subscribe(attachments => {
+        this.rowData = attachments
       })
     )
   }
@@ -73,7 +81,7 @@ export class AttachmentComponent implements OnInit {
     return new AttachmentReqDTO(
       this.form.id,
       this.form.formKind.id,
-      +this.activatedRoute.snapshot.params['ownId'],
+      this.dynamicDialogConfig.data.ownId,
       attachment,
       documentId
     )
@@ -148,4 +156,17 @@ export class AttachmentComponent implements OnInit {
       }
     })
   }
+
+}
+
+@NgModule({
+  declarations: [AttachmentListDialogComponent],
+  imports: [
+    GridActionsModule,
+    CustomGridModule
+  ],
+  exports: [AttachmentListDialogComponent]
+})
+export class AttachmentListDialogModule {
+
 }

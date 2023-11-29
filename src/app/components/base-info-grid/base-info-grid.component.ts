@@ -22,6 +22,8 @@ import {FetchAllDataPayloadDTO, HushaGridUtilService} from "../../utils/husha-gr
 import {AG_GRID_LOCALE_FA} from "../../constants/ag-grid-locale-fa";
 import {CustomCardModule} from "../../ui-kits/custom-card/custom-card.component";
 import {Router} from "@angular/router";
+import {DialogManagementService} from "../../utils/dialog-management.service";
+import {AttachmentListDialogComponent} from "../dialog/attachment-list-dialog/attachment-list-dialog.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -75,7 +77,8 @@ export class BaseInfoGridComponent implements OnInit {
     private hushaCustomerUtilService: HushaCustomerUtilService,
     private cdr: ChangeDetectorRef,
     private hushaGridUtilService: HushaGridUtilService,
-    private router: Router
+    private router: Router,
+    private dialogManagementService: DialogManagementService
   ) {
   }
 
@@ -185,7 +188,10 @@ export class BaseInfoGridComponent implements OnInit {
         })
       )
     } else if ($event === ACCESS_FORM_ACTION_TYPE.ATTACHMENTS) {
-      this.router.navigate([`/form/${this.form.id}/attachment/${this.selectedRow.id}`])
+      // this.router.navigate([`/form/${this.form.id}/attachment/${this.selectedRow.id}`])
+      this.dialogManagementService.openDialog(AttachmentListDialogComponent, {
+        data: {form: this.form, ownId: this.selectedRow.id}
+      })
     } else if ($event === ACCESS_FORM_ACTION_TYPE.IMPORT) {
       this.router.navigate([`/form/${this.form.id}/import-excel`], {
         queryParams: {
