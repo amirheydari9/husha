@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, NgModule, OnInit, Output} from '@angular/core';
-import {ColDef, GridOptions, RowClickedEvent} from "ag-grid-community";
+import {ColDef, GridOptions, GridReadyEvent, RowClickedEvent} from "ag-grid-community";
 import {AG_GRID_LOCALE_FA} from "../../constants/ag-grid-locale-fa";
 import {AgGridModule} from "ag-grid-angular";
 
@@ -13,6 +13,7 @@ import {AgGridModule} from "ag-grid-angular";
       [rowData]="rowData"
       [gridOptions]="gridOptions"
       (rowClicked)="rowClicked.emit($event)"
+      (gridReady)="onGridReady($event)"
     ></ag-grid-angular>
   `,
   styles: []
@@ -49,6 +50,7 @@ export class CustomGridComponent implements OnInit {
   }
 
   @Output() rowClicked: EventEmitter<RowClickedEvent<any>> = new EventEmitter<RowClickedEvent<any>>()
+  @Output() gridReady: EventEmitter<GridReadyEvent<any>> = new EventEmitter<GridReadyEvent<any>>()
 
   constructor() {
   }
@@ -56,6 +58,10 @@ export class CustomGridComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onGridReady($event: GridReadyEvent<any>) {
+    this.gridReady.emit($event)
+    $event.api.sizeColumnsToFit()
+  }
 }
 
 @NgModule({

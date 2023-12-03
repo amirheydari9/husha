@@ -1,11 +1,11 @@
-import {Component, NgModule, OnInit} from '@angular/core';
+import {Component, NgModule} from '@angular/core';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {GridActionsModule} from "../../grid-actions/grid-actions.component";
 import {CustomGridModule} from "../../../ui-kits/custom-grid/custom-grid.component";
 import {Subscription} from "rxjs";
 import {ACCESS_FORM_ACTION_TYPE} from "../../../constants/enums";
 import {IFetchFormRes} from "../../../models/interface/fetch-form-res.interface";
-import {ColDef, RowClickedEvent} from "ag-grid-community";
+import {ColDef, GridApi} from "ag-grid-community";
 import {AttachmentRes} from "../../../models/interface/attachment-res.interface";
 import {BaseInfoService} from "../../../api/base-info.service";
 import {DateService} from "../../../utils/date.service";
@@ -25,12 +25,15 @@ import {AttachmentDialogComponent} from "../attachment-dialog/attachment-dialog.
     <app-custom-grid
       [columnDefs]="columnDefs"
       [rowData]="rowData"
-      (rowClicked)="handleRowSelected($event)"
+      (gridReady)="this.gridApi = $event.api"
     ></app-custom-grid>
   `,
   styles: []
 })
-export class AttachmentListDialogComponent implements OnInit {
+export class AttachmentListDialogComponent {
+
+  gridApi: GridApi;
+  rowData: any[] | null
 
   subscription: Subscription [] = []
   accessFormActions = [
@@ -52,11 +55,8 @@ export class AttachmentListDialogComponent implements OnInit {
     },
     {headerName: 'توضیحات', field: 'desc'},
   ]
-  rowData = []
-  selectedRow: any
   showDialog: boolean = false
   attachment: AttachmentRes
-
 
   constructor(
     public dynamicDialogConfig: DynamicDialogConfig,
@@ -87,24 +87,8 @@ export class AttachmentListDialogComponent implements OnInit {
     )
   }
 
-  handleRowSelected($event: RowClickedEvent<any>) {
-    this.selectedRow = $event.data
-  }
-
-  handleDeleteAttachment() {
-    this.subscription.push(
-      this.baseInfoService.removeAttachment(this.handleAttachmentPayload(null, this.selectedRow.id)).subscribe(data => {
-        this.rowData = this.rowData.filter(item => item.id !== this.selectedRow.id)
-      })
-    )
-  }
-
-  handleDeleteAllAttachment() {
-    this.subscription.push(
-      this.baseInfoService.removeAllAttachment(this.handleAttachmentPayload(null, this.rowData[0].id)).subscribe(data => {
-        this.rowData = []
-      })
-    )
+  get selectedRow() {
+    return this.gridApi?.getSelectedRows()[0]
   }
 
   handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
@@ -143,20 +127,48 @@ export class AttachmentListDialogComponent implements OnInit {
         )
         if (this.attachment) {
           this.subscription.push(
-            this.baseInfoService.updateAttachment(this.handleAttachmentPayload(attachment, this.attachment.id)).subscribe(data => {
-              this.rowData = this.rowData.map(item => {
-                if (item.id === data.id) item = data
-                return item
+            this.baseInfoService.updateAttachment(this.handleAttachmentPayload(attachment, this.attachment.id))
+              // .subscribe(data => this.gridApi.getSelectedNodes()[0].setData(data))
+              .subscribe(data => {
+                const itemsToUpdate: any[] = [];
+                this.gridApi.forEachNodeAfterFilterAndSort((rowNode, index) => {
+                  if (rowNode.data.id === data.id) rowNode.data = data
+                  itemsToUpdate.push(data);
+                });
+                this.gridApi.applyTransaction({update: itemsToUpdate})
               })
-            })
           )
         } else {
           this.subscription.push(
-            this.baseInfoService.addAttachment(this.handleAttachmentPayload(attachment)).subscribe(data => this.rowData = [...this.rowData, data])
+            this.baseInfoService.addAttachment(this.handleAttachmentPayload(attachment))
+              .subscribe(data => this.gridApi.applyTransaction({add: [data]}))
           )
         }
       }
     })
+  }
+
+  handleDeleteAttachment() {
+    this.subscription.push(
+      this.baseInfoService.removeAttachment(this.handleAttachmentPayload(null, this.selectedRow.id))
+        // .subscribe(data => this.gridApi.applyTransaction({remove: [{id: this.selectedRow.id}]}))
+        .subscribe(data => {
+          const selectedData = this.gridApi.getSelectedRows();
+          this.gridApi.applyTransaction({remove: selectedData});
+        })
+    )
+  }
+
+  handleDeleteAllAttachment() {
+    this.subscription.push(
+      this.baseInfoService.removeAllAttachment(this.handleAttachmentPayload(null, this.gridApi.getRenderedNodes()[0].data.id))
+        // .subscribe(data => this.gridApi.setRowData([]))
+        .subscribe(data => {
+          const rowData: any[] = [];
+          this.gridApi.forEachNode((node) => rowData.push(node.data))
+          this.gridApi.applyTransaction({remove: rowData})
+        })
+    )
   }
 
 }
@@ -165,7 +177,7 @@ export class AttachmentListDialogComponent implements OnInit {
   declarations: [AttachmentListDialogComponent],
   imports: [
     GridActionsModule,
-    CustomGridModule
+    CustomGridModule,
   ],
   exports: [AttachmentListDialogComponent]
 })
