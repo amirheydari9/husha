@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, NgModule, OnInit, Output} from '@angular/core';
-import {ColDef, GridOptions, GridReadyEvent, RowClickedEvent} from "ag-grid-community";
+import {ColDef, GridApi, GridOptions, GridReadyEvent, RowClickedEvent} from "ag-grid-community";
 import {AG_GRID_LOCALE_FA} from "../../constants/ag-grid-locale-fa";
 import {AgGridModule} from "ag-grid-angular";
 
@@ -19,6 +19,8 @@ import {AgGridModule} from "ag-grid-angular";
   styles: []
 })
 export class CustomGridComponent implements OnInit {
+
+  gridApi: GridApi
 
   @Input() columnDefs: ColDef[] = []
   @Input() rowData: any[] = []
@@ -59,8 +61,39 @@ export class CustomGridComponent implements OnInit {
   }
 
   onGridReady($event: GridReadyEvent<any>) {
+    this.gridApi = $event.api
     this.gridReady.emit($event)
     $event.api.sizeColumnsToFit()
+  }
+
+  getAllRows() {
+    const allRowNodes = [];
+    this.gridApi.forEachNode(node => allRowNodes.push(node));
+    return allRowNodes
+  }
+
+  clearData() {
+    const rowData: any[] = [];
+    this.gridApi.forEachNode((node) => rowData.push(node.data))
+    this.gridApi.applyTransaction({remove: rowData})
+  }
+
+  removeSelectedRows() {
+    const selectedData = this.gridApi.getSelectedRows();
+    this.gridApi.applyTransaction({remove: selectedData});
+  }
+
+  addRows(data) {
+    this.gridApi.applyTransaction({add: data})
+  }
+
+  updateRow(data) {
+    const itemsToUpdate: any[] = [];
+    this.gridApi.forEachNodeAfterFilterAndSort((rowNode, index) => {
+      if (rowNode.data.id === data.id) rowNode.data = data
+      itemsToUpdate.push(data);
+    });
+    this.gridApi.applyTransaction({update: itemsToUpdate})
   }
 }
 

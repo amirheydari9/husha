@@ -1,7 +1,7 @@
-import {Component, NgModule} from '@angular/core';
+import {Component, NgModule, ViewChild} from '@angular/core';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {GridActionsModule} from "../../grid-actions/grid-actions.component";
-import {CustomGridModule} from "../../../ui-kits/custom-grid/custom-grid.component";
+import {CustomGridComponent, CustomGridModule} from "../../../ui-kits/custom-grid/custom-grid.component";
 import {Subscription} from "rxjs";
 import {ACCESS_FORM_ACTION_TYPE} from "../../../constants/enums";
 import {IFetchFormRes} from "../../../models/interface/fetch-form-res.interface";
@@ -23,6 +23,7 @@ import {AttachmentDialogComponent} from "../attachment-dialog/attachment-dialog.
       (onAction)="handleOnAction($event)"
     ></app-grid-actions>
     <app-custom-grid
+      #grid
       [columnDefs]="columnDefs"
       [rowData]="rowData"
       (gridReady)="this.gridApi = $event.api"
@@ -32,18 +33,11 @@ import {AttachmentDialogComponent} from "../attachment-dialog/attachment-dialog.
 })
 export class AttachmentListDialogComponent {
 
+  subscription: Subscription [] = []
+
+  @ViewChild('grid') grid: CustomGridComponent
   gridApi: GridApi;
   rowData: any[] | null
-
-  subscription: Subscription [] = []
-  accessFormActions = [
-    ACCESS_FORM_ACTION_TYPE.ADD,
-    ACCESS_FORM_ACTION_TYPE.UPDATE,
-    ACCESS_FORM_ACTION_TYPE.DELETE,
-    ACCESS_FORM_ACTION_TYPE.DELETE_ALL,
-    ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE
-  ];
-  form: IFetchFormRes
   columnDefs: ColDef[] = [
     {headerName: 'نام فایل', field: 'name'},
     {headerName: 'نام', field: 'createBy.name'},
@@ -55,6 +49,15 @@ export class AttachmentListDialogComponent {
     },
     {headerName: 'توضیحات', field: 'desc'},
   ]
+
+  accessFormActions = [
+    ACCESS_FORM_ACTION_TYPE.ADD,
+    ACCESS_FORM_ACTION_TYPE.UPDATE,
+    ACCESS_FORM_ACTION_TYPE.DELETE,
+    ACCESS_FORM_ACTION_TYPE.DELETE_ALL,
+    ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE
+  ];
+  form: IFetchFormRes
   showDialog: boolean = false
   attachment: AttachmentRes
 
@@ -71,9 +74,8 @@ export class AttachmentListDialogComponent {
   ngOnInit(): void {
     this.form = this.dynamicDialogConfig.data.form
     this.subscription.push(
-      this.baseInfoService.getAllAttachments(this.handleAttachmentPayload()).subscribe(attachments => {
-        this.rowData = attachments
-      })
+      this.baseInfoService.getAllAttachments(this.handleAttachmentPayload())
+        .subscribe(attachments => this.rowData = attachments)
     )
   }
 
@@ -128,20 +130,12 @@ export class AttachmentListDialogComponent {
         if (this.attachment) {
           this.subscription.push(
             this.baseInfoService.updateAttachment(this.handleAttachmentPayload(attachment, this.attachment.id))
-              // .subscribe(data => this.gridApi.getSelectedNodes()[0].setData(data))
-              .subscribe(data => {
-                const itemsToUpdate: any[] = [];
-                this.gridApi.forEachNodeAfterFilterAndSort((rowNode, index) => {
-                  if (rowNode.data.id === data.id) rowNode.data = data
-                  itemsToUpdate.push(data);
-                });
-                this.gridApi.applyTransaction({update: itemsToUpdate})
-              })
+              .subscribe(data => this.grid.updateRow(data))
           )
         } else {
           this.subscription.push(
             this.baseInfoService.addAttachment(this.handleAttachmentPayload(attachment))
-              .subscribe(data => this.gridApi.applyTransaction({add: [data]}))
+              .subscribe(data => this.grid.addRows([data]))
           )
         }
       }
@@ -151,23 +145,14 @@ export class AttachmentListDialogComponent {
   handleDeleteAttachment() {
     this.subscription.push(
       this.baseInfoService.removeAttachment(this.handleAttachmentPayload(null, this.selectedRow.id))
-        // .subscribe(data => this.gridApi.applyTransaction({remove: [{id: this.selectedRow.id}]}))
-        .subscribe(data => {
-          const selectedData = this.gridApi.getSelectedRows();
-          this.gridApi.applyTransaction({remove: selectedData});
-        })
+        .subscribe(data => this.grid.removeSelectedRows())
     )
   }
 
   handleDeleteAllAttachment() {
     this.subscription.push(
-      this.baseInfoService.removeAllAttachment(this.handleAttachmentPayload(null, this.gridApi.getRenderedNodes()[0].data.id))
-        // .subscribe(data => this.gridApi.setRowData([]))
-        .subscribe(data => {
-          const rowData: any[] = [];
-          this.gridApi.forEachNode((node) => rowData.push(node.data))
-          this.gridApi.applyTransaction({remove: rowData})
-        })
+      this.baseInfoService.removeAllAttachment(this.handleAttachmentPayload(null, this.grid.getAllRows()[0].data.id))
+        .subscribe(data => this.grid.clearData())
     )
   }
 
