@@ -10,21 +10,11 @@ import {NgxsModule} from "@ngxs/store";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {InterceptorService} from "./utils/interceptor.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {NgxUiLoaderConfig, NgxUiLoaderHttpModule, NgxUiLoaderModule, SPINNER,} from "ngx-ui-loader";
 import {CustomToastModule} from "./ui-kits/custom-toast/custom-toast.component";
 import {DialogService} from "primeng/dynamicdialog";
-import { ServiceWorkerModule } from '@angular/service-worker';
+import {ServiceWorkerModule} from '@angular/service-worker';
 import {ReactiveFormsModule} from "@angular/forms";
-
-const ngxUiLoaderConfig: NgxUiLoaderConfig = {
-  fgsType: SPINNER.ballSpinClockwise,
-  fgsColor: 'blue',
-  fgsSize: 60,
-  bgsColor: 'rgba(0, 0, 0, 0.1)',
-  text: 'صبر کنید',
-  pbColor: 'blue',
-  pbThickness: 2,
-};
+import {NgxSpinnerModule} from "ngx-spinner";
 
 @NgModule({
   declarations: [
@@ -40,10 +30,6 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     }),
     NgxsDispatchPluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),
-    NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
-    NgxUiLoaderHttpModule.forRoot({
-      showForeground: true
-    }),
     CustomToastModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
@@ -52,6 +38,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
       registrationStrategy: 'registerWhenStable:30000'
     }),
     ReactiveFormsModule,
+    NgxSpinnerModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true},

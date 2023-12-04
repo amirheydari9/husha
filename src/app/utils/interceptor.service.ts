@@ -15,6 +15,7 @@ import {environment} from "../../environments/environment";
 import {OauthFacade} from "../data-core/oauth/oauth.facade";
 import {NotificationService} from "../ui-kits/custom-toast/notification.service";
 import {showNotification} from "../constants/keys";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Injectable()
 export class InterceptorService implements HttpInterceptor {
@@ -28,7 +29,8 @@ export class InterceptorService implements HttpInterceptor {
     private router: Router,
     private appConfigService: AppConfigService,
     private notificationService: NotificationService,
-    private oauthFacade: OauthFacade
+    private oauthFacade: OauthFacade,
+    private spinner: NgxSpinnerService
   ) {
     router.events.subscribe(event => {
       // if (event instanceof NavigationEnd) this.appConfigService.cancelPendingRequests();
@@ -53,6 +55,7 @@ export class InterceptorService implements HttpInterceptor {
 
   private _sendRequest(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.appConfigService.setLoading(true)
+    this.spinner.show();
     const token = this.tokenStorageService.getToken();
     if (token) {
       request = this.addTokenHeader(request, token)
@@ -65,7 +68,10 @@ export class InterceptorService implements HttpInterceptor {
         if (error instanceof HttpErrorResponse) this.errorHandler(error)
         return throwError(error);
       }),
-      finalize(() => this.appConfigService.setLoading(false))
+      finalize(() => {
+        this.spinner.hide()
+        this.appConfigService.setLoading(false)
+      })
     )
   }
 
