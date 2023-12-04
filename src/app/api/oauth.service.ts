@@ -30,10 +30,12 @@ export class OauthService {
     return this.httpService.post<ILoginRes>('sso/oauth/token', formData, null, headers).toPromise()
   }
 
+  //TODO صحبت با خانم گلزاری که این سرویس کش بشه یا نه
   fetchUserAvatar(): Promise<IUserAvatarRes> {
     return this.httpService.get<IUserAvatarRes>('sso/user/avatar').toPromise()
   }
 
+  //TODO صحبت با خانم گلزاری که این سرویس کش بشه یا نه
   fetchUserSetting(): Promise<IUserSettingRes> {
     return this.httpService.get<IUserSettingRes>('sso/userSetting/getOwnUserSetting').toPromise()
   }

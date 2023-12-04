@@ -81,6 +81,7 @@ export class BaseInfoService {
     return this.httpService.delete<boolean>(`baseinfo/data`, payload)
   }
 
+  //TODO صحبت با خانم گلزاری که این سرویس کش بشه یا نه
   fetchDetailGridForms(payload: FetchDetailGridFormsReqDTO): Observable<IFetchFormRes[]> {
     return this.httpService.get(`baseinfo/form/${payload.masterFormId}/getDetails`)
   }
