@@ -1,6 +1,16 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  NgModule,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import {GridActionsComponent, GridActionsModule} from "../grid-actions/grid-actions.component";
-import {AgGridModule} from "ag-grid-angular";
+import {AgGridAngular, AgGridModule} from "ag-grid-angular";
 import {Subscription} from "rxjs";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
@@ -9,7 +19,6 @@ import {
   ColumnApi,
   GridApi,
   GridOptions,
-  GridReadyEvent,
   IDatasource,
   IGetRowsParams,
   RowClickedEvent,
@@ -31,7 +40,7 @@ import {AdvanceSearchDialogComponent} from "../dialog/advance-search-dialog/adva
   selector: 'app-base-info-grid',
   templateUrl: './base-info-grid.component.html'
 })
-export class BaseInfoGridComponent implements OnInit {
+export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   subscription: Subscription[] = []
 
@@ -64,6 +73,7 @@ export class BaseInfoGridComponent implements OnInit {
   @Input() fetchSummary: boolean = false
 
   @ViewChild('gridActions') gridActions: GridActionsComponent
+  @ViewChild('grid', {read: AgGridAngular}) grid: AgGridAngular
 
   gridHistory = []
   parentId: number
@@ -83,19 +93,21 @@ export class BaseInfoGridComponent implements OnInit {
   ) {
   }
 
-  async ngOnInit(): Promise<void> {
-    this.accessFormActions = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.fetchSummary)
-    if (!this.fetchSummary) {
-      const data = []
-      this.gridApi.getRenderedNodes().forEach(row => data.push(row.data))
-      this.exportExcelSource = {cols: this.colApi['columnModel'].columnDefs, data}
-    }
+  ngAfterViewInit(): void {
+    this.gridApi = this.grid.api;
+    this.colApi = this.grid.columnApi;
+    this.gridApi.setDatasource(this.dataSource)
+    setTimeout(() => {
+      if (!this.fetchSummary) {
+        const data = []
+        this.gridApi.forEachNode(row => data.push(row.data))
+        this.exportExcelSource = {cols: this.colApi['columnModel'].columnDefs, data}
+      }
+    }, 1000)
   }
 
-  handleGirdReady($event: GridReadyEvent<any>) {
-    this.gridApi = $event.api;
-    this.colApi = $event.columnApi;
-    this.gridApi.setDatasource(this.dataSource)
+  async ngOnInit(): Promise<void> {
+    this.accessFormActions = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.fetchSummary)
   }
 
   dataSource: IDatasource = {
@@ -204,7 +216,7 @@ export class BaseInfoGridComponent implements OnInit {
       this.dialogManagementService.openDialog(AdvanceSearchDialogComponent, {
         data: {form: this.form},
         header: 'جستجوی پیشرفته',
-        closable:false
+        closable: false
       }).subscribe(data => {
         console.log(data)
       })

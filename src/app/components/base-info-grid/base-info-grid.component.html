@@ -11,13 +11,13 @@
     ></app-grid-actions>
 
     <ag-grid-angular
+      #grid
       class="ag-theme-alpine"
       [columnDefs]="columnDefs"
       [gridOptions]="gridOptions"
       (rowDoubleClicked)="handleRowDbClicked($event)"
       (rowClicked)="handleRowClicked($event)"
       (paginationChanged)="selectedRow = null"
-      (gridReady)="handleGirdReady($event)"
       (sortChanged)="handleSortChange($event)"
     ></ag-grid-angular>
 
