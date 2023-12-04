@@ -19,7 +19,8 @@ export enum ACCESS_FORM_ACTION_TYPE {
   CONFIRM_DOC = 'confirmDoc',
   ALL = 'all',
   DELETE_ALL = 'deleteAll',
-  DOWNLOAD_FILE = 'downloadFile'
+  DOWNLOAD_FILE = 'downloadFile',
+  ADVANCE_SEARCH = 'advanceSearch',
 }
 
 export enum FORM_KIND {

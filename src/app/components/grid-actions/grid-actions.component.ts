@@ -161,6 +161,13 @@ export class GridActionsComponent implements OnInit {
       type: ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE,
       tooltip: "دانلود فایل",
       order: 11
+    },
+    {
+      icon: "pi pi-filter",
+      styleClass: "p-button-rounded",
+      type: ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH,
+      tooltip: "جستجوی پیشرفته",
+      order: 12
     }
   ]
 
@@ -239,6 +246,7 @@ export class GridActionsComponent implements OnInit {
       case ACCESS_FORM_ACTION_TYPE.DELETE:
       case ACCESS_FORM_ACTION_TYPE.DELETE_ALL:
       case ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE:
+      case ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH:
         this.onAction.emit(type)
         break
       case ACCESS_FORM_ACTION_TYPE.EXPORT:

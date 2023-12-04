@@ -24,6 +24,7 @@ import {CustomCardModule} from "../../ui-kits/custom-card/custom-card.component"
 import {Router} from "@angular/router";
 import {DialogManagementService} from "../../utils/dialog-management.service";
 import {AttachmentListDialogComponent} from "../dialog/attachment-list-dialog/attachment-list-dialog.component";
+import {AdvanceSearchDialogComponent} from "../dialog/advance-search-dialog/advance-search-dialog.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -198,6 +199,14 @@ export class BaseInfoGridComponent implements OnInit {
         queryParams: {
           masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
         }
+      })
+    } else if ($event === ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH) {
+      this.dialogManagementService.openDialog(AdvanceSearchDialogComponent, {
+        data: {form: this.form},
+        header: 'جستجوی پیشرفته',
+        closable:false
+      }).subscribe(data => {
+        console.log(data)
       })
     }
   }
