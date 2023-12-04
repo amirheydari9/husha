@@ -31,6 +31,10 @@ export class CustomToastComponent {
   ngOnInit(): void {
     this.subscription = this.notificationService.callNotification$().subscribe(notification => {
         this.addSingleNotification(notification);
+        //TODO clear this code after update
+        setTimeout(() => {
+          this.messageService.clear()
+        },3000)
       }
     );
   }
