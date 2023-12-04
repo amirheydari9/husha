@@ -33,12 +33,12 @@ export class HushaGridUtilService {
 
   async handleGridAccessActions(form: IFetchFormRes, fetchSummary: boolean): Promise<ACCESS_FORM_ACTION_TYPE[]> {
     const actions = []
-    actions.push(ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH)
     if (form.formKind.id === FORM_KIND.MULTI_LEVEL) {
       actions.push(ACCESS_FORM_ACTION_TYPE.PERV)
       actions.push(ACCESS_FORM_ACTION_TYPE.NEXT)
     }
     if (!fetchSummary) {
+      actions.push(ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH)
       actions.push(ACCESS_FORM_ACTION_TYPE.EXPORT)
       if (form.hasFormImport) {
         actions.push(ACCESS_FORM_ACTION_TYPE.IMPORT)
