@@ -24,19 +24,7 @@ import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
     </app-input-wrapper>
     <ng-content></ng-content>
   `,
-  styles: [`
-    :host ::ng-deep .p-input-icon-right {
-      > i:last-of-type {
-        left: 0.75rem;
-        right: unset;
-      }
-
-      > .p-inputtext {
-        padding-left: 2.5rem;
-        padding-right: 0.75rem;
-      }
-    }
-  `]
+  styles: [``]
 })
 export class CustomInputPasswordComponent extends BaseControlValueAccessor<string> implements OnInit {
 
