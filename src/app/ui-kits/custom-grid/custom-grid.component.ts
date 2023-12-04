@@ -66,10 +66,15 @@ export class CustomGridComponent implements OnInit {
     $event.api.sizeColumnsToFit()
   }
 
-  getAllRows() {
+
+  get AllRows() {
     const allRowNodes = [];
     this.gridApi.forEachNode(node => allRowNodes.push(node));
     return allRowNodes
+  }
+
+  get selectedRows() {
+    return this.gridOptions.rowSelection === "single" ? this.gridApi?.getSelectedRows()[0] : this.gridApi?.getSelectedRows()
   }
 
   clearData() {

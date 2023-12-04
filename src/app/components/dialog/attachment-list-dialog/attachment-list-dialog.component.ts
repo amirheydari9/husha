@@ -5,7 +5,7 @@ import {CustomGridComponent, CustomGridModule} from "../../../ui-kits/custom-gri
 import {Subscription} from "rxjs";
 import {ACCESS_FORM_ACTION_TYPE} from "../../../constants/enums";
 import {IFetchFormRes} from "../../../models/interface/fetch-form-res.interface";
-import {ColDef, GridApi} from "ag-grid-community";
+import {ColDef} from "ag-grid-community";
 import {AttachmentRes} from "../../../models/interface/attachment-res.interface";
 import {BaseInfoService} from "../../../api/base-info.service";
 import {DateService} from "../../../utils/date.service";
@@ -19,14 +19,13 @@ import {AttachmentDialogComponent} from "../attachment-dialog/attachment-dialog.
   template: `
     <app-grid-actions
       [accessFormActions]="accessFormActions"
-      [selectedRow]="selectedRow"
+      [selectedRow]="grid?.selectedRows"
       (onAction)="handleOnAction($event)"
     ></app-grid-actions>
     <app-custom-grid
       #grid
       [columnDefs]="columnDefs"
       [rowData]="rowData"
-      (gridReady)="this.gridApi = $event.api"
     ></app-custom-grid>
   `,
   styles: []
@@ -36,7 +35,6 @@ export class AttachmentListDialogComponent {
   subscription: Subscription [] = []
 
   @ViewChild('grid') grid: CustomGridComponent
-  gridApi: GridApi;
   rowData: any[] | null
   columnDefs: ColDef[] = [
     {headerName: 'نام فایل', field: 'name'},
@@ -89,10 +87,6 @@ export class AttachmentListDialogComponent {
     )
   }
 
-  get selectedRow() {
-    return this.gridApi?.getSelectedRows()[0]
-  }
-
   handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
     switch ($event) {
       case ACCESS_FORM_ACTION_TYPE.ADD:
@@ -100,7 +94,7 @@ export class AttachmentListDialogComponent {
         this.openDialog()
         break
       case ACCESS_FORM_ACTION_TYPE.UPDATE:
-        this.attachment = this.selectedRow
+        this.attachment = this.grid.selectedRows
         this.openDialog()
         break;
       case ACCESS_FORM_ACTION_TYPE.DELETE:
@@ -110,7 +104,7 @@ export class AttachmentListDialogComponent {
         this.handleDeleteAllAttachment()
         break
       case ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE:
-        this.fileService.downloadBase64(this.selectedRow.data, this.selectedRow.name)
+        this.fileService.downloadBase64(this.grid.selectedRows.data, this.grid.selectedRows.name)
     }
   }
 
@@ -144,14 +138,14 @@ export class AttachmentListDialogComponent {
 
   handleDeleteAttachment() {
     this.subscription.push(
-      this.baseInfoService.removeAttachment(this.handleAttachmentPayload(null, this.selectedRow.id))
+      this.baseInfoService.removeAttachment(this.handleAttachmentPayload(null, this.grid.selectedRows.id))
         .subscribe(data => this.grid.removeSelectedRows())
     )
   }
 
   handleDeleteAllAttachment() {
     this.subscription.push(
-      this.baseInfoService.removeAllAttachment(this.handleAttachmentPayload(null, this.grid.getAllRows()[0].data.id))
+      this.baseInfoService.removeAllAttachment(this.handleAttachmentPayload(null, this.grid.AllRows[0].data.id))
         .subscribe(data => this.grid.clearData())
     )
   }
