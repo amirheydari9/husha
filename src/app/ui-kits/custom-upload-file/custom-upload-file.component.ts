@@ -4,6 +4,11 @@ import {FieldErrorModule} from "../field-error/field-error.component";
 import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
 import {NgClass, NgIf} from "@angular/common";
 import {CustomButtonModule} from "../custom-button/custom-button.component";
+import {ImageCropperModule} from "ngx-image-cropper";
+import {DialogManagementService} from "../../utils/dialog-management.service";
+import {CropImageDialogComponent} from "./crop-image-dialog.component";
+import {DynamicDialogActionsModule} from "../../components/dynamic-dilaog-actions/dynamic-dialog-actions.component";
+import {FileService} from "../../utils/file.service";
 
 @Component({
   selector: 'app-custom-upload-file',
@@ -12,7 +17,7 @@ import {CustomButtonModule} from "../custom-button/custom-button.component";
       <div class="flex align-items-stretch">
         <app-custom-button type="button" label="Choose file" (onClick)="touched(); input.click()"
                            icon="pi pi-plus"></app-custom-button>
-        <input #input class="hidden" type="file">
+        <input #input class="hidden" type="file" [accept]="'.jpg, .jpeg, .png, .xls,.xlsx,.pdf,.doc,.docx'">
         <div class="flex align-items-center flex-grow-1 file"
              [ngClass]="[control.invalid &&( control.dirty || control.touched) ? 'error-border' :'border-2']">
           <span class="font-sm-regular mr-2">{{selectedFile ? selectedFile.name : ''}}</span>
@@ -52,6 +57,8 @@ export class CustomUploadFileComponent extends BaseControlValueAccessor<File> im
 
   constructor(
     @Self() public controlDir: NgControl,
+    private dialogManagementService: DialogManagementService,
+    private fileService: FileService
   ) {
     super()
     this.controlDir.valueAccessor = this;
@@ -61,22 +68,39 @@ export class CustomUploadFileComponent extends BaseControlValueAccessor<File> im
     this.control = this.controlDir.control as FormControl
   }
 
-  @HostListener('change', ['$event.target.files'])
-  async changeFiles(fileList: FileList) {
-    this.selectedFile = fileList && fileList.item(0);
-    // let fileToBase64: string = null
-    // if (this.selectedFile) fileToBase64 = await this.fileService.convertFileToBase64(this.selectedFile)
-    this.changed(this.selectedFile);
+  @HostListener('change', ['$event'])
+  async changeFiles(event) {
+    this.selectedFile = event.target.files[0]
+    if (this.selectedFile.type.includes('image/')) {
+      this.handleOpenCropper(event)
+    } else if (this.selectedFile.type.includes('application/')) {
+      this.changed(this.selectedFile);
+    }
+    // this.selectedFile = fileList && fileList.item(0);
+    // // let fileToBase64: string = null
+    // // if (this.selectedFile) fileToBase64 = await this.fileService.convertFileToBase64(this.selectedFile)
+    // this.changed(this.selectedFile);
+  }
+
+  handleOpenCropper(event: any): void {
+    this.dialogManagementService.openDialog(CropImageDialogComponent, {data: {image: event}}).subscribe(data => {
+      if (data) {
+        const file = this.fileService.createFile(data, this.selectedFile.name)[0]
+        this.changed(file);
+      }
+    })
   }
 }
 
 @NgModule({
-  declarations: [CustomUploadFileComponent],
+  declarations: [CustomUploadFileComponent, CropImageDialogComponent],
   imports: [
     FieldErrorModule,
     NgIf,
     NgClass,
-    CustomButtonModule
+    CustomButtonModule,
+    ImageCropperModule,
+    DynamicDialogActionsModule
   ],
   exports: [CustomUploadFileComponent]
 })
