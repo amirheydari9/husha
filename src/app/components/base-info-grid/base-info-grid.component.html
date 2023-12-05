@@ -1,4 +1,39 @@
 <app-custom-card>
+
+  <ng-container *ngIf="fetchSummary">
+
+    <form [formGroup]="searchSummaryForm" class="flex align-items-start flex-wrap">
+
+      <div class="col-4">
+        <app-custom-input-text
+          formControlName="code"
+          label="کد"
+        ></app-custom-input-text>
+      </div>
+
+      <div class="col-4">
+        <app-custom-input-text
+          formControlName="title"
+          label="عنوان"
+        ></app-custom-input-text>
+
+      </div>
+
+      <div class="col-12 flex-row-reverse flex">
+        <app-custom-button
+          type="button"
+          (onClick)="handleSummarySearch()"
+          label="جستجو"
+          icon="pi pi-search"
+        ></app-custom-button>
+      </div>
+
+    </form>
+
+
+  </ng-container>
+
+
   <div [class]="class">
     <app-grid-actions
       #gridActions

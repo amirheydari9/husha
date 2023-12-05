@@ -26,7 +26,7 @@ import {
 } from "ag-grid-community";
 import {BaseInfoService} from "../../api/base-info.service";
 import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
-import {ACCESS_FORM_ACTION_TYPE, FORM_KIND} from "../../constants/enums";
+import {ACCESS_FORM_ACTION_TYPE, CRITERIA_OPERATION_TYPE, FORM_KIND} from "../../constants/enums";
 import {FetchAllDataPayloadDTO, HushaGridUtilService} from "../../utils/husha-grid-util.service";
 import {AG_GRID_LOCALE_FA} from "../../constants/ag-grid-locale-fa";
 import {CustomCardModule} from "../../ui-kits/custom-card/custom-card.component";
@@ -34,6 +34,11 @@ import {Router} from "@angular/router";
 import {DialogManagementService} from "../../utils/dialog-management.service";
 import {AttachmentListDialogComponent} from "../dialog/attachment-list-dialog/attachment-list-dialog.component";
 import {AdvanceSearchDialogComponent} from "../dialog/advance-search-dialog/advance-search-dialog.component";
+import {NgIf} from "@angular/common";
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {CustomInputTextModule} from "../../ui-kits/custom-input-text/custom-input-text.component";
+import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
+import {criteriaInterface} from "../../models/DTOs/fetch-all-form-data.DTO";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -43,6 +48,9 @@ import {AdvanceSearchDialogComponent} from "../dialog/advance-search-dialog/adva
 export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   subscription: Subscription[] = []
+
+  searchSummaryForm: FormGroup
+  summaryCriteria: criteriaInterface[] = null
 
   gridApi: GridApi
   colApi: ColumnApi
@@ -89,7 +97,8 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private hushaGridUtilService: HushaGridUtilService,
     private router: Router,
-    private dialogManagementService: DialogManagementService
+    private dialogManagementService: DialogManagementService,
+    private fb: FormBuilder
   ) {
   }
 
@@ -107,7 +116,21 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
+    if (this.fetchSummary) {
+      this.searchSummaryForm = this.fb.group({
+        code: this.fb.control(null),
+        title: this.fb.control(null),
+      })
+    }
     this.accessFormActions = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.fetchSummary)
+  }
+
+  get code(): FormControl {
+    return this.searchSummaryForm.controls['code'] as FormControl
+  }
+
+  get title(): FormControl {
+    return this.searchSummaryForm.controls['title'] as FormControl
   }
 
   dataSource: IDatasource = {
@@ -118,7 +141,8 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         this.masterId,
         this.gridApi.paginationGetCurrentPage(),
         this.gridApi.paginationGetPageSize(),
-        this.hushaGridUtilService.handleSortParam(params.sortModel)
+        this.hushaGridUtilService.handleSortParam(params.sortModel),
+        this.fetchSummary ? this.summaryCriteria : null
       )
       this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).subscribe(formData => {
         const paginationInfo = formData.shift()
@@ -219,6 +243,17 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       })
     }
   }
+
+  handleSummarySearch() {
+    this.summaryCriteria = []
+    if (this.code.value) {
+      this.summaryCriteria.push({key: 'code', operation: CRITERIA_OPERATION_TYPE.EQUAL, value: this.code.value},)
+    }
+    if (this.title.value) {
+      this.summaryCriteria.push({key: 'title', operation: CRITERIA_OPERATION_TYPE.EQUAL, value: this.title.value},)
+    }
+    this.gridApi.setDatasource(this.dataSource)
+  }
 }
 
 @NgModule({
@@ -226,7 +261,11 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   imports: [
     GridActionsModule,
     AgGridModule,
-    CustomCardModule
+    CustomCardModule,
+    NgIf,
+    ReactiveFormsModule,
+    CustomInputTextModule,
+    CustomButtonModule
   ],
   exports: [BaseInfoGridComponent]
 })

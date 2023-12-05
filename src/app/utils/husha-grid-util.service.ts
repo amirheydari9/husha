@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {FetchAllFormDataDTO} from "../models/DTOs/fetch-all-form-data.DTO";
+import {criteriaInterface, FetchAllFormDataDTO} from "../models/DTOs/fetch-all-form-data.DTO";
 import {ACCESS_FORM_ACTION_TYPE, CRITERIA_OPERATION_TYPE, FORM_KIND, VIEW_TYPE} from "../constants/enums";
 import {ColDef} from "ag-grid-community";
 import {HushaCustomerUtilService} from "./husha-customer-util.service";
@@ -16,6 +16,7 @@ export class FetchAllDataPayloadDTO {
     public page?: number,
     public size?: number,
     public sort?: string,
+    public criteria?: criteriaInterface[]
   ) {
   }
 }
@@ -81,13 +82,14 @@ export class HushaGridUtilService {
       payload.sort,
       formKindId === FORM_KIND.MULTI_LEVEL ? payload.parentId : null,
       formKindId === FORM_KIND.DETAIL ? payload.masterId : null,
-      [
+      payload.criteria ? [
         {
           key: "isActive",
           operation: CRITERIA_OPERATION_TYPE.EQUAL,
           value: "true"
-        }
-      ]
+        },
+        ...payload.criteria
+      ] : [{key: "isActive", operation: CRITERIA_OPERATION_TYPE.EQUAL, value: "true"}]
     )
   }
 
