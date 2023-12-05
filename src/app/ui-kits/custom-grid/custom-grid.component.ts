@@ -94,6 +94,7 @@ export class CustomGridComponent implements OnInit {
 
   addRows(data) {
     this.gridApi.applyTransaction({add: data})
+    this.gridApi.paginationGoToLastPage()
   }
 
   updateRow(data) {
