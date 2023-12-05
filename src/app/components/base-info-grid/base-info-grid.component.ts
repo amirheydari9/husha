@@ -204,7 +204,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       // this.router.navigate([`/form/${this.form.id}/attachment/${this.selectedRow.id}`])
       this.dialogManagementService.openDialog(AttachmentListDialogComponent, {
         data: {form: this.form, ownId: this.selectedRow.id},
-        header: 'لیست ضمیمه ها'
       })
     } else if ($event === ACCESS_FORM_ACTION_TYPE.IMPORT) {
       this.router.navigate([`/form/${this.form.id}/import-excel`], {
@@ -215,8 +214,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     } else if ($event === ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH) {
       this.dialogManagementService.openDialog(AdvanceSearchDialogComponent, {
         data: {form: this.form},
-        header: 'جستجوی پیشرفته',
-        closable: false
       }).subscribe(data => {
         console.log(data)
       })

@@ -13,7 +13,7 @@ export class AdvanceSearchDialogComponent {
     public dynamicDialogConfig: DynamicDialogConfig,
     public ref: DynamicDialogRef,
   ) {
-    console.log(this.dynamicDialogConfig.data)
+    dynamicDialogConfig.header = 'جستجوی پیشرفته'
   }
 
   handleClose() {

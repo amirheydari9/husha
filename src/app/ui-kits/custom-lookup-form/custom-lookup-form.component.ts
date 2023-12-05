@@ -3,8 +3,7 @@ import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
 import {FormControl, FormsModule, NgControl} from "@angular/forms";
 import {IFetchFormRes, IFormField} from "../../models/interface/fetch-form-res.interface";
 import {LookupFormDialogComponent} from "./lookup-form-dialog.component";
-import {CustomDialogModule} from "../custom-dialog/custom-dialog.component";
-import {CommonModule, NgClass, NgIf} from "@angular/common";
+import {NgClass} from "@angular/common";
 import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
 import {InputTextModule} from "primeng/inputtext";
 import {CustomButtonModule} from "../custom-button/custom-button.component";
@@ -14,7 +13,11 @@ import {FORM_KIND} from "../../constants/enums";
 import {ActivatedRoute} from "@angular/router";
 import {HushaFormUtilService} from "../../utils/husha-form-util.service";
 import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
+import {DialogManagementService} from "../../utils/dialog-management.service";
+import {DynamicDialogActionsModule} from "../../components/dynamic-dilaog-actions/dynamic-dialog-actions.component";
+import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-custom-lookup-form',
   template: `
@@ -22,7 +25,7 @@ import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service"
       <app-custom-button
         type="button"
         [icon]="'pi pi-table'"
-        (onClick)="showDialog = true"
+        (onClick)="handleOpenDialog()"
       ></app-custom-button>
       <div class="flex-grow-1">
         <app-input-wrapper [label]="field.caption" [control]="control">
@@ -39,12 +42,6 @@ import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service"
         </app-input-wrapper>
       </div>
     </div>
-    <app-lookup-form-dialog
-      *ngIf="showDialog"
-      [(visible)]="showDialog"
-      [field]="field"
-      (onHide)="handleOnHide($event)"
-    ></app-lookup-form-dialog>
   `,
   styles: [`
     :host ::ng-deep {
@@ -59,7 +56,6 @@ import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service"
 export class CustomLookupFormComponent extends BaseControlValueAccessor<any> implements OnInit {
 
   control: FormControl
-  showDialog: boolean = false
 
   @Input() public field: IFormField
   @Input() public form: IFetchFormRes
@@ -69,7 +65,8 @@ export class CustomLookupFormComponent extends BaseControlValueAccessor<any> imp
     private activatedRoute: ActivatedRoute,
     private hushaFormUtilService: HushaFormUtilService,
     private baseInfoService: BaseInfoService,
-    private hushaCustomerUtilService: HushaCustomerUtilService
+    private hushaCustomerUtilService: HushaCustomerUtilService,
+    private dialogManagementService: DialogManagementService
   ) {
     super()
     this.controlDir.valueAccessor = this;
@@ -97,26 +94,28 @@ export class CustomLookupFormComponent extends BaseControlValueAccessor<any> imp
     )
   }
 
-  handleOnHide($event: any) {
-    if ($event) {
-      this.changed($event.id)
-      this.writeValue(`${$event.code} - ${$event.title}`)
-    }
-    this.touched()
+  handleOpenDialog() {
+    this.dialogManagementService.openDialog(LookupFormDialogComponent, {
+      data: {field: this.field},
+    }).subscribe(data => {
+      if (data) {
+        this.changed(data.id)
+        this.writeValue(`${data.code} - ${data.title}`)
+      }
+      this.touched()
+    })
   }
 }
 
 @NgModule({
   declarations: [CustomLookupFormComponent, LookupFormDialogComponent],
   imports: [
-    CustomDialogModule,
-    NgIf,
     NgClass,
     InputWrapperModule,
     InputTextModule,
     CustomButtonModule,
     FormsModule,
-    CommonModule
+    DynamicDialogActionsModule
   ],
   exports: [CustomLookupFormComponent],
   entryComponents: [LookupFormDialogComponent]

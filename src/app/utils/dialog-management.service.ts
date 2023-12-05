@@ -20,7 +20,7 @@ export class DialogManagementService {
     modal: true,
     width: '50vw',
     height: 'auto',
-    // closable: false,
+    closable: false,
     // closeOnEscape: false
   }
 

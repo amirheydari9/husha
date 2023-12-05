@@ -67,6 +67,7 @@ export class AttachmentListDialogComponent {
     private fileService: FileService,
     private dialogManagementService: DialogManagementService
   ) {
+    dynamicDialogConfig.header = 'لیست ضمیمه ها'
   }
 
   ngOnInit(): void {
