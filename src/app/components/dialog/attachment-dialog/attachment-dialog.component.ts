@@ -91,7 +91,7 @@ export class AttachmentDialogComponent implements OnInit {
   async handleClose() {
     const payload = {
       name: this.nameCtrl.value.concat(`.${this.fileType}`),
-      data: this.fileCtrl.value ? await this.fileService.convertFileToBase64(this.fileCtrl.value) : this.attachment.data,
+      data: this.fileCtrl.value ? (await this.fileService.convertFileToBase64(this.fileCtrl.value)).split(',')[1] : this.attachment.data,
       desc: this.form.controls['desc'].value
     }
     this.ref.close(payload)

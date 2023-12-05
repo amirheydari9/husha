@@ -67,10 +67,14 @@ export class CustomGridComponent implements OnInit {
   }
 
 
-  get AllRows() {
+  get allRows() {
     const allRowNodes = [];
     this.gridApi.forEachNode(node => allRowNodes.push(node));
     return allRowNodes
+  }
+
+  get rowDataCount(): number {
+    return this.gridApi.getDisplayedRowCount()
   }
 
   get selectedRows() {

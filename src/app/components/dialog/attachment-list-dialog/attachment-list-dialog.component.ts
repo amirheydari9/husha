@@ -68,6 +68,7 @@ export class AttachmentListDialogComponent {
     private dialogManagementService: DialogManagementService
   ) {
     dynamicDialogConfig.header = 'لیست ضمیمه ها'
+    dynamicDialogConfig.closable = true
   }
 
   ngOnInit(): void {
@@ -119,7 +120,7 @@ export class AttachmentListDialogComponent {
         const attachment = new DocumentModelDTO(
           data['name'],
           data['desc'],
-          this.rowData.length > 1 ? this.rowData[0].id : null,
+          this.grid.rowDataCount >= 1 ? this.grid.allRows[0].data.id : null,
           data['data'],
         )
         if (this.attachment) {
@@ -146,7 +147,7 @@ export class AttachmentListDialogComponent {
 
   handleDeleteAllAttachment() {
     this.subscription.push(
-      this.baseInfoService.removeAllAttachment(this.handleAttachmentPayload(null, this.grid.AllRows[0].data.id))
+      this.baseInfoService.removeAllAttachment(this.handleAttachmentPayload(null, this.grid.allRows[0].data.id))
         .subscribe(data => this.grid.clearData())
     )
   }
