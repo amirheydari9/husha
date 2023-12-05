@@ -19,7 +19,7 @@ export class OauthService {
   }
 
   loadCaptcha(): Promise<ICaptchaRes> {
-    return this.httpService.get<ICaptchaRes>('sso/oauth/captcha').toPromise()
+    return this.httpService.get<ICaptchaRes>('sso/oauth/captcha', null, this.httpService.noCacheHeader()).toPromise()
   }
 
   login(payload: LoginReqDto): Promise<ILoginRes> {

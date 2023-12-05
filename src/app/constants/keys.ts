@@ -5,3 +5,4 @@ export const selectedPeriodKey = 'selectedPeriodKey';
 
 export const hushaHttpError = 'hushaHttpError'
 export const showNotification = 'showNotification'
+export const noCacheHeader = 'noCacheHeader'

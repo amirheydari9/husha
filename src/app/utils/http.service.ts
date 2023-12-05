@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {showNotification} from "../constants/keys";
+import {noCacheHeader, showNotification} from "../constants/keys";
 
 @Injectable({
   providedIn: 'root'
@@ -53,5 +53,8 @@ export class HttpService {
 
   showNotificationHeader(): HttpHeaders {
     return new HttpHeaders().set(showNotification, 'true')
+  }
+  noCacheHeader(): HttpHeaders {
+    return new HttpHeaders().set(noCacheHeader, 'true')
   }
 }

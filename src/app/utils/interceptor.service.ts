@@ -14,7 +14,7 @@ import {AppConfigService} from "./app-config.service";
 import {environment} from "../../environments/environment";
 import {OauthFacade} from "../data-core/oauth/oauth.facade";
 import {NotificationService} from "../ui-kits/custom-toast/notification.service";
-import {showNotification} from "../constants/keys";
+import {noCacheHeader, showNotification} from "../constants/keys";
 import {NgxSpinnerService} from "ngx-spinner";
 
 @Injectable()
@@ -87,7 +87,7 @@ export class InterceptorService implements HttpInterceptor {
         this.notificationService.success('موفق', 'عملیات موردنظر با موفقیت انجام شد')
       }
       const response = res.body.response
-      if (req.method === "GET") {
+      if (req.method === "GET" && !req.headers.get(noCacheHeader)) {
         const expireDate = new Date(Date.now() + environment.cacheTimeForHttpRequest)
         this._cache.set(req.urlWithParams, {expireDate, response})
       }
