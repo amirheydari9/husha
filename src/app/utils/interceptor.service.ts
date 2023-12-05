@@ -14,7 +14,7 @@ import {AppConfigService} from "./app-config.service";
 import {environment} from "../../environments/environment";
 import {OauthFacade} from "../data-core/oauth/oauth.facade";
 import {NotificationService} from "../ui-kits/custom-toast/notification.service";
-import {noCacheHeader, showNotification} from "../constants/keys";
+import {noCacheHeader, showNotificationHeader} from "../constants/keys";
 import {NgxSpinnerService} from "ngx-spinner";
 
 @Injectable()
@@ -83,7 +83,7 @@ export class InterceptorService implements HttpInterceptor {
     if (res.body.error) {
       throw new HttpErrorResponse({status: 400, error: res.body.error})
     } else {
-      if (['PUT', 'PATCH', 'DELETE'].indexOf(req.method) !== -1 || req.headers.get(showNotification)) {
+      if (['PUT', 'PATCH', 'DELETE'].indexOf(req.method) !== -1 || req.headers.get(showNotificationHeader)) {
         this.notificationService.success('موفق', 'عملیات موردنظر با موفقیت انجام شد')
       }
       const response = res.body.response
