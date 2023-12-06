@@ -51,7 +51,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   subscription: Subscription[] = []
 
   searchSummaryForm: FormGroup
-  summaryCriteria: criteriaInterface[] = null
+  criteria: criteriaInterface[] = null
 
   gridApi: GridApi
   colApi: ColumnApi
@@ -135,7 +135,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         this.gridApi.paginationGetCurrentPage(),
         this.gridApi.paginationGetPageSize(),
         this.hushaGridUtilService.handleSortParam(params.sortModel),
-        this.fetchSummary ? this.summaryCriteria : null,
+        this.criteria ?? null,
         null,
         this.fetchSummary ? 'id,code,title' : null
       )
@@ -280,12 +280,12 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   }
 
   handleSummarySearch() {
-    this.summaryCriteria = []
+    this.criteria = []
     if (this.code.value) {
-      this.summaryCriteria.push({key: 'code', operation: CRITERIA_OPERATION_TYPE.EQUAL, value: this.code.value},)
+      this.criteria.push({key: 'code', operation: CRITERIA_OPERATION_TYPE.EQUAL, value: this.code.value},)
     }
     if (this.title.value) {
-      this.summaryCriteria.push({key: 'title', operation: CRITERIA_OPERATION_TYPE.EQUAL, value: this.title.value},)
+      this.criteria.push({key: 'title', operation: CRITERIA_OPERATION_TYPE.EQUAL, value: this.title.value},)
     }
     this.gridApi.setDatasource(this.dataSource)
   }
