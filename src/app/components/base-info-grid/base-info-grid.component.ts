@@ -86,7 +86,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   gridHistory = []
   parentId: number
-  selectedRow: any
 
   @Output() onRowDoubleClicked: EventEmitter<any> = new EventEmitter<any>()
   @Output() onRowClicked: EventEmitter<any> = new EventEmitter<any>()
@@ -151,17 +150,14 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
 
   handleRowDbClicked($event: any) {
-    this.selectedRow = null
-    const selectedRow = $event.data
     if (this.form.formKind.id === FORM_KIND.MULTI_LEVEL) {
-      this.handleMultiLevelGid(selectedRow)
+      this.handleMultiLevelGid(this.selectedRow)
     } else if (this.form.formKind.id === FORM_KIND.MASTER) {
-      this.onRowDoubleClicked.emit(selectedRow.id)
+      this.onRowDoubleClicked.emit(this.selectedRow?.id)
     }
   }
 
   handleRowClicked($event: RowClickedEvent<any>) {
-    this.selectedRow = $event.data
     this.onRowClicked.emit(this.selectedRow)
   }
 
@@ -183,6 +179,10 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   handleClickHistory(item: any) {
     this.parentId = item ? item.id : null
     this.gridApi.setDatasource(this.dataSource)
+  }
+
+  get selectedRow() {
+    return this.gridApi?.getSelectedRows()[0]
   }
 
   handleSortChange($event: SortChangedEvent<any>) {
@@ -222,7 +222,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   }
 
   handleUpdate() {
-    this.router.navigate([`/form/${this.form.id}/update/${this.selectedRow.id}`], {
+    this.router.navigate([`/form/${this.form.id}/update/${this.selectedRow?.id}`], {
       queryParams: {
         masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
       }
@@ -234,7 +234,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     this.subscription.push(
       this.baseInfoService.deleteFormData(this.hushaGridUtilService.handleCreatePayloadForDeleteRow(
         this.form,
-        this.selectedRow.id,
+        this.selectedRow?.id,
         this.masterId
       )).subscribe(data => {
         this.gridApi.setDatasource(this.dataSource)
@@ -244,7 +244,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   handleAttachment() {
     this.dialogManagementService.openDialog(AttachmentListDialogComponent, {
-      data: {form: this.form, ownId: this.selectedRow.id},
+      data: {form: this.form, ownId: this.selectedRow?.id},
     })
   }
 
