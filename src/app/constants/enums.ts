@@ -104,3 +104,16 @@ export enum DYNAMIC_FORM_RULES {
   ACCEPTED_FILE_TYPE = 'ACCEPTED_FILE_TYPE',
   ACCEPTED_FILE_SIZE = 'ACCEPTED_FILE_SIZE',
 }
+
+export enum DOWNLOAD_TYPE {
+  XLS = 1,
+  XLSX = 2,
+  CSV = 3,
+  XML = 4,
+  HTML = 5,
+  PDF = 6,
+}
+
+export const downloadTypeOptions = Object.keys(DOWNLOAD_TYPE)
+  .filter(key => !isNaN(Number(key)))
+  .map(key => ({id: Number(key), title: DOWNLOAD_TYPE[key]}));

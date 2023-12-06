@@ -45,6 +45,10 @@ export class BaseInfoService {
     return this.httpService.post<any[]>(`baseinfo/data/all`, payload)
   }
 
+  downloadFormData(payload: FetchAllFormDataDTO): Observable<void> {
+    return this.httpService.post<void>(`baseinfo/data/download`, payload)
+  }
+
   fetchFormData(payload: FetchFormDataByIdDTO): Observable<any> {
     return this.httpService.post<any>(`baseinfo/data/id`, payload)
   }

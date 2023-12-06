@@ -2,22 +2,25 @@ import {Component, NgModule, OnInit} from '@angular/core';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {DynamicDialogActionsModule} from "../../dynamic-dilaog-actions/dynamic-dialog-actions.component";
 import {CustomPickListModule} from "../../../ui-kits/custom-pick-list/custom-pick-list.component";
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {CustomGridModule} from "../../../ui-kits/custom-grid/custom-grid.component";
 import {ColDef, GridOptions} from "ag-grid-community";
 import {CustomDropdownModule} from "../../../ui-kits/custom-dropdown/custom-dropdown.component";
 import {Subscription} from "rxjs";
 import {AutoUnsubscribe} from "../../../decorators/AutoUnSubscribe";
+import {downloadTypeOptions} from "../../../constants/enums";
+import {BaseInfoService} from "../../../api/base-info.service";
+import {FetchAllDataPayloadDTO, HushaGridUtilService} from "../../../utils/husha-grid-util.service";
 
 @AutoUnsubscribe()
 @Component({
   selector: 'app-export-excel-dialog',
   template: `
-    <form [formGroup]="form">
+    <form [formGroup]="exportExcelForm">
       <div class="col-4">
         <app-custom-dropdown
-          formControlName="type"
-          [options]="[]"
+          formControlName="downloadType"
+          [options]="downloadTypeOptions"
           label="نوع خروجی"
         ></app-custom-dropdown>
       </div>
@@ -33,7 +36,7 @@ import {AutoUnsubscribe} from "../../../decorators/AutoUnSubscribe";
       ></app-custom-grid>
     </div>
     <app-dynamic-dialog-actions
-      [disabled]="form.invalid"
+      [disabled]="exportExcelForm.invalid"
       (confirmed)="handleConfirm()"
       (closed)="ref.close()"
     ></app-dynamic-dialog-actions>
@@ -41,33 +44,48 @@ import {AutoUnsubscribe} from "../../../decorators/AutoUnSubscribe";
 })
 export class ExportExcelDialogComponent implements OnInit {
 
-  form: FormGroup
+  exportExcelForm: FormGroup
   subscription: Subscription
 
   colDefs: ColDef[] = []
   gridOptions: GridOptions = {
     pagination: false
   }
+  downloadTypeOptions = downloadTypeOptions
 
   constructor(
     public dynamicDialogConfig: DynamicDialogConfig,
     public ref: DynamicDialogRef,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private baseInfoService: BaseInfoService,
+    private hushaGridUtilService: HushaGridUtilService
   ) {
+    this.dynamicDialogConfig.closable = true
+    this.dynamicDialogConfig.header = 'خروجی اکسل'
   }
 
 
   ngOnInit(): void {
-
-    this.form = this.fb.group({
-      type: this.fb.control(null, [Validators.required]),
+    this.exportExcelForm = this.fb.group({
+      downloadType: this.fb.control(null, [Validators.required]),
       pickList: this.fb.control([], [Validators.required])
     })
-    this.subscription = this.form.controls['pickList'].valueChanges.subscribe(data => this.colDefs = [...data])
+    this.subscription = this.exportExcelForm.controls['pickList'].valueChanges.subscribe(data => this.colDefs = [...data])
   }
 
   handleConfirm() {
-    console.log(this.form.value)
+    const payload = new FetchAllDataPayloadDTO(
+      this.dynamicDialogConfig.data.source.form,
+      this.dynamicDialogConfig.data.source.parentId,
+      this.dynamicDialogConfig.data.source.masterId,
+      null,
+      null,
+      null,
+      null,
+      this.exportExcelForm.controls['downloadType'].value,
+      this.exportExcelForm.controls['pickList'].value.map(item => item.field).join(',')
+    )
+    this.baseInfoService.downloadFormData(this.hushaGridUtilService.handleCreatePayloadForFetchAllData(payload)).subscribe()
   }
 }
 

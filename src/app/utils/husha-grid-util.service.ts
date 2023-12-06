@@ -1,6 +1,12 @@
 import {Injectable} from '@angular/core';
 import {criteriaInterface, FetchAllFormDataDTO} from "../models/DTOs/fetch-all-form-data.DTO";
-import {ACCESS_FORM_ACTION_TYPE, CRITERIA_OPERATION_TYPE, FORM_KIND, VIEW_TYPE} from "../constants/enums";
+import {
+  ACCESS_FORM_ACTION_TYPE,
+  CRITERIA_OPERATION_TYPE,
+  DOWNLOAD_TYPE,
+  FORM_KIND,
+  VIEW_TYPE
+} from "../constants/enums";
 import {ColDef} from "ag-grid-community";
 import {HushaCustomerUtilService} from "./husha-customer-util.service";
 import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
@@ -16,7 +22,9 @@ export class FetchAllDataPayloadDTO {
     public page?: number,
     public size?: number,
     public sort?: string,
-    public criteria?: criteriaInterface[]
+    public criteria?: criteriaInterface[],
+    public downloadType?: DOWNLOAD_TYPE,
+    public resultSet?: string
   ) {
   }
 }
@@ -69,6 +77,11 @@ export class HushaGridUtilService {
 
   handleCreatePayloadForFetchAllData(payload: FetchAllDataPayloadDTO) {
     const formKindId = payload.form.formKind.id
+    const defaultCriteria = {
+      key: "isActive",
+      operation: CRITERIA_OPERATION_TYPE.EQUAL,
+      value: "true"
+    }
     return new FetchAllFormDataDTO(
       this.hushaCustomerUtilService.customer.id,
       payload.form.id,
@@ -82,14 +95,9 @@ export class HushaGridUtilService {
       payload.sort,
       formKindId === FORM_KIND.MULTI_LEVEL ? payload.parentId : null,
       formKindId === FORM_KIND.DETAIL ? payload.masterId : null,
-      payload.criteria ? [
-        {
-          key: "isActive",
-          operation: CRITERIA_OPERATION_TYPE.EQUAL,
-          value: "true"
-        },
-        ...payload.criteria
-      ] : [{key: "isActive", operation: CRITERIA_OPERATION_TYPE.EQUAL, value: "true"}]
+      payload.criteria ? [defaultCriteria, ...payload.criteria] : [defaultCriteria],
+      payload.downloadType,
+      payload.resultSet,
     )
   }
 

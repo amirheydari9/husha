@@ -39,6 +39,7 @@ import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from "@angular
 import {CustomInputTextModule} from "../../ui-kits/custom-input-text/custom-input-text.component";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 import {criteriaInterface} from "../../models/DTOs/fetch-all-form-data.DTO";
+import {ExportExcelDialogComponent} from "../dialog/export-excel-dialog/export-excel-dialog.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -86,7 +87,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   gridHistory = []
   parentId: number
   selectedRow: any
-  exportExcelSource = null
 
   @Output() onRowDoubleClicked: EventEmitter<any> = new EventEmitter<any>()
   @Output() onRowClicked: EventEmitter<any> = new EventEmitter<any>()
@@ -106,13 +106,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     this.gridApi = this.grid.api;
     this.colApi = this.grid.columnApi;
     this.gridApi.setDatasource(this.dataSource)
-    setTimeout(() => {
-      if (!this.fetchSummary) {
-        const data = []
-        this.gridApi.forEachNode(row => data.push(row.data))
-        this.exportExcelSource = {cols: this.colApi['columnModel'].columnDefs, data}
-      }
-    }, 1000)
   }
 
   async ngOnInit(): Promise<void> {
@@ -225,7 +218,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         })
       )
     } else if ($event === ACCESS_FORM_ACTION_TYPE.ATTACHMENTS) {
-      // this.router.navigate([`/form/${this.form.id}/attachment/${this.selectedRow.id}`])
       this.dialogManagementService.openDialog(AttachmentListDialogComponent, {
         data: {form: this.form, ownId: this.selectedRow.id},
       })
@@ -241,6 +233,21 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       }).subscribe(data => {
         console.log(data)
       })
+    } else if ($event === ACCESS_FORM_ACTION_TYPE.EXPORT) {
+      if (!this.fetchSummary) {
+        const data = []
+        this.gridApi.forEachNode(row => data.push(row.data))
+        const source = {
+          cols: this.gridApi.getColumnDefs(),
+          data,
+          form: this.form,
+          parentId: this.parentId,
+          masterId: this.masterId,
+        }
+        this.dialogManagementService.openDialog(ExportExcelDialogComponent, {
+          data: {source},
+        })
+      }
     }
   }
 

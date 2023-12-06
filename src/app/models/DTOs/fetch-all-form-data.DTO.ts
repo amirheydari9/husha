@@ -1,4 +1,4 @@
-import {CRITERIA_OPERATION_TYPE} from "../../constants/enums";
+import {CRITERIA_OPERATION_TYPE, DOWNLOAD_TYPE} from "../../constants/enums";
 
 export interface criteriaInterface {
   key: string;
@@ -21,7 +21,9 @@ export class FetchAllFormDataDTO {
     public sort?: string,
     public parentId?: number,
     public masterId?: number,
-    public criteria?: criteriaInterface[]
+    public criteria?: criteriaInterface[],
+    public downloadType?: DOWNLOAD_TYPE,
+    public resultSet?: string
   ) {
   }
 }

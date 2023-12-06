@@ -14,10 +14,6 @@ import {ACCESS_FORM_ACTION_TYPE} from "../../constants/enums";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
-import {
-  ExportExcelDialogComponent,
-  ExportExcelDialogModule
-} from "../dialog/export-excel-dialog/export-excel-dialog.component";
 import {DialogManagementService} from "../../utils/dialog-management.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
@@ -59,7 +55,6 @@ export class GridActionsComponent implements OnInit {
   currentHistoryIndex: number
   @Input() selectedRow: any
   @Input() gridHistory = []
-  @Input() exportExcelSource = null
 
   @Input() set accessFormActions(data: ACCESS_FORM_ACTION_TYPE[]) {
     if (data.length) {
@@ -247,13 +242,8 @@ export class GridActionsComponent implements OnInit {
       case ACCESS_FORM_ACTION_TYPE.DELETE_ALL:
       case ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE:
       case ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH:
-        this.onAction.emit(type)
-        break
       case ACCESS_FORM_ACTION_TYPE.EXPORT:
-        this.dialogManagementService.openDialog(ExportExcelDialogComponent, {
-          data: {source: this.exportExcelSource},
-          header: 'خروجی اکسل'
-        })
+        this.onAction.emit(type)
         break
     }
   }
@@ -266,7 +256,6 @@ export class GridActionsComponent implements OnInit {
     NgClass,
     NgIf,
     CustomButtonModule,
-    ExportExcelDialogModule
   ],
   exports: [GridActionsComponent]
 })
