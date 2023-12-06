@@ -154,10 +154,6 @@ export class HushaGridUtilService {
 
   handleFetchData(fetchSummary: boolean, data: FetchAllDataPayloadDTO) {
     const payload = this.handleCreatePayloadForFetchAllData(data)
-    if (fetchSummary) {
-      return this.baseInfoService.fetchAllSummary(payload)
-    } else {
-      return this.baseInfoService.fetchAllFormData(payload)
-    }
+    return this.baseInfoService.fetchAllFormData(payload)
   }
 }

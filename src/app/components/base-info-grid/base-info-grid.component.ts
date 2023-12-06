@@ -135,7 +135,9 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         this.gridApi.paginationGetCurrentPage(),
         this.gridApi.paginationGetPageSize(),
         this.hushaGridUtilService.handleSortParam(params.sortModel),
-        this.fetchSummary ? this.summaryCriteria : null
+        this.fetchSummary ? this.summaryCriteria : null,
+        null,
+        this.fetchSummary ? 'id,code,title' : null
       )
       this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).subscribe(formData => {
         const paginationInfo = formData.shift()

@@ -13,7 +13,6 @@ import {IFetchAccessActionRes} from "../models/interface/fetch-access-action-res
 import {FetchFormDataByIdDTO} from "../models/DTOs/fetch-form-data-by-id.DTO";
 import {DeleteFormDataDTO} from "../models/DTOs/delete-form-data.DTO";
 import {FetchMaxIncValueByFieldNameDTO} from "../models/DTOs/fetch-max-inc-value-by-field-name.DTO";
-import {IFetchAllSummaryRes} from "../models/interface/fetch-all-summary-res.interface";
 import {AddFormDataReqDTO} from "../models/DTOs/add-form-data-req.DTO";
 import {UpdateFormDataReqDTO} from "../models/DTOs/update-form-data-req.DTO";
 import {FetchDetailGridFormsReqDTO} from "../models/DTOs/fetch-detail-grid-forms-req-d-t.o";
@@ -63,10 +62,6 @@ export class BaseInfoService {
 
   fetchMaxIncValue(payload: FetchMaxIncValueByFieldNameDTO): Observable<number> {
     return this.httpService.post<number>(`baseinfo/data/max-inc-value-by-field-name`, payload)
-  }
-
-  fetchAllSummary(payload: FetchAllFormDataDTO): Observable<IFetchAllSummaryRes[]> {
-    return this.httpService.post<IFetchAllSummaryRes[]>(`baseinfo/data/summary`, payload)
   }
 
   addFormData(payload: AddFormDataReqDTO) {
