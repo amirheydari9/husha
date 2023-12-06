@@ -197,60 +197,86 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
     if ($event === ACCESS_FORM_ACTION_TYPE.ADD) {
-      this.router.navigate([`/form/${this.form.id}/create`], {
-        queryParams: {
-          masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
-        }
-      })
+      this.handleAdd()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.UPDATE) {
-      this.router.navigate([`/form/${this.form.id}/update/${this.selectedRow.id}`], {
-        queryParams: {
-          masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
-        }
-      })
+      this.handleUpdate()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.DELETE) {
-      //TODO تست حذف در حالت مستر دیتیل
-      this.subscription.push(
-        this.baseInfoService.deleteFormData(this.hushaGridUtilService.handleCreatePayloadForDeleteRow(
-          this.form,
-          this.selectedRow.id,
-          this.masterId
-        )).subscribe(data => {
-          this.gridApi.setDatasource(this.dataSource)
-        })
-      )
+      this.handleDelete()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.ATTACHMENTS) {
-      this.dialogManagementService.openDialog(AttachmentListDialogComponent, {
-        data: {form: this.form, ownId: this.selectedRow.id},
-      })
+      this.handleAttachment()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.IMPORT) {
-      this.router.navigate([`/form/${this.form.id}/import-excel`], {
-        queryParams: {
-          masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
-        }
-      })
+      this.handleImport()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH) {
-      this.dialogManagementService.openDialog(AdvanceSearchDialogComponent, {
-        data: {form: this.form},
-      }).subscribe(data => {
-        console.log(data)
-      })
+      this.handleAdvanceSearch()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.EXPORT) {
-      if (!this.fetchSummary) {
-        const data = []
-        this.gridApi.forEachNode(row => data.push(row.data))
-        const source = {
-          cols: this.gridApi.getColumnDefs(),
-          data,
-          form: this.form,
-          parentId: this.parentId,
-          masterId: this.masterId,
-        }
-        this.dialogManagementService.openDialog(ExportExcelDialogComponent, {
-          data: {source},
-        })
-      }
+      this.handleExport()
     }
+  }
+
+  handleAdd() {
+    this.router.navigate([`/form/${this.form.id}/create`], {
+      queryParams: {
+        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
+      }
+    })
+  }
+
+  handleUpdate() {
+    this.router.navigate([`/form/${this.form.id}/update/${this.selectedRow.id}`], {
+      queryParams: {
+        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
+      }
+    })
+  }
+
+  handleDelete() {
+    //TODO تست حذف در حالت مستر دیتیل
+    this.subscription.push(
+      this.baseInfoService.deleteFormData(this.hushaGridUtilService.handleCreatePayloadForDeleteRow(
+        this.form,
+        this.selectedRow.id,
+        this.masterId
+      )).subscribe(data => {
+        this.gridApi.setDatasource(this.dataSource)
+      })
+    )
+  }
+
+  handleAttachment() {
+    this.dialogManagementService.openDialog(AttachmentListDialogComponent, {
+      data: {form: this.form, ownId: this.selectedRow.id},
+    })
+  }
+
+  handleImport() {
+    this.router.navigate([`/form/${this.form.id}/import-excel`], {
+      queryParams: {
+        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
+      }
+    })
+  }
+
+  handleAdvanceSearch() {
+    this.dialogManagementService.openDialog(AdvanceSearchDialogComponent, {
+      data: {form: this.form},
+    }).subscribe(data => {
+      console.log(data)
+    })
+  }
+
+  handleExport() {
+    const data = []
+    this.gridApi.forEachNode(row => data.push(row.data))
+    const source = {
+      cols: this.gridApi.getColumnDefs(),
+      data,
+      form: this.form,
+      parentId: this.parentId,
+      masterId: this.masterId,
+    }
+    this.dialogManagementService.openDialog(ExportExcelDialogComponent, {
+      data: {source},
+    })
   }
 
   handleSummarySearch() {
