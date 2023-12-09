@@ -5,6 +5,7 @@ import {
   CRITERIA_OPERATION_TYPE,
   DOWNLOAD_TYPE,
   FORM_KIND,
+  VALUE_TYPE,
   VIEW_TYPE
 } from "../constants/enums";
 import {ColDef} from "ag-grid-community";
@@ -77,10 +78,11 @@ export class HushaGridUtilService {
 
   handleCreatePayloadForFetchAllData(payload: FetchAllDataPayloadDTO) {
     const formKindId = payload.form.formKind.id
-    const defaultCriteria = {
-      key: "isActive",
+    const defaultCriteria: criteriaInterface = {
+      key: "isactive",
       operation: CRITERIA_OPERATION_TYPE.EQUAL,
-      value: "true"
+      value: "true",
+      valueType: VALUE_TYPE.BOOLEAN
     }
     return new FetchAllFormDataDTO(
       this.hushaCustomerUtilService.customer.id,
@@ -106,7 +108,6 @@ export class HushaGridUtilService {
     form.fields.forEach(item => {
       //TODO که دیگه کاری به viewType نداریم  چک و تیک برای وقتی که حلت خلاصه داریم
       if (fetchSummary) {
-        //TODO id  در نمایش ستون ها نباشد
         if (item.name === 'code' || item.name === 'title') {
           colDefs.push({field: item.name, headerName: item.caption})
         }

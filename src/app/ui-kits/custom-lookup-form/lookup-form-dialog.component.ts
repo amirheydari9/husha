@@ -31,7 +31,7 @@ export class LookupFormDialogComponent implements AfterViewInit {
     public dynamicDialogConfig: DynamicDialogConfig,
     public ref: DynamicDialogRef,
   ) {
-    dynamicDialogConfig.header = dynamicDialogConfig.data.field.caption
+    dynamicDialogConfig.header = dynamicDialogConfig.data.field.lookupCaptionTitle
   }
 
   ngAfterViewInit(): void {

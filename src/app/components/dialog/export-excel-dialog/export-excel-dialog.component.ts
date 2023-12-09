@@ -31,7 +31,7 @@ import {FetchAllDataPayloadDTO, HushaGridUtilService} from "../../../utils/husha
     <div class="mt-5">
       <app-custom-grid
         [columnDefs]="colDefs"
-        [rowData]="dynamicDialogConfig.data.source.data"
+        [rowData]="dynamicDialogConfig.data.source.rowData"
         [gridOptions]="gridOptions"
       ></app-custom-grid>
     </div>
@@ -81,7 +81,7 @@ export class ExportExcelDialogComponent implements OnInit {
       null,
       null,
       null,
-      null,
+      this.dynamicDialogConfig.data.source.criteria,
       this.exportExcelForm.controls['downloadType'].value,
       this.exportExcelForm.controls['pickList'].value.map(item => item.field).join(',')
     )

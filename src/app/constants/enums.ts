@@ -78,6 +78,7 @@ export enum LOOKUP_VIEW_TYPE {
 
 export enum CRITERIA_OPERATION_TYPE {
   EQUAL = "EQUAL",
+  NOT_EQUAL = "NOT_EQUAL",
   LIKE = "LIKE",
   CONTAINS = "CONTAINS",
   START_WITH = "START_WITH",
@@ -90,7 +91,8 @@ export enum CRITERIA_OPERATION_TYPE {
   NULL = "NULL",
   EMPTY = "EMPTY",
   NOT_EMPTY = "NOT_EMPTY",
-  IN = "IN"
+  IN = "IN",
+  BETWEEN = "BETWEEN",
 }
 
 export enum DYNAMIC_FORM_RULES {
@@ -117,3 +119,10 @@ export enum DOWNLOAD_TYPE {
 export const downloadTypeOptions = Object.keys(DOWNLOAD_TYPE)
   .filter(key => !isNaN(Number(key)))
   .map(key => ({id: Number(key), title: DOWNLOAD_TYPE[key]}));
+
+
+export enum VALUE_TYPE {
+  NUMBER = 1,
+  STRING = 2,
+  BOOLEAN = 3
+}

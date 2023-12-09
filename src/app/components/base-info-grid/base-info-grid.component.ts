@@ -26,7 +26,7 @@ import {
 } from "ag-grid-community";
 import {BaseInfoService} from "../../api/base-info.service";
 import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
-import {ACCESS_FORM_ACTION_TYPE, CRITERIA_OPERATION_TYPE, FORM_KIND} from "../../constants/enums";
+import {ACCESS_FORM_ACTION_TYPE, CRITERIA_OPERATION_TYPE, FORM_KIND, VALUE_TYPE} from "../../constants/enums";
 import {FetchAllDataPayloadDTO, HushaGridUtilService} from "../../utils/husha-grid-util.service";
 import {AG_GRID_LOCALE_FA} from "../../constants/ag-grid-locale-fa";
 import {CustomCardModule} from "../../ui-kits/custom-card/custom-card.component";
@@ -258,21 +258,25 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   handleAdvanceSearch() {
     this.dialogManagementService.openDialog(AdvanceSearchDialogComponent, {
-      data: {form: this.form},
+      data: {form: this.form, colDefs: this.gridApi.getColumnDefs()},
     }).subscribe(data => {
-      console.log(data)
+      if (data) {
+        this.criteria = data
+        this.gridApi.setDatasource(this.dataSource)
+      }
     })
   }
 
   handleExport() {
-    const data = []
-    this.gridApi.forEachNode(row => data.push(row.data))
+    const rowData = []
+    this.gridApi.forEachNode(row => rowData.push(row.data))
     const source = {
       cols: this.gridApi.getColumnDefs(),
-      data,
+      rowData,
       form: this.form,
       parentId: this.parentId,
       masterId: this.masterId,
+      criteria: this.criteria
     }
     this.dialogManagementService.openDialog(ExportExcelDialogComponent, {
       data: {source},
@@ -282,10 +286,20 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   handleSummarySearch() {
     this.criteria = []
     if (this.code.value) {
-      this.criteria.push({key: 'code', operation: CRITERIA_OPERATION_TYPE.EQUAL, value: this.code.value},)
+      this.criteria.push({
+        key: 'code',
+        operation: CRITERIA_OPERATION_TYPE.EQUAL,
+        value: this.code.value,
+        valueType: VALUE_TYPE.NUMBER
+      },)
     }
     if (this.title.value) {
-      this.criteria.push({key: 'title', operation: CRITERIA_OPERATION_TYPE.EQUAL, value: this.title.value},)
+      this.criteria.push({
+        key: 'title',
+        operation: CRITERIA_OPERATION_TYPE.EQUAL,
+        value: this.title.value,
+        valueType: VALUE_TYPE.STRING
+      },)
     }
     this.gridApi.setDatasource(this.dataSource)
   }

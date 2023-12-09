@@ -1,3 +1,46 @@
+<form [formGroup]="advanceSearchForm" class="flex align-items-center">
+  <div class="col-3">
+    <app-custom-dropdown
+      label="فیلد مورد جستجو"
+      formControlName="key"
+      [options]="keyOptions"
+    ></app-custom-dropdown>
+  </div>
+  <div class="col-3">
+    <app-custom-dropdown
+      label="شرط"
+      formControlName="operation"
+      [options]="criteriaOptions"
+    ></app-custom-dropdown>
+  </div>
+  <div class="col-3">
+    <app-custom-dropdown
+      *ngIf="selectedInputFieldType === INPUT_FIELD_TYPE.SWITCH ; else elseBack"
+      label="مقدار"
+      formControlName="value"
+      [options]="booleanValueOptions"
+    ></app-custom-dropdown>
+     <ng-template #elseBack>
+       <app-custom-input-text
+         label="مقدار"
+         formControlName="value"
+       ></app-custom-input-text>
+     </ng-template>
+  </div>
+  <app-custom-button
+    type="button"
+    label="ثبت"
+    (onClick)="handleAddCriteria()"
+    [disabled]="advanceSearchForm.invalid"
+  ></app-custom-button>
+</form>
+
+<div *ngFor="let criteria of criteriaList">
+  <span>{{criteria.title}}</span>
+  <span>{{criteria.operationTitle}}</span>
+  <span>{{criteria.value}}</span>
+</div>
+
 <app-dynamic-dialog-actions
   (confirmed)="handleClose()"
   (closed)="ref.close()"

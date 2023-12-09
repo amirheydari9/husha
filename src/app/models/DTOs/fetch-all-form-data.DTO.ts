@@ -1,9 +1,10 @@
-import {CRITERIA_OPERATION_TYPE, DOWNLOAD_TYPE} from "../../constants/enums";
+import {CRITERIA_OPERATION_TYPE, DOWNLOAD_TYPE, VALUE_TYPE} from "../../constants/enums";
 
 export interface criteriaInterface {
   key: string;
   operation: CRITERIA_OPERATION_TYPE,
-  value: string
+  value: string,
+  valueType: VALUE_TYPE
 }
 
 
