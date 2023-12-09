@@ -3,8 +3,7 @@ import {BaseControlValueAccessor} from "../../utils/BaseControlValueAccessor";
 import {FormControl, FormsModule, NgControl} from "@angular/forms";
 import {IFetchFormRes, IFormField} from "../../models/interface/fetch-form-res.interface";
 import {LookupFormDialogComponent} from "./lookup-form-dialog.component";
-import {NgClass} from "@angular/common";
-import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
+import {NgClass, NgIf} from "@angular/common";
 import {InputTextModule} from "primeng/inputtext";
 import {CustomButtonModule} from "../custom-button/custom-button.component";
 import {BaseInfoService} from "../../api/base-info.service";
@@ -16,6 +15,7 @@ import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service"
 import {DialogManagementService} from "../../utils/dialog-management.service";
 import {DynamicDialogActionsModule} from "../../components/dynamic-dilaog-actions/dynamic-dialog-actions.component";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
+import {FieldErrorModule} from "../field-error/field-error.component";
 
 @AutoUnsubscribe()
 @Component({
@@ -27,19 +27,22 @@ import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
         [icon]="'pi pi-table'"
         (onClick)="handleOpenDialog()"
       ></app-custom-button>
-      <div class="flex-grow-1">
-        <app-input-wrapper [label]="field.caption" [control]="control">
-          <input
-            type="text"
-            readonly
-            #input
-            pInputText
-            [(ngModel)]="value"
-            [disabled]="disabled"
-            [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
-            [style]="{'width':'100%','border-right':'0','border-top-right-radius':'0','border-bottom-right-radius':'0'}"
-            (blur)="touched()">
-        </app-input-wrapper>
+      <div class="flex-grow-1 uikit-wrapper-height">
+          <span class="p-input-icon-left p-float-label w-full">
+             <i class="pi pi-times cursor-pointer" *ngIf="control.value" (click)="handleReset()"></i>
+             <input
+               type="text"
+               readonly
+               #input
+               pInputText
+               [(ngModel)]="value"
+               [disabled]="disabled"
+               [ngClass]="{'ng-invalid ng-dirty' : control.invalid &&( control.dirty || control.touched)}"
+               [style]="{'width':'100%','border-right':'0','border-top-right-radius':'0','border-bottom-right-radius':'0'}"
+               (blur)="touched()">
+            <label class="text-1 font-sm-regular">{{field.caption}}</label>
+          </span>
+        <app-field-error *ngIf="control.invalid" [formField]="control"></app-field-error>
       </div>
     </div>
   `,
@@ -105,17 +108,23 @@ export class CustomLookupFormComponent extends BaseControlValueAccessor<any> imp
       this.touched()
     })
   }
+
+  handleReset() {
+    this.changed(null)
+    this.writeValue(null)
+  }
 }
 
 @NgModule({
   declarations: [CustomLookupFormComponent, LookupFormDialogComponent],
   imports: [
     NgClass,
-    InputWrapperModule,
+    NgIf,
     InputTextModule,
     CustomButtonModule,
     FormsModule,
-    DynamicDialogActionsModule
+    DynamicDialogActionsModule,
+    FieldErrorModule
   ],
   exports: [CustomLookupFormComponent],
   entryComponents: [LookupFormDialogComponent]
