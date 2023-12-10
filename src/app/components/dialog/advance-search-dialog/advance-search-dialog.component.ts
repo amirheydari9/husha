@@ -15,6 +15,7 @@ import {criteriaInterface} from "../../../models/DTOs/fetch-all-form-data.DTO";
 import {CommonModule} from "@angular/common";
 import {CriteriaOperationPipe, CriteriaOperationPipeModule} from "../../../pipes/criteria-operation.pipe";
 import {DividerModule} from "primeng/divider";
+import {CustomValidators} from "../../../utils/Custom-Validators";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -123,7 +124,7 @@ export class AdvanceSearchDialogComponent implements OnInit {
     this.advanceSearchForm = this.fb.group({
       key: this.fb.control(null, [Validators.required]),
       operation: this.fb.control({value: null, disabled: true}, [Validators.required]),
-      value: this.fb.control({value: null, disabled: true})
+      value: this.fb.control({value: null, disabled: true},[Validators.required])
     })
 
     this.subscription.push(
@@ -247,12 +248,14 @@ export class AdvanceSearchDialogComponent implements OnInit {
       case INPUT_FIELD_TYPE.TEXT:
       case INPUT_FIELD_TYPE.TEXT_AREA:
         this.criteriaOptions = this.textCriteriaOptions
+        this.valueCtrl.addValidators([CustomValidators.noWhitespace])
         break
       case INPUT_FIELD_TYPE.NUMBER:
         this.criteriaOptions = this.numberCriteriaOptions
         break
       case INPUT_FIELD_TYPE.SWITCH:
         this.criteriaOptions = this.booleanCriteriaOptions
+        this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
     }
     return this.criteriaOptions
   }
