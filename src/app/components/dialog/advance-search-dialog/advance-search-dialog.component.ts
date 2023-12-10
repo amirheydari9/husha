@@ -166,8 +166,11 @@ export class AdvanceSearchDialogComponent implements OnInit {
       })
     )
 
+    if (this.dynamicDialogConfig.data.criteria) {
+      this.criteriaList = this.dynamicDialogConfig.data.criteria
+    }
+
     this.handleCreateKeyOptions()
-    this.handleCreateCriteriaList()
   }
 
   handleCreateKeyOptions() {
@@ -190,23 +193,6 @@ export class AdvanceSearchDialogComponent implements OnInit {
         }
       })
     })
-  }
-
-  handleCreateCriteriaList() {
-    if (this.dynamicDialogConfig.data.criteria) {
-      this.dynamicDialogConfig.data.criteria.forEach(cr => {
-        const keyOption = this.keyOptions.find(key => key.id === cr.key)
-        this.criteriaList.push({
-          id: this.criteriaList.length + 1,
-          title: keyOption.title,
-          key: cr.key,
-          operation: cr.operation,
-          value: cr.value,
-          valueType: cr.valueType,
-          valueLabel: cr.valueLabel
-        })
-      })
-    }
   }
 
   get keyCtrl(): FormControl {
@@ -300,7 +286,7 @@ export class AdvanceSearchDialogComponent implements OnInit {
 
   handleCriteriaValue(value) {
     if (Array.isArray(value)) {
-      return value.map(v => (v.id)).join(',')
+      return value.map(v => v.id).join(',')
     } else {
       return value.hasOwnProperty('id') ? value.id : value
     }
@@ -308,7 +294,7 @@ export class AdvanceSearchDialogComponent implements OnInit {
 
   handleCriteriaValueLabel(value) {
     if (Array.isArray(value)) {
-      return value.map(v => (v.title)).join(',')
+      return value.map(v => v.title).join(',')
     } else {
       return value.hasOwnProperty('title') ? value.id : value
     }
