@@ -52,6 +52,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   searchSummaryForm: FormGroup
   criteria: criteriaInterface[] = null
+  criteriaMetaData: any[] = null
 
   gridApi: GridApi
   colApi: ColumnApi
@@ -260,10 +261,21 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   handleAdvanceSearch() {
     this.dialogManagementService.openDialog(AdvanceSearchDialogComponent, {
-      data: {form: this.form, colDefs: this.gridApi.getColumnDefs(), criteria: this.criteria},
+      data: {form: this.form, colDefs: this.gridApi.getColumnDefs(), criteria: this.criteriaMetaData},
     }).subscribe(data => {
       if (data) {
-        this.criteria = data.length ? data : null
+        if (data.length) {
+          this.criteriaMetaData = data;
+          this.criteria = data.map(cr => ({
+            key: cr.key,
+            operation: cr.operation,
+            value: cr.value,
+            valueType: cr.valueType,
+          }))
+        } else {
+          this.criteriaMetaData = null
+          this.criteria = null
+        }
         this.gridApi.setDatasource(this.dataSource)
       }
     })
@@ -271,6 +283,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   handleResetAdvanceSearch() {
     this.criteria = null
+    this.criteriaMetaData = null
     this.gridApi.setDatasource(this.dataSource)
   }
 

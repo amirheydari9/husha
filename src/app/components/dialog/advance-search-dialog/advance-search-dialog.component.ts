@@ -11,11 +11,12 @@ import {Subscription} from "rxjs";
 import {HushaFormUtilService} from "../../../utils/husha-form-util.service";
 import {CustomInputTextModule} from "../../../ui-kits/custom-input-text/custom-input-text.component";
 import {CustomButtonModule} from "../../../ui-kits/custom-button/custom-button.component";
-import {criteriaInterface} from "../../../models/DTOs/fetch-all-form-data.DTO";
 import {CommonModule} from "@angular/common";
 import {CriteriaOperationPipe, CriteriaOperationPipeModule} from "../../../pipes/criteria-operation.pipe";
 import {DividerModule} from "primeng/divider";
 import {CustomValidators} from "../../../utils/Custom-Validators";
+import {CustomSwitchModule} from "../../../ui-kits/custom-switch/custom-switch.component";
+import {CustomMultiSelectModule} from "../../../ui-kits/custom-multi-select/custom-multi-select.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -89,18 +90,24 @@ export class AdvanceSearchDialogComponent implements OnInit {
     },
     {id: CRITERIA_OPERATION_TYPE.BETWEEN, title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.BETWEEN)},
   ]
-
   booleanCriteriaOptions = [
-    {id: CRITERIA_OPERATION_TYPE.EQUAL, title: "مساوی"},
+    {id: CRITERIA_OPERATION_TYPE.EQUAL, title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.EQUAL)},
+  ]
+  dropDownCriteriaOptions = [
+    {id: CRITERIA_OPERATION_TYPE.EQUAL, title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.EQUAL)},
+    {
+      id: CRITERIA_OPERATION_TYPE.NOT_EQUAL,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.NOT_EQUAL)
+    },
+    {
+      id: CRITERIA_OPERATION_TYPE.IN,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.IN)
+    },
   ]
 
-  booleanValueOptions = [
-    {id: "true", title: "بله"},
-    {id: "false", title: "خیر"}
-  ]
+  dropDownValueOptions = []
 
   criteriaOptions = []
-  totalCriteria: criteriaInterface[] = []
   criteriaList = []
 
   @ViewChild(FormGroupDirective) formGroupDirective: FormGroupDirective
@@ -110,7 +117,7 @@ export class AdvanceSearchDialogComponent implements OnInit {
     public ref: DynamicDialogRef,
     private fb: FormBuilder,
     private hushaFormUtilService: HushaFormUtilService,
-    private criteriaOperationPipe: CriteriaOperationPipe
+    private criteriaOperationPipe: CriteriaOperationPipe,
   ) {
     dynamicDialogConfig.header = 'جستجوی پیشرفته'
     dynamicDialogConfig.height = '50vh'
@@ -120,15 +127,14 @@ export class AdvanceSearchDialogComponent implements OnInit {
 
   ngOnInit() {
 
-    // TODO implement between
     this.advanceSearchForm = this.fb.group({
       key: this.fb.control(null, [Validators.required]),
       operation: this.fb.control({value: null, disabled: true}, [Validators.required]),
-      value: this.fb.control({value: null, disabled: true},[Validators.required])
+      value: this.fb.control({value: null, disabled: true}, [Validators.required])
     })
 
     this.subscription.push(
-      this.keyCtrl.valueChanges.subscribe(data => {
+      this.keyCtrl.valueChanges.subscribe(async data => {
         this.operationCtrl.setValue(null)
         this.valueCtrl.setValue(null)
         this.criteriaOptions = []
@@ -136,6 +142,7 @@ export class AdvanceSearchDialogComponent implements OnInit {
           this.operationCtrl.enable()
           this.valueCtrl.enable()
           this.handleCreateCriteriaOptions(data)
+          await this.handleValueOptions(data)
         } else {
           this.selectedInputFieldType = null
           this.operationCtrl.disable()
@@ -153,6 +160,12 @@ export class AdvanceSearchDialogComponent implements OnInit {
       })
     )
 
+    this.subscription.push(
+      this.valueCtrl.valueChanges.subscribe(data => {
+        console.log(data)
+      })
+    )
+
     this.handleCreateKeyOptions()
     this.handleCreateCriteriaList()
   }
@@ -163,7 +176,8 @@ export class AdvanceSearchDialogComponent implements OnInit {
       field.fieldType.id === INPUT_FIELD_TYPE.TEXT ||
       field.fieldType.id === INPUT_FIELD_TYPE.NUMBER ||
       field.fieldType.id === INPUT_FIELD_TYPE.TEXT_AREA ||
-      field.fieldType.id === INPUT_FIELD_TYPE.SWITCH
+      field.fieldType.id === INPUT_FIELD_TYPE.SWITCH ||
+      field.fieldType.id === INPUT_FIELD_TYPE.DROP_DOWN
     )
     filteredField.forEach(field => {
       this.colDefs.forEach(col => {
@@ -183,12 +197,13 @@ export class AdvanceSearchDialogComponent implements OnInit {
       this.dynamicDialogConfig.data.criteria.forEach(cr => {
         const keyOption = this.keyOptions.find(key => key.id === cr.key)
         this.criteriaList.push({
+          id: this.criteriaList.length + 1,
           title: keyOption.title,
           key: cr.key,
           operation: cr.operation,
           value: cr.value,
           valueType: cr.valueType,
-          id: this.criteriaList.length + 1
+          valueLabel: cr.valueLabel
         })
       })
     }
@@ -231,6 +246,7 @@ export class AdvanceSearchDialogComponent implements OnInit {
       case INPUT_FIELD_TYPE.TEXT_AREA:
         return VALUE_TYPE.STRING
       case INPUT_FIELD_TYPE.NUMBER:
+      case INPUT_FIELD_TYPE.DROP_DOWN:
         return VALUE_TYPE.NUMBER
       case INPUT_FIELD_TYPE.SWITCH:
         return VALUE_TYPE.BOOLEAN
@@ -256,30 +272,50 @@ export class AdvanceSearchDialogComponent implements OnInit {
       case INPUT_FIELD_TYPE.SWITCH:
         this.criteriaOptions = this.booleanCriteriaOptions
         this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
+        break
+      case INPUT_FIELD_TYPE.DROP_DOWN:
+        this.criteriaOptions = this.dropDownCriteriaOptions
+        this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
     }
     return this.criteriaOptions
+  }
+
+  async handleValueOptions(fieldName: string) {
+    const field = this.form.fields.find(field => field.name === fieldName)
+    this.dropDownValueOptions = await this.hushaFormUtilService.handleOptions(field)
   }
 
   handleAddCriteria() {
     const selectedKeyOption = this.keyOptions.find(key => key.id === this.keyCtrl.value)
     this.criteriaList.unshift({
+      id: this.criteriaList.length + 1,
       ...this.advanceSearchForm.getRawValue(),
       title: selectedKeyOption.title,
       valueType: selectedKeyOption.valueType,
-      id: this.criteriaList.length + 1,
+      value: this.handleCriteriaValue(this.valueCtrl.value),
+      valueLabel: this.handleCriteriaValueLabel(this.valueCtrl.value)
     })
     this.formGroupDirective.resetForm()
   }
 
+  handleCriteriaValue(value) {
+    if (Array.isArray(value)) {
+      return value.map(v => (v.id)).join(',')
+    } else {
+      return value.hasOwnProperty('id') ? value.id : value
+    }
+  }
+
+  handleCriteriaValueLabel(value) {
+    if (Array.isArray(value)) {
+      return value.map(v => (v.title)).join(',')
+    } else {
+      return value.hasOwnProperty('title') ? value.id : value
+    }
+  }
+
   handleClose() {
-    this.totalCriteria = this.criteriaList.map(cr => ({
-      key: cr.key,
-      operation: cr.operation,
-      value: cr.value,
-      valueType: cr.valueType
-    }))
-    this.ref.close(this.totalCriteria)
-    console.log(this.totalCriteria)
+    this.ref.close(this.criteriaList)
   }
 
   removeCriteria(id) {
@@ -297,7 +333,9 @@ export class AdvanceSearchDialogComponent implements OnInit {
     CustomButtonModule,
     CommonModule,
     CriteriaOperationPipeModule,
-    DividerModule
+    DividerModule,
+    CustomSwitchModule,
+    CustomMultiSelectModule
   ],
   exports: [AdvanceSearchDialogComponent],
 })

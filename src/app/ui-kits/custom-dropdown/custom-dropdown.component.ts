@@ -46,11 +46,12 @@ import {InputWrapperModule} from "../input-wrapper/input-wrapper.component";
     }
   `]
 })
-export class CustomDropdownComponent extends BaseControlValueAccessor<string> implements OnInit {
+export class CustomDropdownComponent extends BaseControlValueAccessor<any> implements OnInit {
 
   control: FormControl;
 
   @Input() label: string;
+  @Input() returnObject: boolean = false
 
   @Input() showClear = true;
 
@@ -94,7 +95,12 @@ export class CustomDropdownComponent extends BaseControlValueAccessor<string> im
 
   public onChanged(event: any): void {
     const value: string = event.value;
-    this.changed(value);
+    if (this.returnObject) {
+      const option = this.options.find(op => op[this.optionValue] === value)
+      this.changed({[this.optionValue]: value, [this.optionLabel]: option[this.optionLabel]});
+    } else {
+      this.changed(value);
+    }
   }
 
 }

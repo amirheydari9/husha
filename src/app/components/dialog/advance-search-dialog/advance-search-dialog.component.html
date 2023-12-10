@@ -14,18 +14,31 @@
     ></app-custom-dropdown>
   </div>
   <div class="col-3" *ngIf="showValueInput">
-    <app-custom-dropdown
-      *ngIf="selectedInputFieldType === INPUT_FIELD_TYPE.SWITCH ; else elseBack"
-      label="مقدار"
-      formControlName="value"
-      [options]="booleanValueOptions"
-    ></app-custom-dropdown>
-    <ng-template #elseBack>
+
+    <ng-container [ngSwitch]="selectedInputFieldType">
+
+      <app-custom-switch
+        *ngSwitchCase="INPUT_FIELD_TYPE.SWITCH"
+        label="مقدار"
+        formControlName="value"
+      ></app-custom-switch>
+
+      <app-custom-multi-select
+        *ngSwitchCase="INPUT_FIELD_TYPE.DROP_DOWN"
+        label="مقدار"
+        formControlName="value"
+        [options]="dropDownValueOptions"
+        [returnObject]="true"
+      ></app-custom-multi-select>
+
       <app-custom-input-text
+        *ngSwitchDefault
         label="مقدار"
         formControlName="value"
       ></app-custom-input-text>
-    </ng-template>
+
+    </ng-container>
+
   </div>
   <app-custom-button
     type="button"
@@ -41,7 +54,7 @@
     <div class="flex align-items-center justify-content-start text-1 font-sm-regular">
       <span>{{criteria.title}}</span>
       <span class="mx-1">{{criteria.operation|criteriaOperation}}</span>
-      <span>{{criteria.value}} باشد</span>
+      <span>{{ criteria.valueLabel}} باشد</span>
       <i class="pi pi-times cursor-pointer mr-auto" style="font-size: 0.75rem;color:red"
          (click)="removeCriteria(criteria.id)"></i>
     </div>
