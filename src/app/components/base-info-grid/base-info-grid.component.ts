@@ -208,6 +208,8 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       this.handleImport()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH) {
       this.handleAdvanceSearch()
+    } else if ($event === ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH) {
+      this.handleResetAdvanceSearch()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.EXPORT) {
       this.handleExport()
     }
@@ -258,13 +260,18 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   handleAdvanceSearch() {
     this.dialogManagementService.openDialog(AdvanceSearchDialogComponent, {
-      data: {form: this.form, colDefs: this.gridApi.getColumnDefs()},
+      data: {form: this.form, colDefs: this.gridApi.getColumnDefs(), criteria: this.criteria},
     }).subscribe(data => {
       if (data) {
-        this.criteria = data
+        this.criteria = data.length ? data : null
         this.gridApi.setDatasource(this.dataSource)
       }
     })
+  }
+
+  handleResetAdvanceSearch() {
+    this.criteria = null
+    this.gridApi.setDatasource(this.dataSource)
   }
 
   handleExport() {

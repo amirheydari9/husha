@@ -13,12 +13,17 @@ import {CustomInputTextModule} from "../../../ui-kits/custom-input-text/custom-i
 import {CustomButtonModule} from "../../../ui-kits/custom-button/custom-button.component";
 import {criteriaInterface} from "../../../models/DTOs/fetch-all-form-data.DTO";
 import {CommonModule} from "@angular/common";
+import {CriteriaOperationPipe, CriteriaOperationPipeModule} from "../../../pipes/criteria-operation.pipe";
+import {DividerModule} from "primeng/divider";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
   selector: 'app-advance-search-dialog',
   templateUrl: './advance-search-dialog.component.html',
-  styleUrls: ['./advance-search-dialog.component.scss']
+  styleUrls: ['./advance-search-dialog.component.scss'],
+  providers: [
+    CriteriaOperationPipe
+  ]
 })
 export class AdvanceSearchDialogComponent implements OnInit {
 
@@ -31,29 +36,57 @@ export class AdvanceSearchDialogComponent implements OnInit {
   form: IFetchFormRes
   colDefs: ColDef[]
   defaultCriteriaOptions = [
-    {id: CRITERIA_OPERATION_TYPE.EQUAL, title: "مساوی"},
-    {id: CRITERIA_OPERATION_TYPE.NOT_EQUAL, title: "مخالف"},
+    {id: CRITERIA_OPERATION_TYPE.EQUAL, title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.EQUAL)},
+    {
+      id: CRITERIA_OPERATION_TYPE.NOT_EQUAL,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.NOT_EQUAL)
+    },
   ]
-
   textCriteriaOptions = [
     ...this.defaultCriteriaOptions,
-    {id: CRITERIA_OPERATION_TYPE.LIKE, title: "شبیه"},
-    {id: CRITERIA_OPERATION_TYPE.CONTAINS, title: "شامل"},
-    {id: CRITERIA_OPERATION_TYPE.START_WITH, title: "شروع شود با"},
-    {id: CRITERIA_OPERATION_TYPE.END_WITH, title: "تمام شود با"},
-    {id: CRITERIA_OPERATION_TYPE.NOT_NULL, title: "نال نباشد"},
-    {id: CRITERIA_OPERATION_TYPE.NULL, title: "نال باشد"},
-    {id: CRITERIA_OPERATION_TYPE.NOT_EMPTY, title: "خالی نباشد"},
-    {id: CRITERIA_OPERATION_TYPE.EMPTY, title: "خالی باشد"},
+    {id: CRITERIA_OPERATION_TYPE.LIKE, title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.LIKE)},
+    {
+      id: CRITERIA_OPERATION_TYPE.CONTAINS,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.CONTAINS)
+    },
+    {
+      id: CRITERIA_OPERATION_TYPE.START_WITH,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.START_WITH)
+    },
+    {
+      id: CRITERIA_OPERATION_TYPE.END_WITH,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.END_WITH)
+    },
+    {
+      id: CRITERIA_OPERATION_TYPE.NOT_NULL,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.NOT_NULL)
+    },
+    {id: CRITERIA_OPERATION_TYPE.NULL, title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.NULL)},
+    {
+      id: CRITERIA_OPERATION_TYPE.NOT_EMPTY,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.NOT_EMPTY)
+    },
+    {id: CRITERIA_OPERATION_TYPE.EMPTY, title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.EMPTY)},
   ]
-
   numberCriteriaOptions = [
     ...this.defaultCriteriaOptions,
-    {id: CRITERIA_OPERATION_TYPE.LESS_THAN, title: "کوچکتر از"},
-    {id: CRITERIA_OPERATION_TYPE.LESS_THAN_EQUAL, title: "کوچکتر یا مساوی از"},
-    {id: CRITERIA_OPERATION_TYPE.GREATER_THAN, title: "بزرگتر از"},
-    {id: CRITERIA_OPERATION_TYPE.GREATER_THAN_EQUAL, title: "بزرگتر یا مساوی از"},
-    {id: CRITERIA_OPERATION_TYPE.BETWEEN, title: "بین"},
+    {
+      id: CRITERIA_OPERATION_TYPE.LESS_THAN,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.LESS_THAN)
+    },
+    {
+      id: CRITERIA_OPERATION_TYPE.LESS_THAN_EQUAL,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.LESS_THAN_EQUAL)
+    },
+    {
+      id: CRITERIA_OPERATION_TYPE.GREATER_THAN,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.GREATER_THAN)
+    },
+    {
+      id: CRITERIA_OPERATION_TYPE.GREATER_THAN_EQUAL,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.GREATER_THAN_EQUAL)
+    },
+    {id: CRITERIA_OPERATION_TYPE.BETWEEN, title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.BETWEEN)},
   ]
 
   booleanCriteriaOptions = [
@@ -75,7 +108,8 @@ export class AdvanceSearchDialogComponent implements OnInit {
     public dynamicDialogConfig: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private fb: FormBuilder,
-    private hushaFormUtilService: HushaFormUtilService
+    private hushaFormUtilService: HushaFormUtilService,
+    private criteriaOperationPipe: CriteriaOperationPipe
   ) {
     dynamicDialogConfig.header = 'جستجوی پیشرفته'
     dynamicDialogConfig.height = '50vh'
@@ -89,7 +123,7 @@ export class AdvanceSearchDialogComponent implements OnInit {
     this.advanceSearchForm = this.fb.group({
       key: this.fb.control(null, [Validators.required]),
       operation: this.fb.control({value: null, disabled: true}, [Validators.required]),
-      value: this.fb.control({value: null, disabled: true},)
+      value: this.fb.control({value: null, disabled: true})
     })
 
     this.subscription.push(
@@ -112,9 +146,17 @@ export class AdvanceSearchDialogComponent implements OnInit {
     this.subscription.push(
       this.operationCtrl.valueChanges.subscribe(data => {
         this.criteriaOperationType = data
+        if (!this.showValueInput) {
+          this.valueCtrl.setValue(null, {emitEvent: false})
+        }
       })
     )
 
+    this.handleCreateKeyOptions()
+    this.handleCreateCriteriaList()
+  }
+
+  handleCreateKeyOptions() {
     //TODO dropdown and ...
     const filteredField = this.form.fields.filter(field =>
       field.fieldType.id === INPUT_FIELD_TYPE.TEXT ||
@@ -122,7 +164,6 @@ export class AdvanceSearchDialogComponent implements OnInit {
       field.fieldType.id === INPUT_FIELD_TYPE.TEXT_AREA ||
       field.fieldType.id === INPUT_FIELD_TYPE.SWITCH
     )
-
     filteredField.forEach(field => {
       this.colDefs.forEach(col => {
         if (col.field === field.name) {
@@ -134,6 +175,22 @@ export class AdvanceSearchDialogComponent implements OnInit {
         }
       })
     })
+  }
+
+  handleCreateCriteriaList() {
+    if (this.dynamicDialogConfig.data.criteria) {
+      this.dynamicDialogConfig.data.criteria.forEach(cr => {
+        const keyOption = this.keyOptions.find(key => key.id === cr.key)
+        this.criteriaList.push({
+          title: keyOption.title,
+          key: cr.key,
+          operation: cr.operation,
+          value: cr.value,
+          valueType: cr.valueType,
+          id: this.criteriaList.length + 1
+        })
+      })
+    }
   }
 
   get keyCtrl(): FormControl {
@@ -154,6 +211,15 @@ export class AdvanceSearchDialogComponent implements OnInit {
 
   get INPUT_FIELD_TYPE(): typeof INPUT_FIELD_TYPE {
     return INPUT_FIELD_TYPE
+  }
+
+  get showValueInput() {
+    return [
+      CRITERIA_OPERATION_TYPE.NULL,
+      CRITERIA_OPERATION_TYPE.NOT_NULL,
+      CRITERIA_OPERATION_TYPE.EMPTY,
+      CRITERIA_OPERATION_TYPE.NOT_EMPTY
+    ].indexOf(this.operationCtrl.value) === -1
   }
 
   //TODO dropdown and ...
@@ -193,11 +259,11 @@ export class AdvanceSearchDialogComponent implements OnInit {
 
   handleAddCriteria() {
     const selectedKeyOption = this.keyOptions.find(key => key.id === this.keyCtrl.value)
-    this.criteriaList.push({
+    this.criteriaList.unshift({
       ...this.advanceSearchForm.getRawValue(),
       title: selectedKeyOption.title,
-      operationTitle: this.criteriaOptions.find(cr => cr.id === this.operationCtrl.value).title,
       valueType: selectedKeyOption.valueType,
+      id: this.criteriaList.length + 1,
     })
     this.formGroupDirective.resetForm()
   }
@@ -209,8 +275,12 @@ export class AdvanceSearchDialogComponent implements OnInit {
       value: cr.value,
       valueType: cr.valueType
     }))
-    console.log(this.totalCriteria)
     this.ref.close(this.totalCriteria)
+    console.log(this.totalCriteria)
+  }
+
+  removeCriteria(id) {
+    this.criteriaList = this.criteriaList.filter(cr => cr.id !== id)
   }
 }
 
@@ -222,9 +292,11 @@ export class AdvanceSearchDialogComponent implements OnInit {
     CustomDropdownModule,
     CustomInputTextModule,
     CustomButtonModule,
-    CommonModule
+    CommonModule,
+    CriteriaOperationPipeModule,
+    DividerModule
   ],
-  exports: [AdvanceSearchDialogComponent]
+  exports: [AdvanceSearchDialogComponent],
 })
 export class AdvanceSearchDialogModule {
 

@@ -49,6 +49,7 @@ export class HushaGridUtilService {
     }
     if (!fetchSummary) {
       actions.push(ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH)
+      actions.push(ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH)
       actions.push(ACCESS_FORM_ACTION_TYPE.EXPORT)
       if (form.hasFormImport) {
         actions.push(ACCESS_FORM_ACTION_TYPE.IMPORT)

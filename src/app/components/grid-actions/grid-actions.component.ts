@@ -54,6 +54,7 @@ export class GridActionsComponent implements OnInit {
 
   currentHistoryIndex: number
   @Input() selectedRow: any
+  @Input() hasCriteria: boolean
   @Input() gridHistory = []
 
   @Input() set accessFormActions(data: ACCESS_FORM_ACTION_TYPE[]) {
@@ -163,6 +164,13 @@ export class GridActionsComponent implements OnInit {
       type: ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH,
       tooltip: "جستجوی پیشرفته",
       order: 12
+    },
+    {
+      icon: "pi pi-filter-slash",
+      styleClass: "p-button-rounded",
+      type: ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH,
+      tooltip: "حذف نتایج جستجو",
+      order: 13
     }
   ]
 
@@ -178,6 +186,9 @@ export class GridActionsComponent implements OnInit {
   handleDisableIcon(actionType: ACCESS_FORM_ACTION_TYPE) {
     if (actionType === ACCESS_FORM_ACTION_TYPE.PERV || actionType === ACCESS_FORM_ACTION_TYPE.NEXT) {
       return !this.gridHistory.length || (actionType === ACCESS_FORM_ACTION_TYPE.PERV ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.gridHistory.length - 1)
+    }
+    if (actionType === ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH) {
+      return !this.hasCriteria
     }
     return (
       actionType === ACCESS_FORM_ACTION_TYPE.UPDATE ||
@@ -243,6 +254,7 @@ export class GridActionsComponent implements OnInit {
       case ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE:
       case ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH:
       case ACCESS_FORM_ACTION_TYPE.EXPORT:
+      case ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH:
         this.onAction.emit(type)
         break
     }

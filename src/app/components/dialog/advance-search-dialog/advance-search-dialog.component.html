@@ -13,35 +13,45 @@
       [options]="criteriaOptions"
     ></app-custom-dropdown>
   </div>
-  <div class="col-3">
+  <div class="col-3" *ngIf="showValueInput">
     <app-custom-dropdown
       *ngIf="selectedInputFieldType === INPUT_FIELD_TYPE.SWITCH ; else elseBack"
       label="مقدار"
       formControlName="value"
       [options]="booleanValueOptions"
     ></app-custom-dropdown>
-     <ng-template #elseBack>
-       <app-custom-input-text
-         label="مقدار"
-         formControlName="value"
-       ></app-custom-input-text>
-     </ng-template>
+    <ng-template #elseBack>
+      <app-custom-input-text
+        label="مقدار"
+        formControlName="value"
+      ></app-custom-input-text>
+    </ng-template>
   </div>
   <app-custom-button
     type="button"
     label="ثبت"
+    class="mb-2"
     (onClick)="handleAddCriteria()"
     [disabled]="advanceSearchForm.invalid"
   ></app-custom-button>
 </form>
 
-<div *ngFor="let criteria of criteriaList">
-  <span>{{criteria.title}}</span>
-  <span>{{criteria.operationTitle}}</span>
-  <span>{{criteria.value}}</span>
+<div style="height: 250px; border: 1px solid #ced4da;overflow-y: auto;border-radius: 8px;padding: 20px">
+  <div *ngFor="let criteria of criteriaList;let last = last" class="flex-grow-1">
+    <div class="flex align-items-center justify-content-start text-1 font-sm-regular">
+      <span>{{criteria.title}}</span>
+      <span class="mx-1">{{criteria.operation|criteriaOperation}}</span>
+      <span>{{criteria.value}} باشد</span>
+      <i class="pi pi-times cursor-pointer mr-auto" style="font-size: 0.75rem;color:red"
+         (click)="removeCriteria(criteria.id)"></i>
+    </div>
+    <p-divider *ngIf="!last"></p-divider>
+  </div>
 </div>
+
 
 <app-dynamic-dialog-actions
   (confirmed)="handleClose()"
   (closed)="ref.close()"
 ></app-dynamic-dialog-actions>
+
