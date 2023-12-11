@@ -1,58 +1,13 @@
-<form [formGroup]="advanceSearchForm" class="flex align-items-center">
-  <div class="col-3">
-    <app-custom-dropdown
-      label="فیلد مورد جستجو"
-      formControlName="key"
-      [options]="keyOptions"
-    ></app-custom-dropdown>
-  </div>
-  <div class="col-3">
-    <app-custom-dropdown
-      label="شرط"
-      formControlName="operation"
-      [options]="criteriaOptions"
-    ></app-custom-dropdown>
-  </div>
-  <div class="col-3" *ngIf="showValueInput">
-
-    <ng-container [ngSwitch]="selectedInputFieldType">
-
-      <app-custom-switch
-        *ngSwitchCase="INPUT_FIELD_TYPE.SWITCH"
-        label="مقدار"
-        formControlName="value"
-      ></app-custom-switch>
-
-      <app-custom-multi-select
-        *ngSwitchCase="INPUT_FIELD_TYPE.DROP_DOWN"
-        label="مقدار"
-        formControlName="value"
-        [options]="dropDownValueOptions"
-        [returnObject]="true"
-      ></app-custom-multi-select>
-
-      <app-custom-input-text
-        *ngSwitchDefault
-        label="مقدار"
-        formControlName="value"
-      ></app-custom-input-text>
-
-    </ng-container>
-
-  </div>
-  <app-custom-button
-    type="button"
-    icon="pi pi-plus"
-    class="mb-2"
-    (onClick)="handleAddCriteria()"
-    [disabled]="advanceSearchForm.invalid"
-  ></app-custom-button>
-</form>
+<app-criteria-builder
+  [form]="dynamicDialogConfig.data.form"
+  [colDefs]="dynamicDialogConfig.data.colDefs"
+  (onAddCriteria)="handleAddCriteria($event)"
+></app-criteria-builder>
 
 <div style="height: 250px; border: 1px solid #ced4da;overflow-y: auto;border-radius: 8px;padding: 20px">
   <div *ngFor="let criteria of criteriaList;let last = last" class="flex-grow-1">
     <div class="flex align-items-center justify-content-start text-1 font-sm-regular">
-      <span>{{criteria.title}}</span>
+      <span>{{criteria.keyTitle}}</span>
       <span class="mx-1">{{criteria.operation|criteriaOperation}}</span>
       <span>{{ criteria.valueLabel}} باشد</span>
       <i class="pi pi-times cursor-pointer mr-auto" style="font-size: 0.75rem;color:red"
@@ -62,9 +17,8 @@
   </div>
 </div>
 
-
 <app-dynamic-dialog-actions
-  (confirmed)="handleClose()"
+  (confirmed)="ref.close(this.criteriaList)"
   (closed)="ref.close()"
 ></app-dynamic-dialog-actions>
 

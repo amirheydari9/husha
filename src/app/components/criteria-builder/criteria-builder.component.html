@@ -1,0 +1,50 @@
+<form [formGroup]="advanceSearchForm" class="flex align-items-center">
+  <div class="col-3">
+    <app-custom-dropdown
+      label="فیلد مورد جستجو"
+      formControlName="key"
+      [options]="keyOptions"
+    ></app-custom-dropdown>
+  </div>
+  <div class="col-3">
+    <app-custom-dropdown
+      label="شرط"
+      formControlName="operation"
+      [options]="criteriaOptions"
+    ></app-custom-dropdown>
+  </div>
+  <div class="col-3" *ngIf="showValueInput">
+
+    <ng-container [ngSwitch]="selectedInputFieldType">
+
+      <app-custom-switch
+        *ngSwitchCase="INPUT_FIELD_TYPE.SWITCH"
+        label="مقدار"
+        formControlName="value"
+      ></app-custom-switch>
+
+      <app-custom-multi-select
+        *ngSwitchCase="INPUT_FIELD_TYPE.DROP_DOWN"
+        label="مقدار"
+        formControlName="value"
+        [options]="dropDownValueOptions"
+        [returnObject]="true"
+      ></app-custom-multi-select>
+
+      <app-custom-input-text
+        *ngSwitchDefault
+        label="مقدار"
+        formControlName="value"
+      ></app-custom-input-text>
+
+    </ng-container>
+
+  </div>
+  <app-custom-button
+    type="button"
+    icon="pi pi-plus"
+    class="mb-2"
+    (onClick)="handleAddCriteria()"
+    [disabled]="advanceSearchForm.invalid"
+  ></app-custom-button>
+</form>

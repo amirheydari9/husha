@@ -37,9 +37,9 @@ export class CriteriaOperationPipe implements PipeTransform {
       case CRITERIA_OPERATION_TYPE.NOT_EMPTY:
         return 'خالی'
       case CRITERIA_OPERATION_TYPE.IN:
-        return 'شامل'
+        return 'شامل این موارد '
       case CRITERIA_OPERATION_TYPE.BETWEEN:
-        return 'بین'
+        return 'به جز این موارد'
     }
     return null;
   }
