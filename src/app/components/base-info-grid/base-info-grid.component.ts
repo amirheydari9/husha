@@ -34,7 +34,7 @@ import {Router} from "@angular/router";
 import {DialogManagementService} from "../../utils/dialog-management.service";
 import {AttachmentListDialogComponent} from "../dialog/attachment-list-dialog/attachment-list-dialog.component";
 import {AdvanceSearchDialogComponent} from "../dialog/advance-search-dialog/advance-search-dialog.component";
-import {NgIf} from "@angular/common";
+import {CommonModule, NgIf} from "@angular/common";
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {CustomInputTextModule} from "../../ui-kits/custom-input-text/custom-input-text.component";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
@@ -334,7 +334,8 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     NgIf,
     ReactiveFormsModule,
     CustomInputTextModule,
-    CustomButtonModule
+    CustomButtonModule,
+    CommonModule
   ],
   exports: [BaseInfoGridComponent]
 })

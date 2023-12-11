@@ -1,38 +1,40 @@
-<app-custom-card>
+<ng-container *ngIf="fetchSummary;else elseback">
+  <form [formGroup]="searchSummaryForm" class="flex align-items-center flex-wrap">
 
-  <ng-container *ngIf="fetchSummary">
+    <div class="col-4">
+      <app-custom-input-text
+        formControlName="code"
+        label="کد"
+      ></app-custom-input-text>
+    </div>
 
-    <form [formGroup]="searchSummaryForm" class="flex align-items-center flex-wrap">
+    <div class="col-4">
+      <app-custom-input-text
+        formControlName="title"
+        label="عنوان"
+      ></app-custom-input-text>
 
-      <div class="col-4">
-        <app-custom-input-text
-          formControlName="code"
-          label="کد"
-        ></app-custom-input-text>
-      </div>
+    </div>
 
-      <div class="col-4">
-        <app-custom-input-text
-          formControlName="title"
-          label="عنوان"
-        ></app-custom-input-text>
+    <app-custom-button
+      type="button"
+      (onClick)="handleSummarySearch()"
+      label="جستجو"
+      icon="pi pi-search"
+      class="mb-2"
+    ></app-custom-button>
 
-      </div>
+  </form>
+  <ng-container *ngTemplateOutlet="form"></ng-container>
+</ng-container>
 
-      <app-custom-button
-        type="button"
-        (onClick)="handleSummarySearch()"
-        label="جستجو"
-        icon="pi pi-search"
-        class="mb-2"
-      ></app-custom-button>
+<ng-template #elseback>
+  <app-custom-card>
+    <ng-container *ngTemplateOutlet="form"></ng-container>
+  </app-custom-card>
+</ng-template>
 
-    </form>
-
-
-  </ng-container>
-
-
+<ng-template #form>
   <div [class]="class">
     <app-grid-actions
       #gridActions
@@ -55,4 +57,4 @@
     ></ag-grid-angular>
 
   </div>
-</app-custom-card>
+</ng-template>
