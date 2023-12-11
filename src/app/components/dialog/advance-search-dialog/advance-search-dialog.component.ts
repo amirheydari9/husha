@@ -59,6 +59,8 @@ export class AdvanceSearchDialogComponent implements OnInit {
       return value.title
     } else if (value === null) {
       return ''
+    } else if (value === false) {
+      return 'false'
     } else {
       return value
     }
