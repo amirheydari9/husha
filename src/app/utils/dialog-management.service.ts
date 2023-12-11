@@ -16,7 +16,7 @@ export class DialogManagementService {
   ) {
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.ref.close()
+        this.ref?.close()
       }
     })
   }

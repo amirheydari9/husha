@@ -2,7 +2,7 @@
 
   <ng-container *ngIf="fetchSummary">
 
-    <form [formGroup]="searchSummaryForm" class="flex align-items-start flex-wrap">
+    <form [formGroup]="searchSummaryForm" class="flex align-items-center flex-wrap">
 
       <div class="col-4">
         <app-custom-input-text
@@ -19,14 +19,13 @@
 
       </div>
 
-      <div class="col-12 flex-row-reverse flex">
-        <app-custom-button
-          type="button"
-          (onClick)="handleSummarySearch()"
-          label="جستجو"
-          icon="pi pi-search"
-        ></app-custom-button>
-      </div>
+      <app-custom-button
+        type="button"
+        (onClick)="handleSummarySearch()"
+        label="جستجو"
+        icon="pi pi-search"
+        class="mb-2"
+      ></app-custom-button>
 
     </form>
 
