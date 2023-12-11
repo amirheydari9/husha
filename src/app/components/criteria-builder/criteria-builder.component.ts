@@ -279,7 +279,7 @@ export class CriteriaBuilderComponent implements OnInit {
         // this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
         break
       case INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM:
-        this.criteriaOptions = this.dropDownCriteriaOptions
+        this.criteriaOptions = this.lookUpWithFormCriteriaOptions
       // this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
     }
     return this.criteriaOptions
