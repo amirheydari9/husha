@@ -93,6 +93,7 @@ export enum CRITERIA_OPERATION_TYPE {
   EMPTY = "EMPTY",
   NOT_EMPTY = "NOT_EMPTY",
   IN = "IN",
+  NOT_IN = "NOT_IN",
   BETWEEN = "BETWEEN",
 }
 

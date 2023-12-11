@@ -100,6 +100,10 @@ export class CriteriaBuilderComponent implements OnInit {
       id: CRITERIA_OPERATION_TYPE.IN,
       title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.IN)
     },
+    {
+      id: CRITERIA_OPERATION_TYPE.NOT_IN,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.NOT_IN)
+    },
   ]
 
   dropDownValueOptions = []
