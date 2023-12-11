@@ -151,11 +151,14 @@ export class CriteriaBuilderComponent implements OnInit {
 
     this.subscription.push(
       this.operationCtrl.valueChanges.subscribe(data => {
-        if (!this.showValueInput) {
-          this.valueCtrl.setValue(null, {emitEvent: false})
-          this.valueCtrl.removeValidators([Validators.required, CustomValidators.noWhitespace])
-        } else {
-          // this.handleValueValidation()
+        if (data) {
+          if (this.showValueInput) {
+            this.handleValueValidation()
+          } else {
+            this.valueCtrl.setValue(null, {emitEvent: false})
+            this.valueCtrl.removeValidators([Validators.required, CustomValidators.noWhitespace])
+            this.valueCtrl.updateValueAndValidity()
+          }
         }
       })
     )
@@ -164,27 +167,27 @@ export class CriteriaBuilderComponent implements OnInit {
 
   }
 
-  // handleValueValidation() {
-  //   const fieldType = this.hushaFormUtilService.handleType(this.filed)
-  //   switch (fieldType) {
-  //     case INPUT_FIELD_TYPE.TEXT:
-  //     case INPUT_FIELD_TYPE.TEXT_AREA:
-  //     case INPUT_FIELD_TYPE.NUMBER:
-  //       this.valueCtrl.addValidators([Validators.required, CustomValidators.noWhitespace])
-  //       this.valueCtrl.updateValueAndValidity()
-  //       break
-  //     case INPUT_FIELD_TYPE.SWITCH:
-  //       this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
-  //       this.valueCtrl.updateValueAndValidity()
-  //       break
-  //     case INPUT_FIELD_TYPE.DROP_DOWN:
-  //     case INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM:
-  //       this.valueCtrl.addValidators([Validators.required])
-  //       this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
-  //       this.valueCtrl.updateValueAndValidity()
-  //       break
-  //   }
-  // }
+  handleValueValidation() {
+    const fieldType = this.hushaFormUtilService.handleType(this.filed)
+    switch (fieldType) {
+      case INPUT_FIELD_TYPE.TEXT:
+      case INPUT_FIELD_TYPE.TEXT_AREA:
+      case INPUT_FIELD_TYPE.NUMBER:
+        this.valueCtrl.addValidators([Validators.required, CustomValidators.noWhitespace])
+        this.valueCtrl.updateValueAndValidity()
+        break
+      case INPUT_FIELD_TYPE.SWITCH:
+        this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
+        this.valueCtrl.updateValueAndValidity()
+        break
+      case INPUT_FIELD_TYPE.DROP_DOWN:
+      case INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM:
+        this.valueCtrl.addValidators([Validators.required])
+        this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
+        this.valueCtrl.updateValueAndValidity()
+        break
+    }
+  }
 
   handleCreateKeyOptions() {
     //TODO dropdown and ...
@@ -211,7 +214,6 @@ export class CriteriaBuilderComponent implements OnInit {
     })
   }
 
-
   get keyCtrl(): FormControl {
     return this.advanceSearchForm.controls['key'] as FormControl
   }
@@ -236,7 +238,6 @@ export class CriteriaBuilderComponent implements OnInit {
       CRITERIA_OPERATION_TYPE.NOT_EMPTY
     ].indexOf(this.operationCtrl.value) === -1
   }
-
 
   //TODO dropdown and ...
   handleValueType(field: IFormField): VALUE_TYPE {
@@ -264,22 +265,22 @@ export class CriteriaBuilderComponent implements OnInit {
       case INPUT_FIELD_TYPE.TEXT:
       case INPUT_FIELD_TYPE.TEXT_AREA:
         this.criteriaOptions = this.textCriteriaOptions
-        this.valueCtrl.addValidators([CustomValidators.noWhitespace])
+        // this.valueCtrl.addValidators([CustomValidators.noWhitespace])
         break
       case INPUT_FIELD_TYPE.NUMBER:
         this.criteriaOptions = this.numberCriteriaOptions
         break
       case INPUT_FIELD_TYPE.SWITCH:
         this.criteriaOptions = this.booleanCriteriaOptions
-        this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
+        // this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
         break
       case INPUT_FIELD_TYPE.DROP_DOWN:
         this.criteriaOptions = this.dropDownCriteriaOptions
-        this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
+        // this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
         break
       case INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM:
         this.criteriaOptions = this.dropDownCriteriaOptions
-        this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
+      // this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
     }
     return this.criteriaOptions
   }

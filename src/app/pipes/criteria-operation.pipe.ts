@@ -28,9 +28,9 @@ export class CriteriaOperationPipe implements PipeTransform {
         return 'بزرگتر از'
       case CRITERIA_OPERATION_TYPE.GREATER_THAN_EQUAL:
         return 'بزرگتر یا مساوی از'
-      case CRITERIA_OPERATION_TYPE.NOT_NULL:
-        return 'نال باشد'
       case CRITERIA_OPERATION_TYPE.NULL:
+        return 'نال باشد'
+      case CRITERIA_OPERATION_TYPE.NOT_NULL:
         return 'نال نباشد'
       case CRITERIA_OPERATION_TYPE.EMPTY:
         return 'خالی باشد'
