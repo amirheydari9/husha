@@ -45,16 +45,22 @@ export class AdvanceSearchDialogComponent implements OnInit {
   handleCriteriaValue(value) {
     if (Array.isArray(value)) {
       return value.map(v => v.id).join(',')
+    } else if (typeof value === 'object' && value !== null) {
+      return value.id
     } else {
-      return value.hasOwnProperty('id') ? value.id : value
+      return value
     }
   }
 
   handleCriteriaValueLabel(value) {
     if (Array.isArray(value)) {
       return value.map(v => v.title).join(',')
+    } else if (typeof value === 'object' && value !== null) {
+      return value.title
+    } else if (value === null) {
+      return ''
     } else {
-      return value.hasOwnProperty('title') ? value.title : value
+      return value
     }
   }
 

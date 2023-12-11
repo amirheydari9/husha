@@ -62,6 +62,7 @@ export class CustomLookupFormComponent extends BaseControlValueAccessor<any> imp
 
   @Input() public field: IFormField
   @Input() public form: IFetchFormRes
+  @Input() public returnObject: boolean = false
 
   constructor(
     @Self() public controlDir: NgControl,
@@ -102,7 +103,7 @@ export class CustomLookupFormComponent extends BaseControlValueAccessor<any> imp
       data: {field: this.field},
     }).subscribe(data => {
       if (data) {
-        this.changed(data.id)
+        this.changed(this.returnObject ? {id: data.id, title: `${data.code} - ${data.title}`} : data.id)
         this.writeValue(`${data.code} - ${data.title}`)
       }
       this.touched()

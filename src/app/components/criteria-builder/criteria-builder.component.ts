@@ -14,6 +14,7 @@ import {CustomSwitchModule} from "../../ui-kits/custom-switch/custom-switch.comp
 import {CustomMultiSelectModule} from "../../ui-kits/custom-multi-select/custom-multi-select.component";
 import {CustomInputTextModule} from "../../ui-kits/custom-input-text/custom-input-text.component";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
+import {CustomLookupFormModule} from "../../ui-kits/custom-lookup-form/custom-lookup-form.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -39,6 +40,7 @@ export class CriteriaBuilderComponent implements OnInit {
   keyOptions = []
   criteriaOperationType: CRITERIA_OPERATION_TYPE
   selectedInputFieldType: INPUT_FIELD_TYPE
+
   defaultCriteriaOptions = [
     {id: CRITERIA_OPERATION_TYPE.EQUAL, title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.EQUAL)},
     {
@@ -105,9 +107,13 @@ export class CriteriaBuilderComponent implements OnInit {
       title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.NOT_IN)
     },
   ]
+  lookUpWithFormCriteriaOptions = [
+    ...this.defaultCriteriaOptions,
+  ]
 
   dropDownValueOptions = []
   criteriaOptions = []
+  filed: IFormField
 
   constructor(
     private fb: FormBuilder,
@@ -129,11 +135,13 @@ export class CriteriaBuilderComponent implements OnInit {
         this.valueCtrl.setValue(null)
         this.criteriaOptions = []
         if (data) {
+          this.filed = this.form.fields.find(field => field.name === data)
           this.operationCtrl.enable()
           this.valueCtrl.enable()
           this.handleCreateCriteriaOptions(data)
           await this.handleValueOptions(data)
         } else {
+          this.filed = null
           this.selectedInputFieldType = null
           this.operationCtrl.disable()
           this.valueCtrl.disable()
@@ -143,26 +151,52 @@ export class CriteriaBuilderComponent implements OnInit {
 
     this.subscription.push(
       this.operationCtrl.valueChanges.subscribe(data => {
-        this.criteriaOperationType = data
         if (!this.showValueInput) {
           this.valueCtrl.setValue(null, {emitEvent: false})
+          this.valueCtrl.removeValidators([Validators.required, CustomValidators.noWhitespace])
+        } else {
+          // this.handleValueValidation()
         }
       })
     )
 
     this.handleCreateKeyOptions()
 
-
   }
+
+  // handleValueValidation() {
+  //   const fieldType = this.hushaFormUtilService.handleType(this.filed)
+  //   switch (fieldType) {
+  //     case INPUT_FIELD_TYPE.TEXT:
+  //     case INPUT_FIELD_TYPE.TEXT_AREA:
+  //     case INPUT_FIELD_TYPE.NUMBER:
+  //       this.valueCtrl.addValidators([Validators.required, CustomValidators.noWhitespace])
+  //       this.valueCtrl.updateValueAndValidity()
+  //       break
+  //     case INPUT_FIELD_TYPE.SWITCH:
+  //       this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
+  //       this.valueCtrl.updateValueAndValidity()
+  //       break
+  //     case INPUT_FIELD_TYPE.DROP_DOWN:
+  //     case INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM:
+  //       this.valueCtrl.addValidators([Validators.required])
+  //       this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
+  //       this.valueCtrl.updateValueAndValidity()
+  //       break
+  //   }
+  // }
 
   handleCreateKeyOptions() {
     //TODO dropdown and ...
     const filteredField = this.form.fields.filter(field =>
-      field.fieldType.id === INPUT_FIELD_TYPE.TEXT ||
-      field.fieldType.id === INPUT_FIELD_TYPE.NUMBER ||
-      field.fieldType.id === INPUT_FIELD_TYPE.TEXT_AREA ||
-      field.fieldType.id === INPUT_FIELD_TYPE.SWITCH ||
-      field.fieldType.id === INPUT_FIELD_TYPE.DROP_DOWN
+      [
+        INPUT_FIELD_TYPE.TEXT,
+        INPUT_FIELD_TYPE.TEXT_AREA,
+        INPUT_FIELD_TYPE.NUMBER,
+        INPUT_FIELD_TYPE.SWITCH,
+        INPUT_FIELD_TYPE.DROP_DOWN,
+        INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM
+      ].indexOf(field.fieldType.id) > -1
     )
     filteredField.forEach(field => {
       this.colDefs.forEach(col => {
@@ -190,15 +224,11 @@ export class CriteriaBuilderComponent implements OnInit {
     return this.advanceSearchForm.controls['value'] as FormControl
   }
 
-  get CRITERIA_OPERATION_TYPE(): typeof CRITERIA_OPERATION_TYPE {
-    return CRITERIA_OPERATION_TYPE
-  }
-
   get INPUT_FIELD_TYPE(): typeof INPUT_FIELD_TYPE {
     return INPUT_FIELD_TYPE
   }
 
-  get showValueInput() {
+  get showValueInput(): boolean {
     return [
       CRITERIA_OPERATION_TYPE.NULL,
       CRITERIA_OPERATION_TYPE.NOT_NULL,
@@ -217,6 +247,7 @@ export class CriteriaBuilderComponent implements OnInit {
         return VALUE_TYPE.STRING
       case INPUT_FIELD_TYPE.NUMBER:
       case INPUT_FIELD_TYPE.DROP_DOWN:
+      case INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM:
         return VALUE_TYPE.NUMBER
       case INPUT_FIELD_TYPE.SWITCH:
         return VALUE_TYPE.BOOLEAN
@@ -243,6 +274,10 @@ export class CriteriaBuilderComponent implements OnInit {
         this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
         break
       case INPUT_FIELD_TYPE.DROP_DOWN:
+        this.criteriaOptions = this.dropDownCriteriaOptions
+        this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
+        break
+      case INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM:
         this.criteriaOptions = this.dropDownCriteriaOptions
         this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
     }
@@ -277,7 +312,8 @@ export class CriteriaBuilderComponent implements OnInit {
     CustomSwitchModule,
     CustomMultiSelectModule,
     CustomInputTextModule,
-    CustomButtonModule
+    CustomButtonModule,
+    CustomLookupFormModule
   ],
   exports: [CriteriaBuilderComponent]
 })

@@ -31,6 +31,14 @@
         [returnObject]="true"
       ></app-custom-multi-select>
 
+      <app-custom-lookup-form
+        *ngSwitchCase="INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM"
+        formControlName="value"
+        [returnObject]="true"
+        [form]="form"
+        [field]="filed"
+      ></app-custom-lookup-form>
+
       <app-custom-input-text
         *ngSwitchDefault
         label="مقدار"
