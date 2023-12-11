@@ -9,7 +9,7 @@
     <div class="flex align-items-center justify-content-start text-1 font-sm-regular">
       <span>{{criteria.keyTitle}}</span>
       <span class="mx-1">{{criteria.operation|criteriaOperation}}</span>
-      <span>{{ criteria.valueLabel}} باشد</span>
+      <span *ngIf="criteria.valueLabel">{{ criteria.valueLabel}} باشد</span>
       <i class="pi pi-times cursor-pointer mr-auto" style="font-size: 0.75rem;color:red"
          (click)="removeCriteria(criteria.id)"></i>
     </div>

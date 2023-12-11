@@ -29,13 +29,13 @@ export class CriteriaOperationPipe implements PipeTransform {
       case CRITERIA_OPERATION_TYPE.GREATER_THAN_EQUAL:
         return 'بزرگتر یا مساوی از'
       case CRITERIA_OPERATION_TYPE.NOT_NULL:
-        return 'نال'
+        return 'نال باشد'
       case CRITERIA_OPERATION_TYPE.NULL:
-        return 'نال'
+        return 'نال نباشد'
       case CRITERIA_OPERATION_TYPE.EMPTY:
-        return 'خالی'
+        return 'خالی باشد'
       case CRITERIA_OPERATION_TYPE.NOT_EMPTY:
-        return 'خالی'
+        return 'خالی نباشد'
       case CRITERIA_OPERATION_TYPE.IN:
         return 'شامل موارد '
       case CRITERIA_OPERATION_TYPE.NOT_IN:
