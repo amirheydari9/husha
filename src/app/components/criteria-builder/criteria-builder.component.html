@@ -1,19 +1,19 @@
 <form [formGroup]="advanceSearchForm" class="flex align-items-center">
-  <div class="col-3">
+  <div [ngClass]="[resetForm?'col-3':'col-2']">
     <app-custom-dropdown
       label="فیلد مورد جستجو"
       formControlName="key"
       [options]="keyOptions"
     ></app-custom-dropdown>
   </div>
-  <div class="col-3">
+  <div [ngClass]="[resetForm?'col-3':'col-2']">
     <app-custom-dropdown
       label="شرط"
       formControlName="operation"
       [options]="criteriaOptions"
     ></app-custom-dropdown>
   </div>
-  <div class="col-3" *ngIf="showValueInput">
+  <div [ngClass]="[resetForm?'col-3':'col-2']" *ngIf="showValueInput">
 
     <ng-container [ngSwitch]="selectedInputFieldType">
 

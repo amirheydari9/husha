@@ -64,6 +64,7 @@ export class CriteriaBuilderComponent implements OnInit {
   }
 
   @Input() resetForm: boolean = true
+
   @Input() icon: string = 'pi pi-plus'
 
   @Output() onAddCriteria: EventEmitter<any> = new EventEmitter<any>()
