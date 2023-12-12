@@ -39,6 +39,11 @@
         [field]="filed"
       ></app-custom-lookup-form>
 
+      <app-custom-jalali-date-picker
+        *ngSwitchCase="INPUT_FIELD_TYPE.JALALI_DATE_PICKER"
+        formControlName="value"
+      ></app-custom-jalali-date-picker>
+
       <app-custom-input-text
         *ngSwitchDefault
         label="مقدار"

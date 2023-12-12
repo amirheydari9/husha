@@ -35,10 +35,10 @@ export class AdvanceSearchDialogComponent implements OnInit {
     this.criteriaList.unshift({
       id: this.criteriaList.length + 1,
       ...criteria,
-      keyTitle: criteria.title,
+      keyTitle: criteria.keyTitle,
       valueType: criteria.valueType,
       value: this.handleCriteriaValue(criteria.value),
-      valueLabel: this.handleCriteriaValueLabel(criteria.value)
+      valueLabel: criteria.valueLabel ?? this.handleCriteriaValueLabel(criteria.value)
     })
   }
 

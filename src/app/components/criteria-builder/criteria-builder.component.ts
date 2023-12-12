@@ -15,6 +15,10 @@ import {CustomMultiSelectModule} from "../../ui-kits/custom-multi-select/custom-
 import {CustomInputTextModule} from "../../ui-kits/custom-input-text/custom-input-text.component";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 import {CustomLookupFormModule} from "../../ui-kits/custom-lookup-form/custom-lookup-form.component";
+import {
+  CustomJalaliDatePickerModule
+} from "../../ui-kits/custom-jalali-date-picker/custom-jalali-date-picker.component";
+import {DateService} from "../../utils/date.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -139,6 +143,7 @@ export class CriteriaBuilderComponent implements OnInit {
     private fb: FormBuilder,
     private hushaFormUtilService: HushaFormUtilService,
     private criteriaOperationPipe: CriteriaOperationPipe,
+    private dateService: DateService
   ) {
   }
 
@@ -322,13 +327,19 @@ export class CriteriaBuilderComponent implements OnInit {
     const selectedKeyOption = this.keyOptions.find(key => key.id === this.keyCtrl.value)
     const criteria = {
       ...this.advanceSearchForm.getRawValue(),
-      title: selectedKeyOption.title,
+      keyTitle: selectedKeyOption.title,
       valueType: selectedKeyOption.valueType,
-      value: selectedKeyOption.valueType === VALUE_TYPE.BOOLEAN ? !!this.valueCtrl.value : this.valueCtrl.value
+      value: selectedKeyOption.valueType === VALUE_TYPE.BOOLEAN
+        ? !!this.valueCtrl.value
+        : this.selectedInputFieldType === INPUT_FIELD_TYPE.JALALI_DATE_PICKER
+          ? this.dateService.convertJalaliToGeorgian(this.valueCtrl.value)
+          : this.valueCtrl.value,
+      valueLabel: this.selectedInputFieldType === INPUT_FIELD_TYPE.JALALI_DATE_PICKER ? this.valueCtrl.value : null
     }
     this.formGroupDirective.resetForm()
     this.onAddCriteria.emit(criteria)
   }
+
 }
 
 
@@ -342,7 +353,8 @@ export class CriteriaBuilderComponent implements OnInit {
     CustomMultiSelectModule,
     CustomInputTextModule,
     CustomButtonModule,
-    CustomLookupFormModule
+    CustomLookupFormModule,
+    CustomJalaliDatePickerModule
   ],
   exports: [CriteriaBuilderComponent]
 })
