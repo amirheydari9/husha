@@ -35,35 +35,7 @@ export class AdvanceSearchDialogComponent implements OnInit {
     this.criteriaList.unshift({
       id: this.criteriaList.length + 1,
       ...criteria,
-      keyTitle: criteria.keyTitle,
-      valueType: criteria.valueType,
-      value: this.handleCriteriaValue(criteria.value),
-      valueLabel: criteria.valueLabel ?? this.handleCriteriaValueLabel(criteria.value)
     })
-  }
-
-  handleCriteriaValue(value) {
-    if (Array.isArray(value)) {
-      return value.map(v => v.id).join(',')
-    } else if (typeof value === 'object' && value !== null) {
-      return value.id
-    } else {
-      return value
-    }
-  }
-
-  handleCriteriaValueLabel(value) {
-    if (Array.isArray(value)) {
-      return value.map(v => v.title).join(',')
-    } else if (typeof value === 'object' && value !== null) {
-      return value.title
-    } else if (value === null) {
-      return ''
-    } else if (value === false) {
-      return 'false'
-    } else {
-      return value
-    }
   }
 
   removeCriteria(id) {

@@ -329,15 +329,39 @@ export class CriteriaBuilderComponent implements OnInit {
       ...this.advanceSearchForm.getRawValue(),
       keyTitle: selectedKeyOption.title,
       valueType: selectedKeyOption.valueType,
-      value: selectedKeyOption.valueType === VALUE_TYPE.BOOLEAN
-        ? !!this.valueCtrl.value
-        : this.selectedInputFieldType === INPUT_FIELD_TYPE.JALALI_DATE_PICKER
-          ? this.dateService.convertJalaliToGeorgian(this.valueCtrl.value)
-          : this.valueCtrl.value,
-      valueLabel: this.selectedInputFieldType === INPUT_FIELD_TYPE.JALALI_DATE_PICKER ? this.valueCtrl.value : null
+      value: this.handleValue(selectedKeyOption),
+      valueLabel: this.handleValueLabel(selectedKeyOption)
     }
     this.formGroupDirective.resetForm()
     this.onAddCriteria.emit(criteria)
+  }
+
+  handleValue(selectedKeyOption) {
+    if (Array.isArray(this.valueCtrl.value)) {
+      return this.valueCtrl.value.map(v => v.id).join(',')
+    } else if (typeof this.valueCtrl.value === 'object' && this.valueCtrl.value !== null) {
+      return this.valueCtrl.value.id
+    } else if (selectedKeyOption.valueType === VALUE_TYPE.BOOLEAN) {
+      return !!this.valueCtrl.value
+    } else if (this.selectedInputFieldType === INPUT_FIELD_TYPE.JALALI_DATE_PICKER) {
+      return this.dateService.convertJalaliToGeorgian(this.valueCtrl.value)
+    } else {
+      return this.valueCtrl.value
+    }
+  }
+
+  handleValueLabel(selectedKeyOption) {
+    if (Array.isArray(this.valueCtrl.value)) {
+      return this.valueCtrl.value.map(v => v.title).join(',')
+    } else if (typeof this.valueCtrl.value === 'object' && this.valueCtrl.value !== null) {
+      return this.valueCtrl.value.title
+    } else if (selectedKeyOption.valueType === VALUE_TYPE.BOOLEAN) {
+      return this.valueCtrl.value ? 'true' : 'false'
+    } else if (this.valueCtrl.value === null) {
+      return ''
+    } else {
+      return this.valueCtrl.value
+    }
   }
 
 }

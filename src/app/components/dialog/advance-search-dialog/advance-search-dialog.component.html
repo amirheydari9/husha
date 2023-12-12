@@ -18,7 +18,6 @@
 </div>
 
 <app-dynamic-dialog-actions
-  [disabled]="!(!!criteriaList.length)"
   (confirmed)="ref.close(this.criteriaList)"
   (closed)="ref.close()"
 ></app-dynamic-dialog-actions>
