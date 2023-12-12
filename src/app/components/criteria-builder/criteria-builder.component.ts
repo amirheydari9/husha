@@ -110,6 +110,26 @@ export class CriteriaBuilderComponent implements OnInit {
   lookUpWithFormCriteriaOptions = [
     ...this.defaultCriteriaOptions,
   ]
+  datePickerCriteriaOptions = [
+    ...this.defaultCriteriaOptions,
+    {
+      id: CRITERIA_OPERATION_TYPE.LESS_THAN,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.LESS_THAN)
+    },
+    {
+      id: CRITERIA_OPERATION_TYPE.LESS_THAN_EQUAL,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.LESS_THAN_EQUAL)
+    },
+    {
+      id: CRITERIA_OPERATION_TYPE.GREATER_THAN,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.GREATER_THAN)
+    },
+    {
+      id: CRITERIA_OPERATION_TYPE.GREATER_THAN_EQUAL,
+      title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.GREATER_THAN_EQUAL)
+    },
+    {id: CRITERIA_OPERATION_TYPE.BETWEEN, title: this.criteriaOperationPipe.transform(CRITERIA_OPERATION_TYPE.BETWEEN)},
+  ]
 
   dropDownValueOptions = []
   criteriaOptions = []
@@ -182,6 +202,7 @@ export class CriteriaBuilderComponent implements OnInit {
         break
       case INPUT_FIELD_TYPE.DROP_DOWN:
       case INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM:
+      case INPUT_FIELD_TYPE.JALALI_DATE_PICKER:
         this.valueCtrl.addValidators([Validators.required])
         this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
         this.valueCtrl.updateValueAndValidity()
@@ -198,7 +219,8 @@ export class CriteriaBuilderComponent implements OnInit {
         INPUT_FIELD_TYPE.NUMBER,
         INPUT_FIELD_TYPE.SWITCH,
         INPUT_FIELD_TYPE.DROP_DOWN,
-        INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM
+        INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM,
+        INPUT_FIELD_TYPE.JALALI_DATE_PICKER
       ].indexOf(field.fieldType.id) > -1
     )
     filteredField.forEach(field => {
@@ -245,6 +267,7 @@ export class CriteriaBuilderComponent implements OnInit {
     switch (fieldType) {
       case INPUT_FIELD_TYPE.TEXT:
       case INPUT_FIELD_TYPE.TEXT_AREA:
+      case INPUT_FIELD_TYPE.JALALI_DATE_PICKER:
         return VALUE_TYPE.STRING
       case INPUT_FIELD_TYPE.NUMBER:
       case INPUT_FIELD_TYPE.DROP_DOWN:
@@ -280,6 +303,10 @@ export class CriteriaBuilderComponent implements OnInit {
         break
       case INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM:
         this.criteriaOptions = this.lookUpWithFormCriteriaOptions
+        break
+      case INPUT_FIELD_TYPE.JALALI_DATE_PICKER:
+        this.criteriaOptions = this.datePickerCriteriaOptions
+        break
       // this.valueCtrl.removeValidators([CustomValidators.noWhitespace])
     }
     return this.criteriaOptions

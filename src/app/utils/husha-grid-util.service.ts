@@ -5,6 +5,7 @@ import {
   CRITERIA_OPERATION_TYPE,
   DOWNLOAD_TYPE,
   FORM_KIND,
+  INPUT_FIELD_TYPE,
   VALUE_TYPE,
   VIEW_TYPE
 } from "../constants/enums";
@@ -14,6 +15,7 @@ import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
 import {DeleteFormDataDTO} from "../models/DTOs/delete-form-data.DTO";
 import {BaseInfoService} from "../api/base-info.service";
 import {FetchAccessActionDTO} from "../models/DTOs/fetch-access-action.DTO";
+import {DateService} from "./date.service";
 
 export class FetchAllDataPayloadDTO {
   constructor(
@@ -37,7 +39,8 @@ export class HushaGridUtilService {
 
   constructor(
     private hushaCustomerUtilService: HushaCustomerUtilService,
-    private baseInfoService: BaseInfoService
+    private baseInfoService: BaseInfoService,
+    private dateService: DateService
   ) {
   }
 
@@ -106,6 +109,7 @@ export class HushaGridUtilService {
 
   createGrid(rowData: any[], form: IFetchFormRes, fetchSummary: boolean) {
     const colDefs: ColDef[] = []
+    const jalaliFieldsName = []
     form.fields.forEach(item => {
       //TODO که دیگه کاری به viewType نداریم  چک و تیک برای وقتی که حلت خلاصه داریم
       if (fetchSummary) {
@@ -118,14 +122,28 @@ export class HushaGridUtilService {
           colDefs.push(col)
         }
       }
+      if (item.fieldType.id === INPUT_FIELD_TYPE.JALALI_DATE_PICKER || item.fieldType.id === INPUT_FIELD_TYPE.JALALI_DATE_PICKER_WITH_TIME) {
+        jalaliFieldsName.push(item.name)
+      }
     })
-    for (let i = 0; i < rowData.length; i++) {
-      for (let prop in rowData[i]) {
-        if (typeof rowData[i][prop] === 'object' && rowData[i][prop] !== null) {
-          rowData[i][prop] = rowData[i][prop].title;
+
+    rowData.forEach(row => {
+      for (const [key, value] of Object.entries(row)) {
+        if (jalaliFieldsName.indexOf(key) > -1) {
+          row[key] = this.dateService.convertGeorgianToJalali(value as string)
+        }
+        if (typeof row[key] === 'object' && row[key] !== null) {
+          row[key] = row[key].title;
         }
       }
-    }
+    })
+    // for (let i = 0; i < rowData.length; i++) {
+    //   for (let prop in rowData[i]) {
+    //     if (typeof rowData[i][prop] === 'object' && rowData[i][prop] !== null) {
+    //       rowData[i][prop] = rowData[i][prop].title;
+    //     }
+    //   }
+    // }
     return {colDefs, rowData}
   }
 

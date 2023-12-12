@@ -12,10 +12,9 @@ export class DateService {
   constructor() {
   }
 
-  // convertGeorgianToJalali(date: string, format: string, dateFormat: DateFormat = 'dateTime'): string {
-  //   const formatDate = this.transformDateTimeToDate(date, dateFormat)
-  //   return moment(formatDate, 'YYYY-MM-DD').locale('fa').format(format);
-  // }
+  convertGeorgianToJalali(date: string, fromFormat: string = 'YYYY-MM-DD', toFormat: string = 'jYYYY-jMM-jDD'): string {
+    return moment(date, fromFormat).locale('fa').format(toFormat);
+  }
 
   formatDate(format, date?): string {
     return moment(date).format(format)
