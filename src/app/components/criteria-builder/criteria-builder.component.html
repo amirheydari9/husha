@@ -55,8 +55,8 @@
   </div>
   <app-custom-button
     type="button"
-    icon="pi pi-plus"
-    class="mb-2"
+    [icon]="icon"
+    style="margin-bottom: 21px"
     (onClick)="handleAddCriteria()"
     [disabled]="advanceSearchForm.invalid"
   ></app-custom-button>
