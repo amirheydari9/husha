@@ -266,6 +266,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       data: {form: this.form, colDefs: this.gridApi.getColumnDefs(), criteria: this.criteriaMetaData},
     }).subscribe(data => {
       if (data) {
+        this.criteriaBuilder.handleResetForm()
         if (data.length) {
           this.criteriaMetaData = data;
           this.criteria = data.map(cr => ({
@@ -335,6 +336,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       valueType: cr.valueType,
     }))
     this.gridApi.setDatasource(this.dataSource)
+    this.criteriaMetaData = null
   }
 }
 
