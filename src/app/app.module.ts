@@ -15,6 +15,7 @@ import {DialogService} from "primeng/dynamicdialog";
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgxSpinnerModule} from "ngx-spinner";
+import {BaseInfoGridComponent, BaseInfoGridModule} from "./components/base-info-grid/base-info-grid.component";
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import {NgxSpinnerModule} from "ngx-spinner";
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true},
     // {provide: ErrorHandler, useClass: GlobalErrorHandlerService},
-    DialogService
+    DialogService,
+    BaseInfoGridModule
   ],
   bootstrap: [AppComponent]
 })
