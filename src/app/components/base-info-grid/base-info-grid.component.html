@@ -25,26 +25,38 @@
     ></app-custom-button>
 
   </form>
-  <ng-container *ngTemplateOutlet="form"></ng-container>
+  <ng-container *ngTemplateOutlet="gridForm"></ng-container>
 </ng-container>
 
 <ng-template #elseback>
   <app-custom-card>
-    <ng-container *ngTemplateOutlet="form"></ng-container>
+    <ng-container *ngTemplateOutlet="gridForm"></ng-container>
   </app-custom-card>
 </ng-template>
 
-<ng-template #form>
+<ng-template #gridForm>
   <div [class]="class">
-    <app-grid-actions
-      #gridActions
-      [gridHistory]="gridHistory"
-      [accessFormActions]="accessFormActions"
-      [selectedRow]="selectedRow"
-      [hasCriteria]="!!criteria"
-      (clickHistory)="handleClickHistory($event)"
-      (onAction)="handleOnAction($event)"
-    ></app-grid-actions>
+
+    <div class="flex align-items-center justify-content-between">
+      <div class="flex-grow-1" *ngIf="!fetchSummary">
+        <app-criteria-builder
+          #criteriaBuilder
+          [form]="form"
+          [colDefs]="columnDefs"
+          [resetForm]="false"
+          (onAddCriteria)="handleAddCriteria($event)"
+        ></app-criteria-builder>
+      </div>
+      <app-grid-actions
+        #gridActions
+        [gridHistory]="gridHistory"
+        [accessFormActions]="accessFormActions"
+        [selectedRow]="selectedRow"
+        [hasCriteria]="!!criteria"
+        (clickHistory)="handleClickHistory($event)"
+        (onAction)="handleOnAction($event)"
+      ></app-grid-actions>
+    </div>
 
     <ag-grid-angular
       #grid

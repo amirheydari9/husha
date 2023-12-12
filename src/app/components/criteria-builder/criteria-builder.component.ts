@@ -34,7 +34,36 @@ export class CriteriaBuilderComponent implements OnInit {
   @ViewChild(FormGroupDirective) formGroupDirective: FormGroupDirective
 
   @Input() form: IFetchFormRes
-  @Input() colDefs: ColDef[]
+
+  @Input() set colDefs(data: ColDef[]) {
+    this.keyOptions = []
+    if (data && data.length) {
+      const filteredField = this.form.fields.filter(field =>
+        [
+          INPUT_FIELD_TYPE.TEXT,
+          INPUT_FIELD_TYPE.TEXT_AREA,
+          INPUT_FIELD_TYPE.NUMBER,
+          INPUT_FIELD_TYPE.SWITCH,
+          INPUT_FIELD_TYPE.DROP_DOWN,
+          INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM,
+          INPUT_FIELD_TYPE.JALALI_DATE_PICKER
+        ].indexOf(field.fieldType.id) > -1
+      )
+      filteredField.forEach(field => {
+        data.forEach(col => {
+          if (col.field === field.name) {
+            this.keyOptions.push({
+              id: col.field,
+              title: col.headerName,
+              valueType: this.handleValueType(field)
+            })
+          }
+        })
+      })
+    }
+  }
+
+  @Input() resetForm: boolean = true
 
   @Output() onAddCriteria: EventEmitter<any> = new EventEmitter<any>()
 
@@ -187,9 +216,6 @@ export class CriteriaBuilderComponent implements OnInit {
         }
       })
     )
-
-    this.handleCreateKeyOptions()
-
   }
 
   handleValueValidation() {
@@ -213,32 +239,6 @@ export class CriteriaBuilderComponent implements OnInit {
         this.valueCtrl.updateValueAndValidity()
         break
     }
-  }
-
-  handleCreateKeyOptions() {
-    //TODO dropdown and ...
-    const filteredField = this.form.fields.filter(field =>
-      [
-        INPUT_FIELD_TYPE.TEXT,
-        INPUT_FIELD_TYPE.TEXT_AREA,
-        INPUT_FIELD_TYPE.NUMBER,
-        INPUT_FIELD_TYPE.SWITCH,
-        INPUT_FIELD_TYPE.DROP_DOWN,
-        INPUT_FIELD_TYPE.LOOK_UP_WITH_FORM,
-        INPUT_FIELD_TYPE.JALALI_DATE_PICKER
-      ].indexOf(field.fieldType.id) > -1
-    )
-    filteredField.forEach(field => {
-      this.colDefs.forEach(col => {
-        if (col.field === field.name) {
-          this.keyOptions.push({
-            id: col.field,
-            title: col.headerName,
-            valueType: this.handleValueType(field)
-          })
-        }
-      })
-    })
   }
 
   get keyCtrl(): FormControl {
@@ -332,8 +332,12 @@ export class CriteriaBuilderComponent implements OnInit {
       value: this.handleValue(selectedKeyOption),
       valueLabel: this.handleValueLabel(selectedKeyOption)
     }
-    this.formGroupDirective.resetForm()
+    if (this.resetForm) this.handleResetForm()
     this.onAddCriteria.emit(criteria)
+  }
+
+  handleResetForm() {
+    this.formGroupDirective.resetForm()
   }
 
   handleValue(selectedKeyOption) {

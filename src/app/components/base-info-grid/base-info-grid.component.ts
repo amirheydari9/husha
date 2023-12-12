@@ -40,6 +40,7 @@ import {CustomInputTextModule} from "../../ui-kits/custom-input-text/custom-inpu
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 import {criteriaInterface} from "../../models/DTOs/fetch-all-form-data.DTO";
 import {ExportExcelDialogComponent} from "../dialog/export-excel-dialog/export-excel-dialog.component";
+import {CriteriaBuilderComponent, CriteriaBuilderModule} from "../criteria-builder/criteria-builder.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -84,6 +85,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   @ViewChild('gridActions') gridActions: GridActionsComponent
   @ViewChild('grid', {read: AgGridAngular}) grid: AgGridAngular
+  @ViewChild('criteriaBuilder', {read: CriteriaBuilderComponent}) criteriaBuilder: CriteriaBuilderComponent
 
   gridHistory = []
   parentId: number
@@ -284,6 +286,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   handleResetAdvanceSearch() {
     this.criteria = null
     this.criteriaMetaData = null
+    this.criteriaBuilder.handleResetForm()
     this.gridApi.setDatasource(this.dataSource)
   }
 
@@ -323,6 +326,16 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     }
     this.gridApi.setDatasource(this.dataSource)
   }
+
+  handleAddCriteria(criteria: any) {
+    this.criteria = [criteria].map(cr => ({
+      key: cr.key,
+      operation: cr.operation,
+      value: cr.value,
+      valueType: cr.valueType,
+    }))
+    this.gridApi.setDatasource(this.dataSource)
+  }
 }
 
 @NgModule({
@@ -335,7 +348,8 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     ReactiveFormsModule,
     CustomInputTextModule,
     CustomButtonModule,
-    CommonModule
+    CommonModule,
+    CriteriaBuilderModule
   ],
   exports: [BaseInfoGridComponent]
 })
