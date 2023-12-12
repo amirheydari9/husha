@@ -74,6 +74,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     localeText: AG_GRID_LOCALE_FA,
     overlayNoRowsTemplate: 'رکوری جهت نمایش یافت نشد',
     domLayout: 'autoHeight',
+    multiSortKey:'ctrl',
     // alwaysShowHorizontalScroll:false
   }
   accessFormActions: ACCESS_FORM_ACTION_TYPE[] = []
