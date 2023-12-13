@@ -6,7 +6,7 @@ import {
   NgModule,
   OnInit,
   Output,
-  QueryList,
+  QueryList, ViewChild,
   ViewChildren
 } from '@angular/core';
 import {NgClass, NgFor, NgIf} from "@angular/common";
@@ -15,12 +15,25 @@ import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.comp
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {DialogManagementService} from "../../utils/dialog-management.service";
+import {CriteriaBuilderComponent, CriteriaBuilderModule} from "../criteria-builder/criteria-builder.component";
+import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
+import {ColDef} from "ag-grid-community";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
   selector: 'app-grid-actions',
   template: `
-    <div class="flex justify-content-end mb-3">
+    <div class="flex align-items-center justify-content-between mb-3">
+      <div class="flex-grow-1">
+        <app-criteria-builder
+          #criteriaBuilder
+          [form]="form"
+          [colDefs]="colDefs"
+          [resetForm]="false"
+          [icon]="'pi pi-search'"
+          (onAddCriteria)="onAddCriteria.emit($event)"
+        ></app-criteria-builder>
+      </div>
       <app-custom-button
         *ngFor="let action of totalAccessFormActions"
         class="mr-1"
@@ -56,6 +69,8 @@ export class GridActionsComponent implements OnInit {
   @Input() selectedRow: any
   @Input() hasCriteria: boolean
   @Input() gridHistory = []
+  @Input() form: IFetchFormRes
+  @Input() colDefs: ColDef[]
 
   @Input() set accessFormActions(data: ACCESS_FORM_ACTION_TYPE[]) {
     if (data.length) {
@@ -69,9 +84,11 @@ export class GridActionsComponent implements OnInit {
   }
 
   @ViewChildren('history') history: QueryList<ElementRef>
+  @ViewChild('criteriaBuilder', {read: CriteriaBuilderComponent}) criteriaBuilder: CriteriaBuilderComponent
 
   @Output() clickHistory: EventEmitter<any> = new EventEmitter<any>()
   @Output() onAction: EventEmitter<ACCESS_FORM_ACTION_TYPE> = new EventEmitter<ACCESS_FORM_ACTION_TYPE>()
+  @Output() onAddCriteria: EventEmitter<any> = new EventEmitter<any>()
 
   //TODO صحبت با آقای عبدالهی برای ترتیب آیکون ها
   allAccessFormActions = [
@@ -237,6 +254,10 @@ export class GridActionsComponent implements OnInit {
     this.clickHistory.emit(this.gridHistory[this.currentHistoryIndex])
   }
 
+  handleResetCriteria() {
+    this.criteriaBuilder.handleResetForm()
+  }
+
   handleClickAction(type) {
     switch (type) {
       case ACCESS_FORM_ACTION_TYPE.PERV :
@@ -268,6 +289,7 @@ export class GridActionsComponent implements OnInit {
     NgClass,
     NgIf,
     CustomButtonModule,
+    CriteriaBuilderModule,
   ],
   exports: [GridActionsComponent]
 })

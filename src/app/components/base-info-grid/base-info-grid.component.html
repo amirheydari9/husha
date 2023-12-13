@@ -12,27 +12,18 @@
 
   <div [class]="class">
 
-    <div class="flex align-items-center justify-content-between">
-      <div class="flex-grow-1">
-        <app-criteria-builder
-          #criteriaBuilder
-          [form]="form"
-          [colDefs]="columnDefs"
-          [resetForm]="false"
-          [icon]="'pi pi-search'"
-          (onAddCriteria)="handleAddCriteria($event)"
-        ></app-criteria-builder>
-      </div>
-      <app-grid-actions
-        #gridActions
-        [gridHistory]="gridHistory"
-        [accessFormActions]="accessFormActions"
-        [selectedRow]="selectedRow"
-        [hasCriteria]="!!criteria"
-        (clickHistory)="handleClickHistory($event)"
-        (onAction)="handleOnAction($event)"
-      ></app-grid-actions>
-    </div>
+    <app-grid-actions
+      #gridActions
+      [form]="form"
+      [colDefs]="columnDefs"
+      [gridHistory]="gridHistory"
+      [accessFormActions]="accessFormActions"
+      [selectedRow]="selectedRow"
+      [hasCriteria]="!!criteria"
+      (clickHistory)="handleClickHistory($event)"
+      (onAction)="handleOnAction($event)"
+      (onAddCriteria)="handleAddCriteria($event)"
+    ></app-grid-actions>
 
     <ag-grid-angular
       #grid

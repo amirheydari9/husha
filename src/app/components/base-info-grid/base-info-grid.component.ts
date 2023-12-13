@@ -34,13 +34,9 @@ import {Router} from "@angular/router";
 import {DialogManagementService} from "../../utils/dialog-management.service";
 import {AttachmentListDialogComponent} from "../dialog/attachment-list-dialog/attachment-list-dialog.component";
 import {AdvanceSearchDialogComponent} from "../dialog/advance-search-dialog/advance-search-dialog.component";
-import {CommonModule, NgIf} from "@angular/common";
-import {ReactiveFormsModule} from "@angular/forms";
-import {CustomInputTextModule} from "../../ui-kits/custom-input-text/custom-input-text.component";
-import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
+import {CommonModule} from "@angular/common";
 import {criteriaInterface} from "../../models/DTOs/fetch-all-form-data.DTO";
 import {ExportExcelDialogComponent} from "../dialog/export-excel-dialog/export-excel-dialog.component";
-import {CriteriaBuilderComponent, CriteriaBuilderModule} from "../criteria-builder/criteria-builder.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -85,7 +81,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   @ViewChild('gridActions') gridActions: GridActionsComponent
   @ViewChild('grid', {read: AgGridAngular}) grid: AgGridAngular
-  @ViewChild('criteriaBuilder', {read: CriteriaBuilderComponent}) criteriaBuilder: CriteriaBuilderComponent
 
   gridHistory = []
   parentId: number
@@ -251,7 +246,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       data: {form: this.form, colDefs: this.gridApi.getColumnDefs(), criteria: this.criteriaMetaData},
     }).subscribe(data => {
       if (data) {
-        this.criteriaBuilder.handleResetForm()
+        this.gridActions.handleResetCriteria()
         if (data.length) {
           this.criteriaMetaData = data;
           this.criteria = data.map(cr => ({
@@ -272,7 +267,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   handleResetAdvanceSearch() {
     this.criteria = null
     this.criteriaMetaData = null
-    this.criteriaBuilder.handleResetForm()
+    this.gridActions.handleResetCriteria()
     this.gridApi.setDatasource(this.dataSource)
   }
 
@@ -310,12 +305,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     GridActionsModule,
     AgGridModule,
     CustomCardModule,
-    NgIf,
-    ReactiveFormsModule,
-    CustomInputTextModule,
-    CustomButtonModule,
     CommonModule,
-    CriteriaBuilderModule
   ],
   exports: [BaseInfoGridComponent]
 })
