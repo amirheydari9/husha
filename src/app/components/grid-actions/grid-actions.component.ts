@@ -6,7 +6,8 @@ import {
   NgModule,
   OnInit,
   Output,
-  QueryList, ViewChild,
+  QueryList,
+  ViewChild,
   ViewChildren
 } from '@angular/core';
 import {NgClass, NgFor, NgIf} from "@angular/common";
@@ -14,7 +15,6 @@ import {ACCESS_FORM_ACTION_TYPE} from "../../constants/enums";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
-import {DialogManagementService} from "../../utils/dialog-management.service";
 import {CriteriaBuilderComponent, CriteriaBuilderModule} from "../criteria-builder/criteria-builder.component";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
 import {ColDef} from "ag-grid-community";
@@ -192,7 +192,6 @@ export class GridActionsComponent implements OnInit {
   ]
 
   constructor(
-    private dialogManagementService: DialogManagementService
   ) {
   }
 
