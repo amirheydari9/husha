@@ -150,12 +150,13 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     if (!this.gridHistory.length) this.gridHistory.push(selectedRow)
     this.cdr.detectChanges()
     const index = this.gridHistory.findIndex(item => item.id === selectedRow.id)
+    console.log(index)
     if (index < 0) {
-      this.gridHistory.push(selectedRow)
+      this.gridHistory = [...this.gridHistory, selectedRow]
       this.cdr.detectChanges()
-      this.gridActions.activeHistory(this.gridHistory.length - 1)
+      // this.gridActions.activeHistory(this.gridHistory.length - 1)
     } else {
-      this.gridActions.activeHistory(index)
+      // this.gridActions.activeHistory(index)
     }
   }
 

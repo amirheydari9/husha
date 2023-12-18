@@ -17,7 +17,8 @@ import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {CriteriaBuilderComponent, CriteriaBuilderModule} from "../criteria-builder/criteria-builder.component";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
-import {ColDef} from "ag-grid-community";
+import {ColDef, RowClickedEvent} from "ag-grid-community";
+import {CustomGridModule} from "../../ui-kits/custom-grid/custom-grid.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -47,15 +48,22 @@ import {ColDef} from "ag-grid-community";
         (confirm)="handleClickAction(action.type)"
       ></app-custom-button>
     </div>
-    <div class="mb-3 border-2" *ngIf="gridHistory.length">
-      <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">
-        <span
-          #history
-          class="cursor-pointer p-2"
-          [ngClass]="{'border-bottom-2': i !== gridHistory.length-1}"
-          (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}
-        </span>
-      </div>
+    <div class="mb-3" *ngIf="gridHistory.length">
+      <!--      <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">-->
+      <!--        <span-->
+      <!--          #history-->
+      <!--          class="cursor-pointer p-2"-->
+      <!--          [ngClass]="{'border-bottom-2': i !== gridHistory.length-1}"-->
+      <!--          (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}-->
+      <!--        </span>-->
+      <!--      </div>-->
+
+      <app-custom-grid
+        [columnDefs]="historyGridColDefs"
+        [rowData]="gridHistory"
+        (rowClicked)="handleClickHistoryGridRow($event)"
+      ></app-custom-grid>
+
     </div>
   `,
   styles: [],
@@ -64,6 +72,12 @@ export class GridActionsComponent implements OnInit {
 
   subscription: Subscription[] = []
   totalAccessFormActions = []
+  historyGridColDefs: ColDef[] = [
+    {field: 'code', headerName: 'کد'},
+    {field: 'title', headerName: 'عنوان'},
+  ]
+  historyGridRowData = []
+
 
   currentHistoryIndex: number
   @Input() selectedRow: any
@@ -191,8 +205,7 @@ export class GridActionsComponent implements OnInit {
     }
   ]
 
-  constructor(
-  ) {
+  constructor() {
   }
 
   get ACCESS_FORM_ACTION_TYPE(): typeof ACCESS_FORM_ACTION_TYPE {
@@ -225,32 +238,32 @@ export class GridActionsComponent implements OnInit {
 
   }
 
-  activeHistory(i: number) {
-    this.currentHistoryIndex = i
-    this.resetActiveHistory()
-    this.history.get(i).nativeElement.classList.add('bg-primary')
-  }
-
-  resetActiveHistory() {
-    this.history.map(item => item.nativeElement.classList.remove('bg-primary'))
-  }
-
-  handleClickHistory(item, i) {
-    this.activeHistory(i)
-    this.clickHistory.emit(item)
-  }
+  // activeHistory(i: number) {
+  //   this.currentHistoryIndex = i
+  //   this.resetActiveHistory()
+  //   this.history.get(i).nativeElement.classList.add('bg-primary')
+  // }
+  //
+  // resetActiveHistory() {
+  //   this.history.map(item => item.nativeElement.classList.remove('bg-primary'))
+  // }
+  //
+  // handleClickHistory(item, i) {
+  //   this.activeHistory(i)
+  //   this.clickHistory.emit(item)
+  // }
 
   handleClickPrev() {
-    this.currentHistoryIndex -= 1;
-    this.currentHistoryIndex === -1 ? this.resetActiveHistory() : this.activeHistory(this.currentHistoryIndex)
-    this.clickHistory.emit(this.currentHistoryIndex === -1 ? null : this.gridHistory[this.currentHistoryIndex])
+    // this.currentHistoryIndex -= 1;
+    // this.currentHistoryIndex === -1 ? this.resetActiveHistory() : this.activeHistory(this.currentHistoryIndex)
+    // this.clickHistory.emit(this.currentHistoryIndex === -1 ? null : this.gridHistory[this.currentHistoryIndex])
 
   }
 
   handleClickNex() {
-    this.currentHistoryIndex += 1;
-    this.activeHistory(this.currentHistoryIndex)
-    this.clickHistory.emit(this.gridHistory[this.currentHistoryIndex])
+    // this.currentHistoryIndex += 1;
+    // this.activeHistory(this.currentHistoryIndex)
+    // this.clickHistory.emit(this.gridHistory[this.currentHistoryIndex])
   }
 
   handleResetCriteria() {
@@ -279,6 +292,12 @@ export class GridActionsComponent implements OnInit {
         break
     }
   }
+
+  handleClickHistoryGridRow($event: RowClickedEvent<any>) {
+    console.log($event)
+    this.clickHistory.emit($event.data)
+
+  }
 }
 
 @NgModule({
@@ -289,6 +308,7 @@ export class GridActionsComponent implements OnInit {
     NgIf,
     CustomButtonModule,
     CriteriaBuilderModule,
+    CustomGridModule,
   ],
   exports: [GridActionsComponent]
 })
