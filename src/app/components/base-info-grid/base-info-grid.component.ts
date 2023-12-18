@@ -122,12 +122,14 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         this.fetchSummary ? 'id,code,title' : null
       )
       this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).subscribe(formData => {
-        const paginationInfo = formData.shift()
-        const {colDefs, rowData} = this.hushaGridUtilService.createGrid(formData, this.form, this.fetchSummary)
-        this.columnDefs = colDefs
-        //TODO وقتی دیتا نداریم باید عیارت دیتا یافت نشد نمایش داده شود
-        params.successCallback(rowData, paginationInfo['paginationTotalElements'])
-      })
+          const paginationInfo = formData.shift()
+          const {colDefs, rowData} = this.hushaGridUtilService.createGrid(formData, this.form, this.fetchSummary)
+          this.columnDefs = colDefs
+          //TODO وقتی دیتا نداریم باید عیارت دیتا یافت نشد نمایش داده شود
+          params.successCallback(rowData, paginationInfo['paginationTotalElements'])
+        },
+        error => params.failCallback()
+      )
     })
   }
 
