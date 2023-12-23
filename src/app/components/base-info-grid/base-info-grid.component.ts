@@ -82,7 +82,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   @ViewChild('gridActions') gridActions: GridActionsComponent
   @ViewChild('grid', {read: AgGridAngular}) grid: AgGridAngular
 
-  gridHistory = []
+  gridHistory;
   parentId: number
 
   @Output() onRowDoubleClicked: EventEmitter<any> = new EventEmitter<any>()
@@ -147,17 +147,18 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   handleMultiLevelGid(selectedRow: any) {
     this.parentId = selectedRow.id
     this.gridApi.setDatasource(this.dataSource)
-    if (!this.gridHistory.length) this.gridHistory.push(selectedRow)
-    this.cdr.detectChanges()
-    const index = this.gridHistory.findIndex(item => item.id === selectedRow.id)
-    console.log(index)
-    if (index < 0) {
-      this.gridHistory = [...this.gridHistory, selectedRow]
-      this.cdr.detectChanges()
-      // this.gridActions.activeHistory(this.gridHistory.length - 1)
-    } else {
-      // this.gridActions.activeHistory(index)
-    }
+    this.gridHistory = selectedRow;
+    // if (!this.gridHistory.length) this.gridHistory.push(selectedRow)
+    // this.cdr.detectChanges()
+    // const index = this.gridHistory.findIndex(item => item.id === selectedRow.id)
+    // console.log(index)
+    // if (index < 0) {
+    //   this.gridHistory = [...this.gridHistory, selectedRow]
+    //   this.cdr.detectChanges()
+    //   // this.gridActions.activeHistory(this.gridHistory.length - 1)
+    // } else {
+    //   // this.gridActions.activeHistory(index)
+    // }
   }
 
   handleClickHistory(item: any) {

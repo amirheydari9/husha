@@ -17,9 +17,10 @@ import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {CriteriaBuilderComponent, CriteriaBuilderModule} from "../criteria-builder/criteria-builder.component";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
-import {ColDef, RowClickedEvent} from "ag-grid-community";
-import {CustomGridModule} from "../../ui-kits/custom-grid/custom-grid.component";
-
+import {ColDef, GridOptions, RowClickedEvent} from "ag-grid-community";
+import {CustomGridComponent, CustomGridModule} from "../../ui-kits/custom-grid/custom-grid.component";
+import {AgGridModule} from "ag-grid-angular";
+import { BaseInfoGridComponent } from '../base-info-grid/base-info-grid.component';
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
   selector: 'app-grid-actions',
@@ -48,7 +49,8 @@ import {CustomGridModule} from "../../ui-kits/custom-grid/custom-grid.component"
         (confirm)="handleClickAction(action.type)"
       ></app-custom-button>
     </div>
-    <div class="mb-3" *ngIf="gridHistory.length">
+    <!-- *ngIf="historyLength" -->
+    <div class="mb-3" >
       <!--      <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">-->
       <!--        <span-->
       <!--          #history-->
@@ -57,18 +59,18 @@ import {CustomGridModule} from "../../ui-kits/custom-grid/custom-grid.component"
       <!--          (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}-->
       <!--        </span>-->
       <!--      </div>-->
-
       <app-custom-grid
+        #grid
         [columnDefs]="historyGridColDefs"
-        [rowData]="gridHistory"
         (rowClicked)="handleClickHistoryGridRow($event)"
+        [gridOptions]="gridOptions"
       ></app-custom-grid>
-
     </div>
   `,
   styles: [],
 })
 export class GridActionsComponent implements OnInit {
+  [x: string]: any;
 
   subscription: Subscription[] = []
   totalAccessFormActions = []
@@ -76,27 +78,46 @@ export class GridActionsComponent implements OnInit {
     {field: 'code', headerName: 'کد'},
     {field: 'title', headerName: 'عنوان'},
   ]
-  historyGridRowData = []
 
-
-  currentHistoryIndex: number
+  currentHistoryIndex: number= -1
+  _gridHistory: any[];
+  selectedNode: any;
+  historyLength:number;
+  gridOptions :GridOptions={
+    pagination: false,
+  }
   @Input() selectedRow: any
   @Input() hasCriteria: boolean
-  @Input() gridHistory = []
+  @Input() set gridHistory (data){
+    if ( data ) {
+      this._gridHistory = data;
+      this.grid.gridApi.applyTransaction({add:[this._gridHistory]}) 
+      this.getDisplayedRowsCount();   
+      this.selectLastRow();
+      this.currentHistoryIndex += 1;
+    }
+  }
+  
+  get gridHistory(): any[] {      
+    return this._gridHistory;
+  }
+
   @Input() form: IFetchFormRes
   @Input() colDefs: ColDef[]
-
+  
   @Input() set accessFormActions(data: ACCESS_FORM_ACTION_TYPE[]) {
     if (data.length) {
       data.forEach(item => {
         this.allAccessFormActions.forEach(action => {
           if (action.type === item) this.totalAccessFormActions.push(action)
         })
-      })
-      this.totalAccessFormActions.sort((a, b) => a['order'] - b['order'])
-    }
+    })
+    this.totalAccessFormActions.sort((a, b) => a['order'] - b['order'])
   }
+}
 
+  @ViewChild('grid', {static:false ,read: CustomGridComponent}) grid: CustomGridComponent
+  @ViewChild('baseInfo',{read:BaseInfoGridComponent})baseInfo:BaseInfoGridComponent
   @ViewChildren('history') history: QueryList<ElementRef>
   @ViewChild('criteriaBuilder', {read: CriteriaBuilderComponent}) criteriaBuilder: CriteriaBuilderComponent
 
@@ -214,7 +235,7 @@ export class GridActionsComponent implements OnInit {
 
   handleDisableIcon(actionType: ACCESS_FORM_ACTION_TYPE) {
     if (actionType === ACCESS_FORM_ACTION_TYPE.PERV || actionType === ACCESS_FORM_ACTION_TYPE.NEXT) {
-      return !this.gridHistory.length || (actionType === ACCESS_FORM_ACTION_TYPE.PERV ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.gridHistory.length - 1)
+      return !this.historyLength || (actionType === ACCESS_FORM_ACTION_TYPE.PERV ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.historyLength-1)
     }
     if (actionType === ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH) {
       return !this.hasCriteria
@@ -254,16 +275,24 @@ export class GridActionsComponent implements OnInit {
   // }
 
   handleClickPrev() {
-    // this.currentHistoryIndex -= 1;
-    // this.currentHistoryIndex === -1 ? this.resetActiveHistory() : this.activeHistory(this.currentHistoryIndex)
-    // this.clickHistory.emit(this.currentHistoryIndex === -1 ? null : this.gridHistory[this.currentHistoryIndex])
+    if(this.currentHistoryIndex >= -1){     
+      this.grid.gridApi.applyTransaction({ remove: [this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex).data] });
+      this.currentHistoryIndex -= 1;
+      this.selectedNode = this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex);
+      this.grid.gridApi.forEachNode((node) => node.setSelected(node ===this.selectedNode))
+      this.getDisplayedRowsCount();
+      this.clickHistory.emit(this.selectedNode?.data)
+    }
+    if(this.currentHistoryIndex == 1)   this.clickHistory.emit(null)   
 
   }
 
   handleClickNex() {
-    // this.currentHistoryIndex += 1;
-    // this.activeHistory(this.currentHistoryIndex)
-    // this.clickHistory.emit(this.gridHistory[this.currentHistoryIndex])
+    this.currentHistoryIndex += 1;
+    if (this.currentHistoryIndex < this.historyLength){
+      this.selectedNode = this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex);
+      this.grid.gridApi.forEachNode((node) => node.setSelected(node === this.selectedNode))
+    }
   }
 
   handleResetCriteria() {
@@ -294,9 +323,20 @@ export class GridActionsComponent implements OnInit {
   }
 
   handleClickHistoryGridRow($event: RowClickedEvent<any>) {
-    console.log($event)
     this.clickHistory.emit($event.data)
+  }
 
+  getDisplayedRowsCount(){
+    this.historyLength = this.grid.gridApi.getDisplayedRowCount()    
+  }
+
+  selectLastRow(){
+    if (this.historyLength >= 0) {
+      const totalPages = Math.ceil((this.historyLength + 1) / this.grid.gridApi.paginationGetPageSize());     
+      const lastPageNumber = totalPages > 0 ? totalPages - 1 : 0;      
+      this.grid.gridApi.paginationGoToPage(lastPageNumber);
+      this.grid.gridApi.forEachNode((node) => node.setSelected(node.rowIndex === this.historyLength-1))
+    } 
   }
 }
 
@@ -309,6 +349,7 @@ export class GridActionsComponent implements OnInit {
     CustomButtonModule,
     CriteriaBuilderModule,
     CustomGridModule,
+    AgGridModule
   ],
   exports: [GridActionsComponent]
 })
