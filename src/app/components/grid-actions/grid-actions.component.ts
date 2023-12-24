@@ -8,20 +8,21 @@ import {
   Output,
   QueryList,
   ViewChild,
-  ViewChildren
+  ViewChildren,
+  HostListener
 } from '@angular/core';
-import {NgClass, NgFor, NgIf} from "@angular/common";
-import {ACCESS_FORM_ACTION_TYPE} from "../../constants/enums";
-import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
-import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
-import {Subscription} from "rxjs";
-import {CriteriaBuilderComponent, CriteriaBuilderModule} from "../criteria-builder/criteria-builder.component";
-import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
-import {ColDef, GridOptions, RowClickedEvent} from "ag-grid-community";
-import {CustomGridComponent, CustomGridModule} from "../../ui-kits/custom-grid/custom-grid.component";
-import {AgGridModule} from "ag-grid-angular";
+import { NgClass, NgFor, NgIf } from "@angular/common";
+import { ACCESS_FORM_ACTION_TYPE } from "../../constants/enums";
+import { CustomButtonModule } from "../../ui-kits/custom-button/custom-button.component";
+import { AutoUnsubscribe } from "../../decorators/AutoUnSubscribe";
+import { Subscription } from "rxjs";
+import { CriteriaBuilderComponent, CriteriaBuilderModule } from "../criteria-builder/criteria-builder.component";
+import { IFetchFormRes } from "../../models/interface/fetch-form-res.interface";
+import { ColDef, GridOptions, RowClickedEvent } from "ag-grid-community";
+import { CustomGridComponent, CustomGridModule } from "../../ui-kits/custom-grid/custom-grid.component";
+import { AgGridModule } from "ag-grid-angular";
 import { BaseInfoGridComponent } from '../base-info-grid/base-info-grid.component';
-@AutoUnsubscribe({arrayName: 'subscription'})
+@AutoUnsubscribe({ arrayName: 'subscription' })
 @Component({
   selector: 'app-grid-actions',
   template: `
@@ -75,8 +76,8 @@ export class GridActionsComponent implements OnInit {
   subscription: Subscription[] = []
   totalAccessFormActions = []
   historyGridColDefs: ColDef[] = [
-    {field: 'code', headerName: 'کد'},
-    {field: 'title', headerName: 'عنوان'},
+    { field: 'code', headerName: 'کد' },
+    { field: 'title', headerName: 'عنوان' },
   ]
 
   currentHistoryIndex: number= -1
@@ -112,9 +113,9 @@ export class GridActionsComponent implements OnInit {
           if (action.type === item) this.totalAccessFormActions.push(action)
         })
     })
-    this.totalAccessFormActions.sort((a, b) => a['order'] - b['order'])
+      this.totalAccessFormActions.sort((a, b) => a['order'] - b['order'])
+    }
   }
-}
 
   @ViewChild('grid', {static:false ,read: CustomGridComponent}) grid: CustomGridComponent
   @ViewChild('baseInfo',{read:BaseInfoGridComponent})baseInfo:BaseInfoGridComponent
@@ -233,6 +234,15 @@ export class GridActionsComponent implements OnInit {
     return ACCESS_FORM_ACTION_TYPE
   }
 
+  @HostListener('document:keydown', ['$event'])
+  onKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      if (!this.selectedNode) this.selectedNode = this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex)?.data;
+      // this.rowIndex = ;
+      this.handleClickPrev(this.selectedNode, this.currentHistoryIndex)
+    }
+  }
+
   handleDisableIcon(actionType: ACCESS_FORM_ACTION_TYPE) {
     if (actionType === ACCESS_FORM_ACTION_TYPE.PERV || actionType === ACCESS_FORM_ACTION_TYPE.NEXT) {
       return !this.historyLength || (actionType === ACCESS_FORM_ACTION_TYPE.PERV ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.historyLength-1)
@@ -274,17 +284,26 @@ export class GridActionsComponent implements OnInit {
   //   this.clickHistory.emit(item)
   // }
 
-  handleClickPrev() {
-    if(this.currentHistoryIndex >= -1){     
-      this.grid.gridApi.applyTransaction({ remove: [this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex).data] });
-      this.currentHistoryIndex -= 1;
-      this.selectedNode = this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex);
-      this.grid.gridApi.forEachNode((node) => node.setSelected(node ===this.selectedNode))
+  handleClickPrev(rowData, rowIndex) {
+    if (this.currentHistoryIndex > -1) {
+      if (rowData) {
+        this.grid.gridApi.forEachNode((node) => {
+          if (node.id > (rowIndex)?.toString()) {
+            this.grid.gridApi.applyTransaction({ remove: [node.data] });
+            this.currentHistoryIndex -= 1
+          }
+        })
+        this.selectedNode = rowData;
+      }
+      else {
+        this.grid.gridApi.applyTransaction({ remove: [this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex).data] });
+        this.currentHistoryIndex -= 1;
+        this.currentHistoryIndex == -1 ? this.selectedNode = null : this.selectedNode =(this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex).data);
+      }
+      this.grid.gridApi.forEachNode((node) => node.setSelected(node.data === this.selectedNode))
       this.getDisplayedRowsCount();
-      this.clickHistory.emit(this.selectedNode?.data)
+      this.clickHistory.emit(this.selectedNode)
     }
-    if(this.currentHistoryIndex == 1)   this.clickHistory.emit(null)   
-
   }
 
   handleClickNex() {
@@ -301,8 +320,8 @@ export class GridActionsComponent implements OnInit {
 
   handleClickAction(type) {
     switch (type) {
-      case ACCESS_FORM_ACTION_TYPE.PERV :
-        this.handleClickPrev()
+      case ACCESS_FORM_ACTION_TYPE.PERV:
+        this.handleClickPrev(null, null)
         break
       case ACCESS_FORM_ACTION_TYPE.NEXT:
         this.handleClickNex()
@@ -323,7 +342,7 @@ export class GridActionsComponent implements OnInit {
   }
 
   handleClickHistoryGridRow($event: RowClickedEvent<any>) {
-    this.clickHistory.emit($event.data)
+    this.handleClickPrev($event.data, $event.rowIndex);
   }
 
   getDisplayedRowsCount(){
