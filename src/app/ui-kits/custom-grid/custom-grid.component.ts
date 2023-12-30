@@ -29,7 +29,7 @@ export class CustomGridComponent implements OnInit {
     defaultColDef: {
       sortable: true, filter: true, flex: 1, minWidth: 150, resizable: true
     },
-    overlayNoRowsTemplate: 'رکوری جهت نمایش یافت نشد',
+    overlayNoRowsTemplate: 'رکوردی جهت نمایش یافت نشد',
     rowSelection: 'single',
     localeText: AG_GRID_LOCALE_FA,
     domLayout: 'autoHeight',

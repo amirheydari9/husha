@@ -37,6 +37,7 @@ import {AdvanceSearchDialogComponent} from "../dialog/advance-search-dialog/adva
 import {CommonModule} from "@angular/common";
 import {criteriaInterface} from "../../models/DTOs/fetch-all-form-data.DTO";
 import {ExportExcelDialogComponent} from "../dialog/export-excel-dialog/export-excel-dialog.component";
+import { ButtonModule } from 'primeng/button';
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -67,12 +68,13 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     enableRangeSelection: true,
     pagination: true,
     localeText: AG_GRID_LOCALE_FA,
-    overlayNoRowsTemplate: 'رکوری جهت نمایش یافت نشد',
+    overlayNoRowsTemplate: 'رکوردی جهت نمایش یافت نشد',
     domLayout: 'autoHeight',
     multiSortKey: 'ctrl',
     // alwaysShowHorizontalScroll:false
   }
   accessFormActions: ACCESS_FORM_ACTION_TYPE[] = []
+  _dataSource: IDatasource;
 
   @Input() class: string
   @Input() form: IFetchFormRes
@@ -171,13 +173,36 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   }
 
   handleSortChange($event: SortChangedEvent<any>) {
-    const columnWithSort = this.colApi.getColumnState().find(col => col.sort !== null);
-    if (columnWithSort) {
-      console.log("Column that is sorted right now is " + columnWithSort.colId);
-      console.log("The sort order right now is " + columnWithSort.sort);  // prints "asc" or "desc"
-    } else {
+  //   // const columnWithSort = this.colApi.getColumnState().find(col => col.sort !== null);
+  //   // if (columnWithSort) {
+  //   //   console.log("Column that is sorted right now is " + columnWithSort.colId);
+  //   //   console.log("The sort order right now is " + columnWithSort.sort);  // prints "asc" or "desc"
+  //   // } else {
 
-    }
+  //   // }
+  this._dataSource=  {
+    getRows: ((params: IGetRowsParams) => {
+      const payload = new FetchAllDataPayloadDTO(
+        this.form,
+        this.parentId,
+        this.masterId,
+        this.gridApi.paginationGetCurrentPage(),
+        this.gridApi.paginationGetPageSize(),
+        this.hushaGridUtilService.handleSortParam(params.sortModel),
+        this.criteria ?? null,
+        null,
+        this.fetchSummary ? 'id,code,title' : null
+      )
+      
+      this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).subscribe(formData => {
+        const paginationInfo = formData.shift()
+        const {colDefs, rowData} = this.hushaGridUtilService.createGrid(formData, this.form, this.fetchSummary)
+        this.columnDefs = colDefs
+        //TODO وقتی دیتا نداریم باید عیارت دیتا یافت نشد نمایش داده شود
+        params.successCallback(rowData, paginationInfo['paginationTotalElements'])
+      })
+    })
+  }
   }
 
   handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
@@ -224,7 +249,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         this.selectedRow?.id,
         this.masterId
       )).subscribe(data => {
-        this.gridApi.setDatasource(this.dataSource)
+        this.gridApi.setDatasource(this._dataSource)
       })
     )
   }
@@ -308,6 +333,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     AgGridModule,
     CustomCardModule,
     CommonModule,
+    ButtonModule
   ],
   exports: [BaseInfoGridComponent]
 })

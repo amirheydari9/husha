@@ -34,6 +34,7 @@
       (rowClicked)="handleRowClicked($event)"
       (sortChanged)="handleSortChange($event)"
     ></ag-grid-angular>
+    <p-button styleClass="p-button-sm" (onClick)="handleDelete()" [label]="'delete'" [disabled]="!_dataSource"></p-button>
 
   </div>
 
