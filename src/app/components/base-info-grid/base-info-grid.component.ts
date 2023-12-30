@@ -17,10 +17,12 @@ import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
 import {
   ColDef,
   ColumnApi,
+  GetContextMenuItemsParams,
   GridApi,
   GridOptions,
   IDatasource,
   IGetRowsParams,
+  MenuItemDef,
   RowClickedEvent,
   SortChangedEvent
 } from "ag-grid-community";
@@ -38,7 +40,7 @@ import {CommonModule} from "@angular/common";
 import {criteriaInterface} from "../../models/DTOs/fetch-all-form-data.DTO";
 import {ExportExcelDialogComponent} from "../dialog/export-excel-dialog/export-excel-dialog.component";
 import { ButtonModule } from 'primeng/button';
-
+import 'ag-grid-enterprise';
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
   selector: 'app-base-info-grid',
@@ -59,6 +61,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     defaultColDef: {
       sortable: true, flex: 1, resizable: true, minWidth: 150
     },
+    getContextMenuItems: this.getContextMenuItems,
     rowModelType: 'infinite',
     enableRtl: true,
     rowSelection: 'single',
@@ -323,6 +326,22 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     }))
     this.gridApi.setDatasource(this.dataSource)
     this.criteriaMetaData = null
+  }
+
+  getContextMenuItems( params: GetContextMenuItemsParams ): (string | MenuItemDef)[] {
+    var result: (string | MenuItemDef)[] = [
+      {
+        name: 'copy' + params.value,
+        action: () => { },
+        cssClasses: ['red', 'bold'],
+      },
+      {
+        name: 'cut',
+        action: () => { },
+        cssClasses: ['red', 'bold'],
+      },
+    ]
+    return result
   }
 }
 
