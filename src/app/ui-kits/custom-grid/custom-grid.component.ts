@@ -81,6 +81,10 @@ export class CustomGridComponent implements OnInit {
     return this.gridOptions.rowSelection === "single" ? this.gridApi?.getSelectedRows()[0] : this.gridApi?.getSelectedRows()
   }
 
+  get displayRowCount(): number {
+    return this.gridApi.getDisplayedRowCount()
+  }
+
   clearData() {
     const rowData: any[] = [];
     this.gridApi.forEachNode((node) => rowData.push(node.data))
@@ -95,6 +99,7 @@ export class CustomGridComponent implements OnInit {
   addRows(data) {
     this.gridApi.applyTransaction({add: data})
     this.gridApi.paginationGoToLastPage()
+    this.selectLastRow()
   }
 
   updateRow(data) {
@@ -104,6 +109,10 @@ export class CustomGridComponent implements OnInit {
       itemsToUpdate.push(data);
     });
     this.gridApi.applyTransaction({update: itemsToUpdate})
+  }
+
+  selectLastRow() {
+    this.gridApi.forEachNode((node) => node.setSelected(node.rowIndex === this.displayRowCount - 1))
   }
 }
 

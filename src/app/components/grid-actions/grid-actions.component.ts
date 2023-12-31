@@ -1,28 +1,16 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  NgModule,
-  OnInit,
-  Output,
-  QueryList,
-  ViewChild,
-  ViewChildren,
-  HostListener
-} from '@angular/core';
-import { NgClass, NgFor, NgIf } from "@angular/common";
-import { ACCESS_FORM_ACTION_TYPE } from "../../constants/enums";
-import { CustomButtonModule } from "../../ui-kits/custom-button/custom-button.component";
-import { AutoUnsubscribe } from "../../decorators/AutoUnSubscribe";
-import { Subscription } from "rxjs";
-import { CriteriaBuilderComponent, CriteriaBuilderModule } from "../criteria-builder/criteria-builder.component";
-import { IFetchFormRes } from "../../models/interface/fetch-form-res.interface";
-import { ColDef, GridOptions, RowClickedEvent } from "ag-grid-community";
-import { CustomGridComponent, CustomGridModule } from "../../ui-kits/custom-grid/custom-grid.component";
-import { AgGridModule } from "ag-grid-angular";
-import { BaseInfoGridComponent } from '../base-info-grid/base-info-grid.component';
-@AutoUnsubscribe({ arrayName: 'subscription' })
+import {Component, EventEmitter, HostListener, Input, NgModule, OnInit, Output, ViewChild} from '@angular/core';
+import {NgClass, NgFor, NgIf} from "@angular/common";
+import {ACCESS_FORM_ACTION_TYPE} from "../../constants/enums";
+import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
+import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
+import {Subscription} from "rxjs";
+import {CriteriaBuilderComponent, CriteriaBuilderModule} from "../criteria-builder/criteria-builder.component";
+import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
+import {ColDef, GridOptions, RowClickedEvent} from "ag-grid-community";
+import {CustomGridComponent, CustomGridModule} from "../../ui-kits/custom-grid/custom-grid.component";
+import {AgGridModule} from "ag-grid-angular";
+
+@AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
   selector: 'app-grid-actions',
   template: `
@@ -51,15 +39,7 @@ import { BaseInfoGridComponent } from '../base-info-grid/base-info-grid.componen
       ></app-custom-button>
     </div>
     <!-- *ngIf="historyLength" -->
-    <div class="mb-3" >
-      <!--      <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">-->
-      <!--        <span-->
-      <!--          #history-->
-      <!--          class="cursor-pointer p-2"-->
-      <!--          [ngClass]="{'border-bottom-2': i !== gridHistory.length-1}"-->
-      <!--          (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}-->
-      <!--        </span>-->
-      <!--      </div>-->
+    <div class="mb-3">
       <app-custom-grid
         #grid
         [columnDefs]="historyGridColDefs"
@@ -71,55 +51,52 @@ import { BaseInfoGridComponent } from '../base-info-grid/base-info-grid.componen
   styles: [],
 })
 export class GridActionsComponent implements OnInit {
-  [x: string]: any;
 
   subscription: Subscription[] = []
   totalAccessFormActions = []
   historyGridColDefs: ColDef[] = [
-    { field: 'code', headerName: 'کد' },
-    { field: 'title', headerName: 'عنوان' },
+    {field: 'code', headerName: 'کد'},
+    {field: 'title', headerName: 'عنوان'},
   ]
 
-  currentHistoryIndex: number= -1
+  currentHistoryIndex: number = -1
   _gridHistory: any[];
   selectedNode: any;
-  historyLength:number;
-  gridOptions :GridOptions={
-    pagination: false,
+  historyLength: number;
+  gridOptions: GridOptions = {
+    pagination: true,
   }
   @Input() selectedRow: any
   @Input() hasCriteria: boolean
-  @Input() set gridHistory (data){
-    if ( data ) {
+
+  @Input() set gridHistory(data) {
+    if (data) {
       this._gridHistory = data;
-      this.grid.gridApi.applyTransaction({add:[this._gridHistory]}) 
-      this.getDisplayedRowsCount();   
-      this.selectLastRow();
+      this.grid.addRows([this._gridHistory])
+      this.getDisplayedRowsCount();
       this.currentHistoryIndex += 1;
     }
   }
-  
-  get gridHistory(): any[] {      
+
+  get gridHistory(): any[] {
     return this._gridHistory;
   }
 
   @Input() form: IFetchFormRes
   @Input() colDefs: ColDef[]
-  
+
   @Input() set accessFormActions(data: ACCESS_FORM_ACTION_TYPE[]) {
     if (data.length) {
       data.forEach(item => {
         this.allAccessFormActions.forEach(action => {
           if (action.type === item) this.totalAccessFormActions.push(action)
         })
-    })
+      })
       this.totalAccessFormActions.sort((a, b) => a['order'] - b['order'])
     }
   }
 
-  @ViewChild('grid', {static:false ,read: CustomGridComponent}) grid: CustomGridComponent
-  @ViewChild('baseInfo',{read:BaseInfoGridComponent})baseInfo:BaseInfoGridComponent
-  @ViewChildren('history') history: QueryList<ElementRef>
+  @ViewChild('grid', {read: CustomGridComponent}) grid: CustomGridComponent
   @ViewChild('criteriaBuilder', {read: CriteriaBuilderComponent}) criteriaBuilder: CriteriaBuilderComponent
 
   @Output() clickHistory: EventEmitter<any> = new EventEmitter<any>()
@@ -245,7 +222,7 @@ export class GridActionsComponent implements OnInit {
 
   handleDisableIcon(actionType: ACCESS_FORM_ACTION_TYPE) {
     if (actionType === ACCESS_FORM_ACTION_TYPE.PERV || actionType === ACCESS_FORM_ACTION_TYPE.NEXT) {
-      return !this.historyLength || (actionType === ACCESS_FORM_ACTION_TYPE.PERV ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.historyLength-1)
+      return !this.historyLength || (actionType === ACCESS_FORM_ACTION_TYPE.PERV ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.historyLength - 1)
     }
     if (actionType === ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH) {
       return !this.hasCriteria
@@ -269,36 +246,20 @@ export class GridActionsComponent implements OnInit {
 
   }
 
-  // activeHistory(i: number) {
-  //   this.currentHistoryIndex = i
-  //   this.resetActiveHistory()
-  //   this.history.get(i).nativeElement.classList.add('bg-primary')
-  // }
-  //
-  // resetActiveHistory() {
-  //   this.history.map(item => item.nativeElement.classList.remove('bg-primary'))
-  // }
-  //
-  // handleClickHistory(item, i) {
-  //   this.activeHistory(i)
-  //   this.clickHistory.emit(item)
-  // }
-
   handleClickPrev(rowData, rowIndex) {
     if (this.currentHistoryIndex > -1) {
       if (rowData) {
         this.grid.gridApi.forEachNode((node) => {
           if (node.id > (rowIndex)?.toString()) {
-            this.grid.gridApi.applyTransaction({ remove: [node.data] });
+            this.grid.gridApi.applyTransaction({remove: [node.data]});
             this.currentHistoryIndex -= 1
           }
         })
         this.selectedNode = rowData;
-      }
-      else {
-        this.grid.gridApi.applyTransaction({ remove: [this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex).data] });
+      } else {
+        this.grid.gridApi.applyTransaction({remove: [this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex).data]});
         this.currentHistoryIndex -= 1;
-        this.currentHistoryIndex == -1 ? this.selectedNode = null : this.selectedNode =(this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex).data);
+        this.currentHistoryIndex == -1 ? this.selectedNode = null : this.selectedNode = (this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex).data);
       }
       this.grid.gridApi.forEachNode((node) => node.setSelected(node.data === this.selectedNode))
       this.getDisplayedRowsCount();
@@ -308,7 +269,7 @@ export class GridActionsComponent implements OnInit {
 
   handleClickNex() {
     this.currentHistoryIndex += 1;
-    if (this.currentHistoryIndex < this.historyLength){
+    if (this.currentHistoryIndex < this.historyLength) {
       this.selectedNode = this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex);
       this.grid.gridApi.forEachNode((node) => node.setSelected(node === this.selectedNode))
     }
@@ -345,18 +306,18 @@ export class GridActionsComponent implements OnInit {
     this.handleClickPrev($event.data, $event.rowIndex);
   }
 
-  getDisplayedRowsCount(){
-    this.historyLength = this.grid.gridApi.getDisplayedRowCount()    
+  getDisplayedRowsCount() {
+    this.historyLength = this.grid.gridApi.getDisplayedRowCount()
   }
 
-  selectLastRow(){
-    if (this.historyLength >= 0) {
-      const totalPages = Math.ceil((this.historyLength + 1) / this.grid.gridApi.paginationGetPageSize());     
-      const lastPageNumber = totalPages > 0 ? totalPages - 1 : 0;      
-      this.grid.gridApi.paginationGoToPage(lastPageNumber);
-      this.grid.gridApi.forEachNode((node) => node.setSelected(node.rowIndex === this.historyLength-1))
-    } 
-  }
+  // selectLastRow() {
+  //   if (this.historyLength >= 0) {
+  //     const totalPages = Math.ceil((this.historyLength + 1) / this.grid.gridApi.paginationGetPageSize());
+  //     const lastPageNumber = totalPages > 0 ? totalPages - 1 : 0;
+  //     this.grid.gridApi.paginationGoToPage(lastPageNumber);
+  //     this.grid.gridApi.forEachNode((node) => node.setSelected(node.rowIndex === this.historyLength - 1))
+  //   }
+  // }
 }
 
 @NgModule({
