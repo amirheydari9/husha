@@ -96,6 +96,16 @@ export class CustomGridComponent implements OnInit {
     this.gridApi.applyTransaction({remove: selectedData});
   }
 
+  removeRowByIndex(indexesList) {
+    debugger
+    if (indexesList.length >= 1)
+      indexesList.forEach(row => {
+        this.gridApi.applyTransaction({ remove: [row] });
+      })
+    else this.gridApi.applyTransaction({ remove: [indexesList] });
+    this.selectLastRow()
+  }
+
   addRows(data) {
     this.gridApi.applyTransaction({add: data})
     this.gridApi.paginationGoToLastPage()

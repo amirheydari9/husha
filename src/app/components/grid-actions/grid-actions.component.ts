@@ -67,6 +67,8 @@ export class GridActionsComponent implements OnInit {
   }
   @Input() selectedRow: any
   @Input() hasCriteria: boolean
+  selectedByArrowKey
+  indexOFfocusedCell
 
   @Input() set gridHistory(data) {
     if (data) {
@@ -217,9 +219,19 @@ export class GridActionsComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   onKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
+      if (this.selectedByArrowKey) { 
+        this.selectedNode = this.selectedByArrowKey
+        this.currentHistoryIndex = this.indexOFfocusedCell
+       }
       if (!this.selectedNode) this.selectedNode = this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex)?.data;
-      // this.rowIndex = ;
       this.handleClickPrev(this.selectedNode, this.currentHistoryIndex)
+    }
+    if (event.key === 'ArrowDown' && this.currentHistoryIndex > 0) {
+      this.indexOFfocusedCell = (this.grid.gridApi.getFocusedCell()).rowIndex;
+      this.selectedByArrowKey = this.grid.gridApi.getRowNode((this.indexOFfocusedCell.toString())).data;
+    } if (event.key === 'ArrowUp' && this.currentHistoryIndex > 0) {
+      this.indexOFfocusedCell = (this.grid.gridApi.getFocusedCell()).rowIndex;
+      this.selectedByArrowKey = this.grid.gridApi.getRowNode((this.indexOFfocusedCell.toString())).data;
     }
   }
 
@@ -251,20 +263,22 @@ export class GridActionsComponent implements OnInit {
 
   handleClickPrev(rowData, rowIndex) {
     if (this.currentHistoryIndex > -1) {
+      const ListOfIndexes = []
       if (rowData) {
         this.grid.gridApi.forEachNode((node) => {
-          if (node.id > (rowIndex)?.toString()) {
-            this.grid.gridApi.applyTransaction({remove: [node.data]});
-            this.currentHistoryIndex -= 1
+          if (node.rowIndex > (rowIndex)?.toString()) {
+            ListOfIndexes.push(node.data)
+            this.currentHistoryIndex =rowIndex
           }
         })
+        if (ListOfIndexes.length >= 1) this.grid.removeRowByIndex(ListOfIndexes)
         this.selectedNode = rowData;
       } else {
-        this.grid.gridApi.applyTransaction({remove: [this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex).data]});
+        ListOfIndexes.push(this.displayedRowAtIndex(this.currentHistoryIndex))
+        this.grid.removeRowByIndex(ListOfIndexes)
         this.currentHistoryIndex -= 1;
-        this.currentHistoryIndex == -1 ? this.selectedNode = null : this.selectedNode = (this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex).data);
+        this.currentHistoryIndex == -1 ? this.selectedNode = null : this.selectedNode = (this.displayedRowAtIndex(this.currentHistoryIndex));
       }
-      this.grid.gridApi.forEachNode((node) => node.setSelected(node.data === this.selectedNode))
       this.getDisplayedRowsCount();
       this.clickHistory.emit(this.selectedNode)
     }
@@ -273,8 +287,8 @@ export class GridActionsComponent implements OnInit {
   handleClickNex() {
     this.currentHistoryIndex += 1;
     if (this.currentHistoryIndex < this.historyLength) {
-      this.selectedNode = this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex);
-      this.grid.gridApi.forEachNode((node) => node.setSelected(node === this.selectedNode))
+      this.selectedNode = this.displayedRowAtIndex(this.currentHistoryIndex);
+      this.grid.selectLastRow()
     }
   }
 
@@ -313,14 +327,10 @@ export class GridActionsComponent implements OnInit {
     this.historyLength = this.grid.gridApi.getDisplayedRowCount()
   }
 
-  // selectLastRow() {
-  //   if (this.historyLength >= 0) {
-  //     const totalPages = Math.ceil((this.historyLength + 1) / this.grid.gridApi.paginationGetPageSize());
-  //     const lastPageNumber = totalPages > 0 ? totalPages - 1 : 0;
-  //     this.grid.gridApi.paginationGoToPage(lastPageNumber);
-  //     this.grid.gridApi.forEachNode((node) => node.setSelected(node.rowIndex === this.historyLength - 1))
-  //   }
-  // }
+  displayedRowAtIndex(index) {
+    return this.grid.gridApi.getDisplayedRowAtIndex(index).data
+  }
+  
 }
 
 @NgModule({
