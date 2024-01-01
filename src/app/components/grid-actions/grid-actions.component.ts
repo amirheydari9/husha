@@ -1,6 +1,6 @@
 import {Component, EventEmitter, HostListener, Input, NgModule, OnInit, Output, ViewChild} from '@angular/core';
 import {NgClass, NgFor, NgIf} from "@angular/common";
-import {ACCESS_FORM_ACTION_TYPE} from "../../constants/enums";
+import {ACCESS_FORM_ACTION_TYPE, FORM_KIND} from "../../constants/enums";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
@@ -38,8 +38,7 @@ import {AgGridModule} from "ag-grid-angular";
         (confirm)="handleClickAction(action.type)"
       ></app-custom-button>
     </div>
-    <!-- *ngIf="historyLength" -->
-    <div class="mb-3">
+    <div class="mb-3" *ngIf="form.formKind.id=== FORM_KIND.MULTI_LEVEL">
       <app-custom-grid
         #grid
         [columnDefs]="historyGridColDefs"
@@ -209,6 +208,10 @@ export class GridActionsComponent implements OnInit {
 
   get ACCESS_FORM_ACTION_TYPE(): typeof ACCESS_FORM_ACTION_TYPE {
     return ACCESS_FORM_ACTION_TYPE
+  }
+
+  get FORM_KIND(): typeof FORM_KIND {
+    return FORM_KIND
   }
 
   @HostListener('document:keydown', ['$event'])
