@@ -1,5 +1,4 @@
 import {Component, NgModule, OnInit} from '@angular/core';
-import {IFetchFormRes} from "../../../models/interface/fetch-form-res.interface";
 import {SignReqDTO} from "../../../models/DTOs/sign-req.DTO";
 import {HushaCustomerUtilService} from "../../../utils/husha-customer-util.service";
 import {BaseInfoService} from "../../../api/base-info.service";
@@ -34,7 +33,6 @@ export class SignatureDialogComponent implements OnInit {
     ACCESS_FORM_ACTION_TYPE.RETURN_SIGNATURE
   ]
 
-  form: IFetchFormRes
   colDefs: ColDef[] = []
   gridOptions: GridOptions = {
     pagination: false
@@ -65,7 +63,7 @@ export class SignatureDialogComponent implements OnInit {
       this.dynamicDialogConfig.data.form.formKind.id,
       this.hushaCustomerUtilService.serviceTypeId,
       this.dynamicDialogConfig.data.row.id,
-      123,
+      2,
     )
   }
 
