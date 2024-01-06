@@ -21,7 +21,9 @@ export enum ACCESS_FORM_ACTION_TYPE {
   DELETE_ALL = 'deleteAll',
   DOWNLOAD_FILE = 'downloadFile',
   ADVANCE_SEARCH = 'advanceSearch',
-  RESET_ADVANCE_SEARCH = 'resetAdvanceSearch',
+  RESET_ADVANCE_SEARCH = 'signature',
+  SIGNATURE = 'resetAdvanceSearch',
+  RETURN_SIGNATURE = 'returnSignature',
 }
 
 export enum FORM_KIND {

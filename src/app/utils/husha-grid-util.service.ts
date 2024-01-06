@@ -59,6 +59,7 @@ export class HushaGridUtilService {
       }
       if (form.formKind.id === FORM_KIND.MASTER) {
         actions.push(ACCESS_FORM_ACTION_TYPE.ATTACHMENTS)
+        actions.push(ACCESS_FORM_ACTION_TYPE.SIGN)
       }
       const payload = new FetchAccessActionDTO(
         this.hushaCustomerUtilService.customer.id,

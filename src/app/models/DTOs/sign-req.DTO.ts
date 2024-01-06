@@ -9,7 +9,6 @@ export class SignReqDTO {
     public serialId: number,
     public ownId: number,
     public positionId: number,
-    public signNumber: number,
   ) {
   }
 }

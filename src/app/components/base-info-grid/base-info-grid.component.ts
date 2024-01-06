@@ -37,6 +37,8 @@ import {AdvanceSearchDialogComponent} from "../dialog/advance-search-dialog/adva
 import {CommonModule} from "@angular/common";
 import {criteriaInterface} from "../../models/DTOs/fetch-all-form-data.DTO";
 import {ExportExcelDialogComponent} from "../dialog/export-excel-dialog/export-excel-dialog.component";
+import {FetchFormDataByIdDTO} from "../../models/DTOs/fetch-form-data-by-id.DTO";
+import {SignatureDialogComponent} from "../dialog/signature-dialog/signature-dialog.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -197,6 +199,8 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       this.handleResetAdvanceSearch()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.EXPORT) {
       this.handleExport()
+    } else if ($event === ACCESS_FORM_ACTION_TYPE.SIGN) {
+      this.handleSign()
     }
   }
 
@@ -299,6 +303,27 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     this.gridApi.setDatasource(this.dataSource)
     this.criteriaMetaData = null
   }
+
+  private handleSign() {
+    const payload = new FetchFormDataByIdDTO(
+      this.hushaCustomerUtilService.customer.id,
+      this.hushaCustomerUtilService.serviceTypeId,
+      this.form.id,
+      this.form.formKind.id,
+      this.selectedRow.id,
+      this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
+      this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
+      this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null,
+    )
+    this.subscription.push(
+      this.baseInfoService.fetchFormData(payload).subscribe(data => {
+        this.dialogManagementService.openDialog(SignatureDialogComponent, {
+          data: {row: data, form: this.form}
+        })
+      })
+    )
+  }
+
 }
 
 @NgModule({
