@@ -123,7 +123,7 @@ export class CustomValidators {
       }
       const dateRegex = timeEnable ? new RegExp(/^(\d{4})\/(\d{2})\/(\d{2}) (\d{2}):(\d{2}):(\d{2})$/) : new RegExp(/^\d{4}\/\d{2}\/\d{2}$/)
       return dateRegex.test(datePicker) ? null : {
-        mobile: {message: 'فرمت تاریخ نامعتبر است'}
+        datePickerFormat: {message: 'فرمت تاریخ نامعتبر است'}
       };
     }
   }

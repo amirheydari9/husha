@@ -21,6 +21,7 @@ import {AttachmentDialogComponent} from "../attachment-dialog/attachment-dialog.
       [accessFormActions]="accessFormActions"
       [selectedRow]="grid?.selectedRows"
       (onAction)="handleOnAction($event)"
+      [showSearch]="false"
     ></app-grid-actions>
     <app-custom-grid
       #grid

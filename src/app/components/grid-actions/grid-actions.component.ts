@@ -23,8 +23,8 @@ import {ColDef} from "ag-grid-community";
 @Component({
   selector: 'app-grid-actions',
   template: `
-    <div class="flex align-items-center justify-content-between mb-3">
-      <div class="flex-grow-1">
+    <div class="flex align-items-center mb-3" [ngClass]="[showSearch ? 'justify-content-between' :'justify-content-end']">
+      <div class="flex-grow-1" *ngIf="showSearch">
         <app-criteria-builder
           #criteriaBuilder
           [form]="form"
@@ -68,6 +68,7 @@ export class GridActionsComponent implements OnInit {
   currentHistoryIndex: number
   @Input() selectedRow: any
   @Input() hasCriteria: boolean
+  @Input() showSearch: boolean = true
   @Input() gridHistory = []
   @Input() form: IFetchFormRes
   @Input() colDefs: ColDef[]
