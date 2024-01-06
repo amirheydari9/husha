@@ -31,6 +31,7 @@ export class DialogManagementService {
     height: 'auto',
     closable: false,
     // closeOnEscape: false
+    keepInViewport: true
   }
 
 
