@@ -66,11 +66,10 @@ export class SignatureDialogComponent implements OnInit {
   handleCreateRowData(item) {
     const rowData = []
     for (let i = 1; i <= item['signCount']; i++) {
-      if (item['sign' + i + '_userid']) {
-        rowData.push({username: item['sign' + i + '_userid'], signTime: item['sign' + i + '_time']})
-      } else {
-        break;
+      if (!item['sign' + i + '_userid']) {
+        break
       }
+      rowData.push({username: item['sign' + i + '_userid'], signTime: item['sign' + i + '_time']})
     }
     return rowData
   }
