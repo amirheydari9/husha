@@ -9,6 +9,7 @@ import {ColDef, GridOptions} from "ag-grid-community";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {AutoUnsubscribe} from "../../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
+import {DateService} from "../../../utils/date.service";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -19,8 +20,11 @@ import {Subscription} from "rxjs";
       [accessFormActions]="accessFormActions"
       (onAction)="handleOnAction($event)"
     ></app-grid-actions>
-    <!--<app-custom-grid-->
-    <!--&gt;</app-custom-grid>-->
+    <app-custom-grid
+      [columnDefs]="colDefs"
+      [rowData]="rowData"
+      [gridOptions]="gridOptions"
+    ></app-custom-grid>
   `,
 })
 export class SignatureDialogComponent implements OnInit {
@@ -33,7 +37,13 @@ export class SignatureDialogComponent implements OnInit {
     ACCESS_FORM_ACTION_TYPE.RETURN_SIGNATURE
   ]
 
-  colDefs: ColDef[] = []
+  colDefs: ColDef[] = [
+    {headerName: 'نام کاربری', field: 'username'},
+    {
+      headerName: 'تاریخ امضا', field: 'signTime', cellRenderer: data => this.dateService.timestampToJalali(data.value)
+    },
+  ]
+  rowData = []
   gridOptions: GridOptions = {
     pagination: false
   }
@@ -43,13 +53,26 @@ export class SignatureDialogComponent implements OnInit {
     private baseInfoService: BaseInfoService,
     public dynamicDialogConfig: DynamicDialogConfig,
     public ref: DynamicDialogRef,
+    private dateService: DateService,
   ) {
     this.dynamicDialogConfig.closable = true
     this.dynamicDialogConfig.header = 'تاریخچه امضا'
   }
 
   ngOnInit() {
-    console.log(this.dynamicDialogConfig.data)
+    this.rowData = this.handleCreateRowData(this.dynamicDialogConfig.data.row)
+  }
+
+  handleCreateRowData(item) {
+    const rowData = []
+    for (let i = 1; i <= item['signCount']; i++) {
+      if (item['sign' + i + '_userid']) {
+        rowData.push({username: item['sign' + i + '_userid'], signTime: item['sign' + i + '_time']})
+      } else {
+        break;
+      }
+    }
+    return rowData
   }
 
   handleCreateSignPayload() {
@@ -79,7 +102,7 @@ export class SignatureDialogComponent implements OnInit {
   handleSign() {
     this.subscription.push(
       this.baseInfoService.sign(this.handleCreateSignPayload()).subscribe(data => {
-        console.log(data)
+        this.rowData = this.handleCreateRowData(data)
       })
     )
 
@@ -88,10 +111,12 @@ export class SignatureDialogComponent implements OnInit {
   handleReturnSign() {
     this.subscription.push(
       this.baseInfoService.returnSign(this.handleCreateSignPayload()).subscribe(data => {
-        console.log(data)
+        this.rowData = this.handleCreateRowData(data)
       })
     )
   }
+
+
 }
 
 @NgModule({
