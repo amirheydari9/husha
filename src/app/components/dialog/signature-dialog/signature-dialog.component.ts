@@ -51,8 +51,8 @@ export class SignatureDialogComponent implements OnInit {
   constructor(
     private hushaCustomerUtilService: HushaCustomerUtilService,
     private baseInfoService: BaseInfoService,
-    public dynamicDialogConfig: DynamicDialogConfig,
-    public ref: DynamicDialogRef,
+    private dynamicDialogConfig: DynamicDialogConfig,
+    private ref: DynamicDialogRef,
     private dateService: DateService,
   ) {
     this.dynamicDialogConfig.closable = true
