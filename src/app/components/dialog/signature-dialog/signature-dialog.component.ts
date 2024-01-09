@@ -39,6 +39,7 @@ export class SignatureDialogComponent implements OnInit {
 
   colDefs: ColDef[] = [
     {headerName: 'نام کاربری', field: 'username'},
+    {headerName: 'پوزیشن', field: 'position'},
     {
       headerName: 'تاریخ امضا', field: 'signTime', cellRenderer: data => this.dateService.timestampToJalali(data.value)
     },
@@ -69,7 +70,11 @@ export class SignatureDialogComponent implements OnInit {
       if (!item['sign' + i + '_userid']) {
         break
       }
-      rowData.push({username: item['sign' + i + '_userid'], signTime: item['sign' + i + '_time']})
+      rowData.push({
+        username: item['sign' + i + '_userid'].username,
+        position: item['sign' + i + 'Position'].title,
+        signTime: item['sign' + i + '_time']
+      })
     }
     return rowData
   }
