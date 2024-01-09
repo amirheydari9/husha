@@ -100,6 +100,45 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   ) {
   }
 
+  // async ngAfterViewInit(): Promise<void> {
+  //   this.gridApi = this.grid.api;
+  //   this.colApi = this.grid.columnApi;
+  //   await this.setDataSourceAsync();
+  //   this.gridApi.forEachNode(node => console.log(node));
+  // }
+  //
+  // private async setDataSourceAsync(): Promise<void> {
+  //   return new Promise(((resolve, reject) => {
+  //     const dataSource = {
+  //       getRows: async (params: IGetRowsParams) => {
+  //         const payload = new FetchAllDataPayloadDTO(
+  //           this.form,
+  //           this.parentId,
+  //           this.masterId,
+  //           this.gridApi.paginationGetCurrentPage(),
+  //           this.gridApi.paginationGetPageSize(),
+  //           this.hushaGridUtilService.handleSortParam(params.sortModel),
+  //           this.criteria ?? null,
+  //           null,
+  //           this.fetchSummary ? 'id,code,title' : null
+  //         );
+  //         try {
+  //           const formData = await this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).toPromise();
+  //           const paginationInfo = formData.shift();
+  //           const {colDefs, rowData} = this.hushaGridUtilService.createGrid(formData, this.form, this.fetchSummary);
+  //           this.columnDefs = colDefs;
+  //           params.successCallback(rowData, paginationInfo['paginationTotalElements']);
+  //           resolve()
+  //         } catch (error) {
+  //           params.failCallback();
+  //           reject()
+  //         }
+  //       },
+  //     };
+  //     this.gridApi.setDatasource(dataSource);
+  //   }))
+  // }
+
   ngAfterViewInit(): void {
     this.gridApi = this.grid.api;
     this.colApi = this.grid.columnApi;
@@ -314,7 +353,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
       this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
       this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null,
-      this.form.formKind.id === FORM_KIND.MASTER ?  this.hushaCustomerUtilService.serviceTypeId : null,
+      this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.serviceTypeId : null,
     )
     this.subscription.push(
       this.baseInfoService.fetchFormData(payload).subscribe(data => {
