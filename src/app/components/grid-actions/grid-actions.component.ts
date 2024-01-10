@@ -6,11 +6,11 @@ import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {CriteriaBuilderComponent, CriteriaBuilderModule} from "../criteria-builder/criteria-builder.component";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
-import {ColDef, GridOptions, RowClickedEvent} from "ag-grid-community";
+import {ColDef, GridOptions} from "ag-grid-community";
 import {CustomGridComponent, CustomGridModule} from "../../ui-kits/custom-grid/custom-grid.component";
 import {AgGridModule} from "ag-grid-angular";
-import { StorageService } from 'src/app/utils/storage.service';
-import { multiLevelGridInfo } from 'src/app/constants/keys';
+import {StorageService} from 'src/app/utils/storage.service';
+import {multiLevelGridInfo} from 'src/app/constants/keys';
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -40,11 +40,11 @@ import { multiLevelGridInfo } from 'src/app/constants/keys';
         (confirm)="handleClickAction(action.type)"
       ></app-custom-button>
     </div>
-    <div class="mb-3" *ngIf="form.formKind.id=== FORM_KIND.MULTI_LEVEL">
+    <div class="mb-3" *ngIf="form?.formKind.id=== FORM_KIND.MULTI_LEVEL">
       <app-custom-grid
         #grid
         [columnDefs]="historyGridColDefs"
-        (rowClicked)="handleClickHistoryGridRow($event)"
+        (rowClicked)="handleClickPrev($event.data, $event.rowIndex);"
         [gridOptions]="gridOptions"
       ></app-custom-grid>
     </div>
@@ -61,30 +61,23 @@ export class GridActionsComponent implements OnInit {
   ]
 
   currentHistoryIndex: number = -1
-  _gridHistory: any[];
   selectedNode: any;
-  historyLength: number;
+  // historyLength: number = 0;
   gridOptions: GridOptions = {
-    pagination: true,
+    pagination: false,
   }
   @Input() selectedRow: any
   @Input() hasCriteria: boolean
   selectedByArrowKey
   indexOFfocusedCell
 
-  @Input() set gridHistory(data:any) {
+  @Input() set gridHistory(data: any) {
     if (data) {
-      this._gridHistory = data;
-      const selected = this.grid.gridApi.getSelectedRows()[0]
-      if( selected && (selected?.id == data.id || selected.parentid == data.parentid)) this.grid.removeSelectedRows()
-      this.grid.addRows([this._gridHistory])
-      this.getDisplayedRowsCount();
+      // const selected = this.grid.gridApi.getSelectedRows()[0]
+      // if( selected && (selected?.id == data.id || selected.parentid == data.parentid)) this.grid.removeSelectedRows()
+      this.grid.addRows([data])
       this.currentHistoryIndex += 1;
     }
-  }
-
-  get gridHistory(): any[] {
-    return this._gridHistory;
   }
 
   @Input() form: IFetchFormRes
@@ -225,17 +218,18 @@ export class GridActionsComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   onKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      if (this.selectedByArrowKey) { 
+      if (this.selectedByArrowKey) {
         this.selectedNode = this.selectedByArrowKey
         this.currentHistoryIndex = this.indexOFfocusedCell
-       }
+      }
       if (!this.selectedNode) this.selectedNode = this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex)?.data;
       this.handleClickPrev(this.selectedNode, this.currentHistoryIndex)
     }
     if (event.key === 'ArrowDown' && this.currentHistoryIndex > 0) {
       this.indexOFfocusedCell = (this.grid.gridApi.getFocusedCell()).rowIndex;
       this.selectedByArrowKey = this.grid.gridApi.getRowNode((this.indexOFfocusedCell.toString())).data;
-    } if (event.key === 'ArrowUp' && this.currentHistoryIndex > 0) {
+    }
+    if (event.key === 'ArrowUp' && this.currentHistoryIndex > 0) {
       this.indexOFfocusedCell = (this.grid.gridApi.getFocusedCell()).rowIndex;
       this.selectedByArrowKey = this.grid.gridApi.getRowNode((this.indexOFfocusedCell.toString())).data;
     }
@@ -243,7 +237,8 @@ export class GridActionsComponent implements OnInit {
 
   handleDisableIcon(actionType: ACCESS_FORM_ACTION_TYPE) {
     if (actionType === ACCESS_FORM_ACTION_TYPE.PERV || actionType === ACCESS_FORM_ACTION_TYPE.NEXT) {
-      return !this.historyLength || (actionType === ACCESS_FORM_ACTION_TYPE.PERV ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.historyLength - 1)
+      return !this.grid.rowDataCount ||
+        (actionType === ACCESS_FORM_ACTION_TYPE.PERV ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.grid.rowDataCount - 1)
     }
     if (actionType === ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH) {
       return !this.hasCriteria
@@ -268,38 +263,43 @@ export class GridActionsComponent implements OnInit {
   }
 
   handleClickPrev(rowData, rowIndex) {
-    if (this.currentHistoryIndex > -1) {
+    console.log(rowIndex)
+    if (rowData) {
       const listOfNode = []
       const listOfId = []
-      if (rowData) {
-        this.grid.gridApi.forEachNode((node) => {
-          if (node.rowIndex > (rowIndex)?.toString()) {
-            listOfNode.push(node.data)
-            listOfId.push(node.data.id)
-            this.currentHistoryIndex =rowIndex
-          }
-        })
-        if (listOfNode.length >= 1){ 
-          this.grid.removeRowByIndex(listOfNode)
-          this.handelSession(listOfId)
+      for (let i = 0; i < this.grid.rowNodes.length - 1; i++) {
+        if (this.grid.rowNodes[i].rowIndex === rowIndex) {
+          break
+        } else {
+          // if (node.rowIndex > rowIndex) {
+          //   listOfNode.push(node.data)
+          //   listOfId.push(node.data.id)
+          //   this.currentHistoryIndex = rowIndex
+          // }
         }
-        this.selectedNode = rowData;
-      } else {
-        listOfNode.push(this.displayedRowAtIndex(this.currentHistoryIndex))
-        this.handelSession(null);
-        this.grid.removeRowByIndex(listOfNode)
-        this.currentHistoryIndex -= 1;
-        this.currentHistoryIndex == -1 ? this.selectedNode = null : this.selectedNode = (this.displayedRowAtIndex(this.currentHistoryIndex));
       }
-      this.getDisplayedRowsCount();
-      this.clickHistory.emit(this.selectedNode)
+
+      if (listOfNode.length >= 1) {
+        this.handelSession(listOfId)
+        this.grid.removeByRowData(listOfNode)
+        this.grid.selectLastRow()
+      }
+      this.selectedNode = rowData;
+    } else {
+      const removeRowData = this.grid.getRowDataByIndex(this.currentHistoryIndex)
+      this.handelSession([removeRowData.id])
+      this.grid.removeByRowData([removeRowData])
+      this.grid.selectLastRow()
+      this.currentHistoryIndex -= 1;
+      this.selectedNode = this.currentHistoryIndex === -1 ? null : this.grid.getRowDataByIndex(this.currentHistoryIndex);
     }
+    this.clickHistory.emit(this.selectedNode)
   }
 
   handleClickNex() {
     this.currentHistoryIndex += 1;
-    if (this.currentHistoryIndex < this.historyLength) {
-      this.selectedNode = this.displayedRowAtIndex(this.currentHistoryIndex);
+    if (this.currentHistoryIndex < this.grid.rowDataCount) {
+      this.selectedNode = this.grid.getRowDataByIndex(this.currentHistoryIndex);
       this.grid.selectLastRow()
     }
   }
@@ -331,35 +331,14 @@ export class GridActionsComponent implements OnInit {
     }
   }
 
-  handleClickHistoryGridRow($event: RowClickedEvent<any>) {
-    this.handleClickPrev($event.data, $event.rowIndex);
-  }
-
-  getDisplayedRowsCount() {
-    this.historyLength = this.grid.gridApi.getDisplayedRowCount()
-  }
-
-  displayedRowAtIndex(index) {
-    return this.grid.gridApi.getDisplayedRowAtIndex(index).data
-  }
-
-  handelSession(listOfId){
-    let dataSessionList= []
+  handelSession(removeIdList) {
+    let dataSessionList = []
     const getSessionData = this.storagService.getSessionStorage(multiLevelGridInfo);
-    if(listOfId == null){
-      let selectedRow = this.grid.gridApi.getSelectedRows()
-      dataSessionList= getSessionData.filter(item => item.rowId !== selectedRow[0].id)      
-      
-    }
-    else{
-      getSessionData.forEach( item =>{
-        if((listOfId.indexOf(item.rowId)) == -1)
-        dataSessionList.push(item)
-      })
-    }
-  this.storagService.setSessionStorage(multiLevelGridInfo,dataSessionList)
+    getSessionData.forEach(item => {
+      if ((removeIdList.indexOf(item.rowId)) === -1) dataSessionList.push(item)
+    })
+    this.storagService.setSessionStorage(multiLevelGridInfo, dataSessionList)
   }
-  
 }
 
 @NgModule({

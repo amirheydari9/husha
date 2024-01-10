@@ -66,8 +66,7 @@ export class CustomGridComponent implements OnInit {
     $event.api.sizeColumnsToFit()
   }
 
-
-  get allRows() {
+  get rowNodes() {
     const allRowNodes = [];
     this.gridApi.forEachNode(node => allRowNodes.push(node));
     return allRowNodes
@@ -81,8 +80,8 @@ export class CustomGridComponent implements OnInit {
     return this.gridOptions.rowSelection === "single" ? this.gridApi?.getSelectedRows()[0] : this.gridApi?.getSelectedRows()
   }
 
-  get displayRowCount(): number {
-    return this.gridApi.getDisplayedRowCount()
+  getRowDataByIndex(index) {
+    return this.gridApi.getDisplayedRowAtIndex(index).data
   }
 
   clearData() {
@@ -91,18 +90,8 @@ export class CustomGridComponent implements OnInit {
     this.gridApi.applyTransaction({remove: rowData})
   }
 
-  removeSelectedRows() {
-    const selectedData = this.gridApi.getSelectedRows();
-    this.gridApi.applyTransaction({remove: selectedData});
-  }
-
-  removeRowByIndex(indexesList) {
-    if (indexesList.length >= 1)
-      indexesList.forEach(row => {
-        this.gridApi.applyTransaction({ remove: [row] });
-      })
-    else this.gridApi.applyTransaction({ remove: [indexesList] });
-    this.selectLastRow()
+  removeByRowData(rowData: any[]) {
+    this.gridApi.applyTransaction({remove: rowData});
   }
 
   addRows(data) {
@@ -121,7 +110,7 @@ export class CustomGridComponent implements OnInit {
   }
 
   selectLastRow() {
-    this.gridApi.forEachNode((node) => node.setSelected(node.rowIndex === this.displayRowCount - 1))
+    this.gridApi.forEachNode((node) => node.setSelected(node.rowIndex === this.rowDataCount - 1))
   }
 }
 
