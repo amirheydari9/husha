@@ -13,7 +13,10 @@ export class DateService {
   }
 
   convertGeorgianToJalali(date: string, fromFormat: string = 'YYYY-MM-DD', toFormat: string = 'jYYYY-jMM-jDD'): string {
-    return moment(date, fromFormat).locale('fa').format(toFormat);
+    if (date) {
+      return moment(date, fromFormat).locale('fa').format(toFormat);
+    }
+    return null
   }
 
   convertJalaliToGeorgian(date: string, fromFormat: string = 'jYYYY-jMM-jDD', toFormat: string = 'YYYY-MM-DD'): string {
