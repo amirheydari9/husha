@@ -97,7 +97,6 @@ export class CustomGridComponent implements OnInit {
   }
 
   removeRowByIndex(indexesList) {
-    debugger
     if (indexesList.length >= 1)
       indexesList.forEach(row => {
         this.gridApi.applyTransaction({ remove: [row] });
