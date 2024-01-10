@@ -7,7 +7,9 @@ import {
   NgModule,
   OnInit,
   Output,
-  ViewChild
+  Renderer2,
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
 import {GridActionsComponent, GridActionsModule} from "../grid-actions/grid-actions.component";
 import {AgGridAngular, AgGridModule} from "ag-grid-angular";
@@ -83,6 +85,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   @ViewChild('gridActions') gridActions: GridActionsComponent
   @ViewChild('grid', {read: AgGridAngular}) grid: AgGridAngular
+  // @ViewChild('gridContainer', {read: ViewContainerRef}) gridContainer: ViewContainerRef
 
   gridHistory = []
   parentId: number
@@ -97,6 +100,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     private hushaGridUtilService: HushaGridUtilService,
     private router: Router,
     private dialogManagementService: DialogManagementService,
+    // private renderer: Renderer2
   ) {
   }
 
@@ -137,6 +141,43 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   //     };
   //     this.gridApi.setDatasource(dataSource);
   //   }))
+  // }
+
+  // ngAfterViewInit(): void {
+  //   this.gridContainer.clear()
+  //   const compRef = this.gridContainer.createComponent(AgGridAngular)
+  //   compRef.setInput('gridOptions', this.gridOptions)
+  //   this.renderer.addClass(compRef.location.nativeElement, 'ag-theme-alpine')
+  //   compRef.instance.gridReady.subscribe(event => {
+  //     this.gridApi = event.api
+  //     this.colApi = event.columnApi
+  //     event.api.setDatasource({
+  //       getRows: ((params: IGetRowsParams) => {
+  //         const payload = new FetchAllDataPayloadDTO(
+  //           this.form,
+  //           this.parentId,
+  //           this.masterId,
+  //           this.gridApi.paginationGetCurrentPage(),
+  //           this.gridApi.paginationGetPageSize(),
+  //           this.hushaGridUtilService.handleSortParam(params.sortModel),
+  //           this.criteria ?? null,
+  //           null,
+  //           this.fetchSummary ? 'id,code,title' : null
+  //         )
+  //         this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).subscribe(formData => {
+  //             const paginationInfo = formData.shift()
+  //             const {colDefs, rowData} = this.hushaGridUtilService.createGrid(formData, this.form, this.fetchSummary)
+  //             this.columnDefs = colDefs
+  //             compRef.setInput('columnDefs', this.columnDefs)
+  //             this.cdr.detectChanges()
+  //             //TODO وقتی دیتا نداریم باید عیارت دیتا یافت نشد نمایش داده شود
+  //             params.successCallback(rowData, paginationInfo['paginationTotalElements'])
+  //           },
+  //           error => params.failCallback()
+  //         )
+  //       })
+  //     })
+  //   })
   // }
 
   ngAfterViewInit(): void {
