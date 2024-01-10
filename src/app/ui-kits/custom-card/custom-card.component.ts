@@ -4,7 +4,7 @@ import {CardModule} from "primeng/card";
 @Component({
   selector: 'app-custom-card',
   template: `
-    <p-card dir="rtl" [header]="header">
+    <p-card dir="rtl" [styleClass]="styleClass" [header]="header">
       <ng-content></ng-content>
     </p-card>
   `,
@@ -19,6 +19,7 @@ import {CardModule} from "primeng/card";
 export class CustomCardComponent implements OnInit {
 
   @Input() header: string
+  @Input() styleClass: string
 
   constructor() {
   }

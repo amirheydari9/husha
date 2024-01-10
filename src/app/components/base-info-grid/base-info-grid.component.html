@@ -3,38 +3,34 @@
 </ng-container>
 
 <ng-template #elseback>
-  <app-custom-card>
+  <app-custom-card [styleClass]="class">
     <ng-container *ngTemplateOutlet="gridForm"></ng-container>
   </app-custom-card>
 </ng-template>
 
 <ng-template #gridForm>
 
-  <div [class]="class">
+  <app-grid-actions
+    #gridActions
+    [form]="form"
+    [colDefs]="columnDefs"
+    [gridHistory]="gridHistory"
+    [accessFormActions]="accessFormActions"
+    [selectedRow]="selectedRow"
+    [hasCriteria]="!!criteria"
+    (clickHistory)="handleClickHistory($event)"
+    (onAction)="handleOnAction($event)"
+    (onAddCriteria)="handleAddCriteria($event)"
+  ></app-grid-actions>
 
-    <app-grid-actions
-      #gridActions
-      [form]="form"
-      [colDefs]="columnDefs"
-      [gridHistory]="gridHistory"
-      [accessFormActions]="accessFormActions"
-      [selectedRow]="selectedRow"
-      [hasCriteria]="!!criteria"
-      (clickHistory)="handleClickHistory($event)"
-      (onAction)="handleOnAction($event)"
-      (onAddCriteria)="handleAddCriteria($event)"
-    ></app-grid-actions>
-
-    <ag-grid-angular
-      #grid
-      class="ag-theme-alpine"
-      [columnDefs]="columnDefs"
-      [gridOptions]="gridOptions"
-      (rowDoubleClicked)="handleRowDbClicked($event)"
-      (rowClicked)="handleRowClicked($event)"
-      (sortChanged)="handleSortChange($event)"
-    ></ag-grid-angular>
-
-  </div>
+  <ag-grid-angular
+    #grid
+    class="ag-theme-alpine"
+    [columnDefs]="columnDefs"
+    [gridOptions]="gridOptions"
+    (rowDoubleClicked)="handleRowDbClicked($event)"
+    (rowClicked)="handleRowClicked($event)"
+    (sortChanged)="handleSortChange($event)"
+  ></ag-grid-angular>
 
 </ng-template>
