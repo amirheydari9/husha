@@ -44,7 +44,7 @@ import {multiLevelGridInfo} from 'src/app/constants/keys';
       <app-custom-grid
         #grid
         [columnDefs]="historyGridColDefs"
-        (rowClicked)="handleClickPrev($event.data, $event.rowIndex);"
+        (rowClicked)="handleClickRow($event.data, $event.rowIndex);"
         [gridOptions]="gridOptions"
       ></app-custom-grid>
     </div>
@@ -223,7 +223,7 @@ export class GridActionsComponent implements OnInit {
         this.currentHistoryIndex = this.indexOFfocusedCell
       }
       if (!this.selectedNode) this.selectedNode = this.grid.gridApi.getDisplayedRowAtIndex(this.currentHistoryIndex)?.data;
-      this.handleClickPrev(this.selectedNode, this.currentHistoryIndex)
+      this.handleClickRow(this.selectedNode, this.currentHistoryIndex)
     }
     if (event.key === 'ArrowDown' && this.currentHistoryIndex > 0) {
       this.indexOFfocusedCell = (this.grid.gridApi.getFocusedCell()).rowIndex;
@@ -262,38 +262,36 @@ export class GridActionsComponent implements OnInit {
 
   }
 
-  handleClickPrev(rowData, rowIndex) {
-    console.log(rowIndex)
-    if (rowData) {
-      const listOfNode = []
-      const listOfId = []
-      for (let i = 0; i < this.grid.rowNodes.length - 1; i++) {
-        if (this.grid.rowNodes[i].rowIndex === rowIndex) {
-          break
-        } else {
-          // if (node.rowIndex > rowIndex) {
-          //   listOfNode.push(node.data)
-          //   listOfId.push(node.data.id)
-          //   this.currentHistoryIndex = rowIndex
-          // }
-        }
-      }
-
-      if (listOfNode.length >= 1) {
-        this.handelSession(listOfId)
-        this.grid.removeByRowData(listOfNode)
-        this.grid.selectLastRow()
-      }
+  handleClickRow(rowData, rowIndex) {
+    if (rowIndex !== this.grid.rowNodes.length - 1) {
+      const removeRowData = []
+      this.grid.rowNodes.forEach(node => {
+        if (node.rowIndex > rowIndex) removeRowData.push(node.data)
+      })
+      this.handleRemoveHistories(removeRowData)
+      this.currentHistoryIndex = rowIndex
       this.selectedNode = rowData;
-    } else {
-      const removeRowData = this.grid.getRowDataByIndex(this.currentHistoryIndex)
-      this.handelSession([removeRowData.id])
-      this.grid.removeByRowData([removeRowData])
-      this.grid.selectLastRow()
-      this.currentHistoryIndex -= 1;
-      this.selectedNode = this.currentHistoryIndex === -1 ? null : this.grid.getRowDataByIndex(this.currentHistoryIndex);
+      this.clickHistory.emit(this.selectedNode)
     }
+  }
+
+  handleClickPrev() {
+    this.handleRemoveHistories([this.grid.getRowDataByIndex(this.currentHistoryIndex)])
+    this.currentHistoryIndex -= 1;
+    this.selectedNode = this.currentHistoryIndex === -1 ? null : this.grid.getRowDataByIndex(this.currentHistoryIndex);
     this.clickHistory.emit(this.selectedNode)
+  }
+
+  handleRemoveHistories(removeRowData: any[]) {
+    this.grid.removeByRowData(removeRowData)
+    this.grid.selectLastRow()
+    const removeIdList = removeRowData.map(row => row.id)
+    const dataSessionList = []
+    const getSessionData = this.storagService.getSessionStorage(multiLevelGridInfo);
+    getSessionData.forEach(item => {
+      if ((removeIdList.indexOf(item.rowId)) === -1) dataSessionList.push(item)
+    })
+    this.storagService.setSessionStorage(multiLevelGridInfo, dataSessionList)
   }
 
   handleClickNex() {
@@ -311,7 +309,7 @@ export class GridActionsComponent implements OnInit {
   handleClickAction(type) {
     switch (type) {
       case ACCESS_FORM_ACTION_TYPE.PERV:
-        this.handleClickPrev(null, null)
+        this.handleClickPrev()
         break
       case ACCESS_FORM_ACTION_TYPE.NEXT:
         this.handleClickNex()
@@ -329,15 +327,6 @@ export class GridActionsComponent implements OnInit {
         this.onAction.emit(type)
         break
     }
-  }
-
-  handelSession(removeIdList) {
-    let dataSessionList = []
-    const getSessionData = this.storagService.getSessionStorage(multiLevelGridInfo);
-    getSessionData.forEach(item => {
-      if ((removeIdList.indexOf(item.rowId)) === -1) dataSessionList.push(item)
-    })
-    this.storagService.setSessionStorage(multiLevelGridInfo, dataSessionList)
   }
 }
 
