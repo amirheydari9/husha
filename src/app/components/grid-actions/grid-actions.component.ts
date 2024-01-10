@@ -9,6 +9,8 @@ import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
 import {ColDef, GridOptions, RowClickedEvent} from "ag-grid-community";
 import {CustomGridComponent, CustomGridModule} from "../../ui-kits/custom-grid/custom-grid.component";
 import {AgGridModule} from "ag-grid-angular";
+import { StorageService } from 'src/app/utils/storage.service';
+import { multiLevelGridInfo } from 'src/app/constants/keys';
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -70,9 +72,11 @@ export class GridActionsComponent implements OnInit {
   selectedByArrowKey
   indexOFfocusedCell
 
-  @Input() set gridHistory(data) {
+  @Input() set gridHistory(data:any) {
     if (data) {
       this._gridHistory = data;
+      const selected = this.grid.gridApi.getSelectedRows()[0]
+      if( selected && (selected?.id == data.id || selected.parentid == data.parentid)) this.grid.removeSelectedRows()
       this.grid.addRows([this._gridHistory])
       this.getDisplayedRowsCount();
       this.currentHistoryIndex += 1;
@@ -205,7 +209,9 @@ export class GridActionsComponent implements OnInit {
     }
   ]
 
-  constructor() {
+  constructor(
+    private storagService: StorageService
+  ) {
   }
 
   get ACCESS_FORM_ACTION_TYPE(): typeof ACCESS_FORM_ACTION_TYPE {
@@ -263,19 +269,25 @@ export class GridActionsComponent implements OnInit {
 
   handleClickPrev(rowData, rowIndex) {
     if (this.currentHistoryIndex > -1) {
-      const ListOfIndexes = []
+      const listOfNode = []
+      const listOfId = []
       if (rowData) {
         this.grid.gridApi.forEachNode((node) => {
           if (node.rowIndex > (rowIndex)?.toString()) {
-            ListOfIndexes.push(node.data)
+            listOfNode.push(node.data)
+            listOfId.push(node.data.id)
             this.currentHistoryIndex =rowIndex
           }
         })
-        if (ListOfIndexes.length >= 1) this.grid.removeRowByIndex(ListOfIndexes)
+        if (listOfNode.length >= 1){ 
+          this.grid.removeRowByIndex(listOfNode)
+          this.handelSession(listOfId)
+        }
         this.selectedNode = rowData;
       } else {
-        ListOfIndexes.push(this.displayedRowAtIndex(this.currentHistoryIndex))
-        this.grid.removeRowByIndex(ListOfIndexes)
+        listOfNode.push(this.displayedRowAtIndex(this.currentHistoryIndex))
+        this.handelSession(null);
+        this.grid.removeRowByIndex(listOfNode)
         this.currentHistoryIndex -= 1;
         this.currentHistoryIndex == -1 ? this.selectedNode = null : this.selectedNode = (this.displayedRowAtIndex(this.currentHistoryIndex));
       }
@@ -329,6 +341,23 @@ export class GridActionsComponent implements OnInit {
 
   displayedRowAtIndex(index) {
     return this.grid.gridApi.getDisplayedRowAtIndex(index).data
+  }
+
+  handelSession(listOfId){
+    let dataSessionList= []
+    const getSessionData = this.storagService.getSessionStorage(multiLevelGridInfo);
+    if(listOfId == null){
+      let selectedRow = this.grid.gridApi.getSelectedRows()
+      dataSessionList= getSessionData.filter(item => item.rowId !== selectedRow[0].id)      
+      
+    }
+    else{
+      getSessionData.forEach( item =>{
+        if((listOfId.indexOf(item.rowId)) == -1)
+        dataSessionList.push(item)
+      })
+    }
+  this.storagService.setSessionStorage(multiLevelGridInfo,dataSessionList)
   }
   
 }
