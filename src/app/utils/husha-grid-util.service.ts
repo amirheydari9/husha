@@ -107,6 +107,53 @@ export class HushaGridUtilService {
     )
   }
 
+  handleCreateColumnDefs(form: IFetchFormRes, fetchSummary: boolean, currentItem?: any): ColDef[] {
+    const colDefs: ColDef[] = []
+    form.fields.forEach(item => {
+      if (fetchSummary) {
+        if (item.name === 'code' || item.name === 'title') {
+          colDefs.push({field: item.name, headerName: item.caption})
+        }
+      } else {
+        if (item.isActive && (item.viewType == VIEW_TYPE.SHOW_IN_GRID || item.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM)) {
+          let sortModel = null
+          let sortIndex = 0
+          if (currentItem && currentItem?.sort.length) {
+            currentItem.sort.forEach(sort => {
+              if (sort.colId === item.name) {
+                sortModel = sort.sort
+                sortIndex = sort.sortIndex
+              }
+            })
+          }
+          const col: ColDef = {field: item.name, headerName: item.caption, sort: sortModel, sortIndex:sortIndex}
+          colDefs.push(col)
+        }
+      }
+    })
+    return colDefs
+  }
+
+  handleCreateRowData(rowData: any[], form: IFetchFormRes,): any[] {
+    const jalaliFieldsName = []
+    form.fields.forEach(item => {
+      if ([INPUT_FIELD_TYPE.JALALI_DATE_PICKER, INPUT_FIELD_TYPE.JALALI_DATE_PICKER_WITH_TIME].indexOf(item.fieldType.id) > -1) {
+        jalaliFieldsName.push(item.name)
+      }
+    })
+    rowData.forEach(row => {
+      for (const [key, value] of Object.entries(row)) {
+        if (jalaliFieldsName.indexOf(key) > -1) {
+          row[key] = this.dateService.convertGeorgianToJalali(value as string)
+        }
+        if (typeof row[key] === 'object' && row[key] !== null) {
+          row[key] = row[key].title;
+        }
+      }
+    })
+    return rowData
+  }
+
   createGrid(rowData: any[], form: IFetchFormRes, fetchSummary: boolean) {
     const colDefs: ColDef[] = []
     const jalaliFieldsName = []
@@ -137,13 +184,6 @@ export class HushaGridUtilService {
         }
       }
     })
-    // for (let i = 0; i < rowData.length; i++) {
-    //   for (let prop in rowData[i]) {
-    //     if (typeof rowData[i][prop] === 'object' && rowData[i][prop] !== null) {
-    //       rowData[i][prop] = rowData[i][prop].title;
-    //     }
-    //   }
-    // }
     return {colDefs, rowData}
   }
 

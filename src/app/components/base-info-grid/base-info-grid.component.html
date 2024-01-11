@@ -25,18 +25,20 @@
       (onAddCriteria)="handleAddCriteria($event)"
     ></app-grid-actions>
 
-    <ag-grid-angular
-      #grid
-      class="ag-theme-alpine"
-      [columnDefs]="columnDefs"
-      [gridOptions]="gridOptions"
-      (rowDoubleClicked)="handleRowDbClicked($event)"
-      (rowClicked)="handleRowClicked($event)"
-      (sortChanged)="handleSortChange($event)"
-      [getContextMenuItems]="getContextMenuItems"
-      [suppressContextMenu]="false"
-    ></ag-grid-angular>
-    <p-button styleClass="p-button-sm" (onClick)="handleDelete()" [label]="'delete'" [disabled]="!_dataSource"></p-button>
+<!--    <ag-grid-angular-->
+<!--      #grid-->
+<!--      class="ag-theme-alpine"-->
+<!--      [columnDefs]="columnDefs"-->
+<!--      [gridOptions]="gridOptions"-->
+<!--      (rowDoubleClicked)="handleRowDbClicked($event)"-->
+<!--      (rowClicked)="handleRowClicked($event)"-->
+<!--      (sortChanged)="handleSortChange($event)"-->
+<!--      [getContextMenuItems]="getContextMenuItems"-->
+<!--      [suppressContextMenu]="false"-->
+<!--    ></ag-grid-angular>-->
+<!--    <p-button styleClass="p-button-sm" (onClick)="handleDelete()" [label]="'delete'" [disabled]="!_dataSource"></p-button>-->
+
+    <ng-container #gridContainer></ng-container>
 
   </div>
 

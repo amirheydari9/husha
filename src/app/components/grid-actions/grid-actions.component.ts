@@ -288,8 +288,15 @@ export class GridActionsComponent implements OnInit {
     const removeIdList = removeRowData.map(row => row.id)
     const dataSessionList = []
     const getSessionData = this.storagService.getSessionStorage(multiLevelGridInfo);
+    const lastSort = getSessionData.find(item => item.historyId === removeIdList[0]).originalSort
     getSessionData.forEach(item => {
-      if ((removeIdList.indexOf(item.rowId)) === -1) dataSessionList.push(item)
+      if ((removeIdList.indexOf(item.historyId)) === -1) dataSessionList.push(item)
+    })
+    dataSessionList.forEach((item, index) => {
+      if (index === dataSessionList.length - 1) {
+        item.selectedChildId = removeIdList[0]
+        item.sort = lastSort
+      }
     })
     this.storagService.setSessionStorage(multiLevelGridInfo, dataSessionList)
   }
