@@ -141,6 +141,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   }
 
   async handleCreateDynamicGrid(gridConfig?: any) {
+    //TODO لاگ برای unsubscribe کردن
     this.gridContainer.clear()
     const compRef = this.gridContainer.createComponent(AgGridAngular)
     this.renderer.addClass(compRef.location.nativeElement, 'ag-theme-alpine')
