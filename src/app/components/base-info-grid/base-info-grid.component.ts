@@ -22,7 +22,6 @@ import {
   GetContextMenuItemsParams,
   GridApi,
   GridOptions,
-  IDatasource,
   IGetRowsParams,
   MenuItemDef,
   RowClickedEvent
@@ -81,7 +80,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     // alwaysShowHorizontalScroll:false
   }
   accessFormActions: ACCESS_FORM_ACTION_TYPE[] = []
-  _dataSource: IDatasource;
   currentPage: number;
 
   @Input() class: string
@@ -111,7 +109,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   ) {
   }
 
-  async setDataSourceAsync(item?: any): Promise<void> {
+  async setDataSourceAsync(): Promise<void> {
     return new Promise(((resolve, reject) => {
       const dataSource = {
         getRows: async (params: IGetRowsParams) => {
@@ -119,7 +117,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
             this.form,
             this.parentId,
             this.masterId,
-            item ? item.page : this.gridApi.paginationGetCurrentPage(),
+            this.gridApi.paginationGetCurrentPage(),
             this.gridApi.paginationGetPageSize(),
             this.hushaGridUtilService.handleSortParam(params.sortModel),
             this.criteria ?? null,
@@ -142,11 +140,11 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     }))
   }
 
-  async handleCreateDynamicGrid(item?: any) {
+  async handleCreateDynamicGrid(gridConfig?: any) {
     this.gridContainer.clear()
     const compRef = this.gridContainer.createComponent(AgGridAngular)
     this.renderer.addClass(compRef.location.nativeElement, 'ag-theme-alpine')
-    this.columnDefs = this.hushaGridUtilService.handleCreateColumnDefs(this.form, this.fetchSummary, item)
+    this.columnDefs = this.hushaGridUtilService.handleCreateColumnDefs(this.form, this.fetchSummary)
     compRef.setInput('gridOptions', this.gridOptions)
     compRef.setInput('columnDefs', this.columnDefs)
     this.cdr.detectChanges()
@@ -159,6 +157,14 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         })
       )
     });
+    if (gridConfig) {
+      this.colApi.applyColumnState({
+        state: gridConfig.sort,
+        defaultState: {sort: null}
+      })
+      this.gridApi.paginationGoToPage(gridConfig.page)
+      this.gridApi.paginationSetPageSize(gridConfig.pageSize)
+    }
     await this.setDataSourceAsync();
     this.subscription.push(
       compRef.instance.rowClicked.subscribe(event => this.handleRowClicked(event))
@@ -177,30 +183,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   async ngOnInit(): Promise<void> {
     this.accessFormActions = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.fetchSummary)
   }
-
-  dataSource: IDatasource = {
-    getRows: ((params: IGetRowsParams) => {
-      const payload = new FetchAllDataPayloadDTO(
-        this.form,
-        this.parentId,
-        this.masterId,
-        this.gridApi.paginationGetCurrentPage(),
-        this.gridApi.paginationGetPageSize(),
-        this.hushaGridUtilService.handleSortParam(params.sortModel),
-        this.criteria ?? null,
-        null,
-        this.fetchSummary ? 'id,code,title' : null
-      )
-      this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).subscribe(formData => {
-        const paginationInfo = formData.shift()
-        const {colDefs, rowData} = this.hushaGridUtilService.createGrid(formData, this.form, this.fetchSummary)
-        this.columnDefs = colDefs
-        //TODO وقتی دیتا نداریم باید عیارت دیتا یافت نشد نمایش داده شود
-        params.successCallback(rowData, paginationInfo['paginationTotalElements'])
-      })
-    })
-  }
-
 
   async handleRowDbClicked($event: any) {
     if (this.form.formKind.id === FORM_KIND.MULTI_LEVEL) {
@@ -259,7 +241,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     }
     // console.log(currentRow)
     await this.handleCreateDynamicGrid(currentRow)
-    this.gridApi.paginationGoToPage(currentRow.page);
     this.gridApi.forEachNode(node => {
       if (node.data.id === currentRow.selectedChildId) node.setSelected(true)
     })
@@ -307,13 +288,19 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   handleDelete() {
     //TODO تست حذف در حالت مستر دیتیل
+    //TODO چک کال شدن سرویس
     this.subscription.push(
       this.baseInfoService.deleteFormData(this.hushaGridUtilService.handleCreatePayloadForDeleteRow(
         this.form,
         this.selectedRow?.id,
         this.masterId
-      )).subscribe(data => {
-        this.gridApi.setDatasource(this._dataSource)
+      )).subscribe(async data => {
+        const gridConfig = {
+          page: this.gridApi.paginationGetCurrentPage(),
+          pageSize: this.gridApi.paginationGetPageSize(),
+          sort: this.colApi.getColumnState()
+        }
+        await this.handleCreateDynamicGrid(gridConfig)
       })
     )
   }
@@ -332,10 +319,10 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     })
   }
 
-  handleAdvanceSearch() {
+  async handleAdvanceSearch() {
     this.dialogManagementService.openDialog(AdvanceSearchDialogComponent, {
       data: {form: this.form, colDefs: this.gridApi.getColumnDefs(), criteria: this.criteriaMetaData},
-    }).subscribe(data => {
+    }).subscribe(async data => {
       if (data) {
         this.gridActions.handleResetCriteria()
         if (data.length) {
@@ -350,16 +337,16 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
           this.criteriaMetaData = null
           this.criteria = null
         }
-        this.gridApi.setDatasource(this.dataSource)
+        await this.handleCreateDynamicGrid()
       }
     })
   }
 
-  handleResetAdvanceSearch() {
+  async handleResetAdvanceSearch() {
     this.criteria = null
     this.criteriaMetaData = null
     this.gridActions.handleResetCriteria()
-    this.gridApi.setDatasource(this.dataSource)
+    await this.handleCreateDynamicGrid()
   }
 
   handleExport() {
@@ -378,14 +365,14 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     })
   }
 
-  handleAddCriteria(criteria: any) {
+  async handleAddCriteria(criteria: any) {
     this.criteria = [criteria].map(cr => ({
       key: cr.key,
       operation: cr.operation,
       value: cr.value,
       valueType: cr.valueType,
     }))
-    this.gridApi.setDatasource(this.dataSource)
+    await this.handleCreateDynamicGrid()
     this.criteriaMetaData = null
   }
 

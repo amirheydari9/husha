@@ -107,7 +107,7 @@ export class HushaGridUtilService {
     )
   }
 
-  handleCreateColumnDefs(form: IFetchFormRes, fetchSummary: boolean, currentItem?: any): ColDef[] {
+  handleCreateColumnDefs(form: IFetchFormRes, fetchSummary: boolean): ColDef[] {
     const colDefs: ColDef[] = []
     form.fields.forEach(item => {
       if (fetchSummary) {
@@ -116,17 +116,17 @@ export class HushaGridUtilService {
         }
       } else {
         if (item.isActive && (item.viewType == VIEW_TYPE.SHOW_IN_GRID || item.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM)) {
-          let sortModel = null
-          let sortIndex = 0
-          if (currentItem && currentItem?.sort.length) {
-            currentItem.sort.forEach(sort => {
-              if (sort.colId === item.name) {
-                sortModel = sort.sort
-                sortIndex = sort.sortIndex
-              }
-            })
-          }
-          const col: ColDef = {field: item.name, headerName: item.caption, sort: sortModel, sortIndex:sortIndex}
+          // let sortModel = null
+          // let sortIndex = 0
+          // if (currentItem && currentItem?.sort.length) {
+          //   currentItem.sort.forEach(sort => {
+          //     if (sort.colId === item.name) {
+          //       sortModel = sort.sort
+          //       sortIndex = sort.sortIndex
+          //     }
+          //   })
+          // }
+          const col: ColDef = {field: item.name, headerName: item.caption}
           colDefs.push(col)
         }
       }
