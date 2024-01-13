@@ -1,5 +1,15 @@
 import {Component, EventEmitter, Input, NgModule, OnInit, Output} from '@angular/core';
-import {ColDef, GridApi, GridOptions, GridReadyEvent, RowClickedEvent} from "ag-grid-community";
+import {
+  CellKeyDownEvent,
+  CellPosition,
+  ColDef,
+  FullWidthCellKeyDownEvent,
+  GridApi,
+  GridOptions,
+  GridReadyEvent,
+  IRowNode,
+  RowClickedEvent
+} from "ag-grid-community";
 import {AG_GRID_LOCALE_FA} from "../../constants/ag-grid-locale-fa";
 import {AgGridModule} from "ag-grid-angular";
 
@@ -14,6 +24,7 @@ import {AgGridModule} from "ag-grid-angular";
       [gridOptions]="gridOptions"
       (rowClicked)="rowClicked.emit($event)"
       (gridReady)="onGridReady($event)"
+      (cellKeyDown)="onCellKeyDown($event)"
     ></ag-grid-angular>
   `,
   styles: []
@@ -53,6 +64,7 @@ export class CustomGridComponent implements OnInit {
 
   @Output() rowClicked: EventEmitter<RowClickedEvent<any>> = new EventEmitter<RowClickedEvent<any>>()
   @Output() gridReady: EventEmitter<GridReadyEvent<any>> = new EventEmitter<GridReadyEvent<any>>()
+  @Output() onEnterKeyDown: EventEmitter<GridReadyEvent<any>> = new EventEmitter<GridReadyEvent<any>>()
 
   constructor() {
   }
@@ -66,7 +78,11 @@ export class CustomGridComponent implements OnInit {
     $event.api.sizeColumnsToFit()
   }
 
-  get rowNodes() {
+  get gridID(): string {
+    return this.gridApi.getGridId()
+  }
+
+  get rowNodes(): IRowNode[] {
     const allRowNodes = [];
     this.gridApi.forEachNode(node => allRowNodes.push(node));
     return allRowNodes
@@ -78,6 +94,10 @@ export class CustomGridComponent implements OnInit {
 
   get selectedRows() {
     return this.gridOptions.rowSelection === "single" ? this.gridApi?.getSelectedRows()[0] : this.gridApi?.getSelectedRows()
+  }
+
+  get focusedCell(): CellPosition {
+    return this.gridApi.getFocusedCell()
   }
 
   getRowDataByIndex(index) {
@@ -111,6 +131,18 @@ export class CustomGridComponent implements OnInit {
 
   selectLastRow() {
     this.gridApi.forEachNode((node) => node.setSelected(node.rowIndex === this.rowDataCount - 1))
+  }
+
+  onCellKeyDown(event: CellKeyDownEvent<any> | FullWidthCellKeyDownEvent<any>) {
+    console.log('onCellKeyDown', event);
+    if (!event.event) return;
+    const keyboardEvent = (event.event as unknown) as KeyboardEvent;
+    const key = keyboardEvent.key;
+    if (key === 'Enter') {
+      //TODO بررسی کن ببین که اصلا وقتی خارج از گردی هستی focusedCell داری یا نه
+      //TODO و اینکه وقتی خارج از گریدی این اکشن کال میشه یا نه
+      this.onEnterKeyDown.emit(this.getRowDataByIndex(this.focusedCell.rowIndex))
+    }
   }
 }
 

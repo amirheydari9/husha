@@ -65,11 +65,12 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       sortable: true, flex: 1, resizable: true, minWidth: 150
     },
     // getContextMenuItems: this.getContextMenuItems,
-    rowModelType: 'infinite',
+    rowModelType: 'serverSide',
     enableRtl: true,
     rowSelection: 'single',
     cacheBlockSize: this.defaultPageSize,
     paginationPageSize: this.defaultPageSize,
+    maxBlocksInCache: 1,
     // paginationAutoPageSize:true,
     enableRangeSelection: true,
     pagination: true,
@@ -142,6 +143,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   async handleCreateDynamicGrid(gridConfig?: any) {
     //TODO لاگ برای unsubscribe کردن
+    // این که هر سری داری گرید رو میسازی selected رو باید خالی باشه
     this.gridContainer.clear()
     const compRef = this.gridContainer.createComponent(AgGridAngular)
     this.renderer.addClass(compRef.location.nativeElement, 'ag-theme-alpine')
@@ -222,7 +224,9 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         originalSort: sortModel,
         criteria: null,
       })
+      this.gridApi.forEachNode(node => node.setSelected(false))
       await this.handleCreateDynamicGrid()
+      console.log(this.selectedRow)
       this.storageService.setSessionStorage(multiLevelGridInfo, sessionGetData)
     } catch (e) {
       console.log(e)
@@ -296,12 +300,9 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         this.selectedRow?.id,
         this.masterId
       )).subscribe(async data => {
-        const gridConfig = {
-          page: this.gridApi.paginationGetCurrentPage(),
-          pageSize: this.gridApi.paginationGetPageSize(),
-          sort: this.colApi.getColumnState()
-        }
-        await this.handleCreateDynamicGrid(gridConfig)
+        this.gridApi.paginationGoToPage(this.gridApi.paginationGetCurrentPage())
+        this.gridApi.forEachNode(node => node.setSelected(false))
+        console.log(this.selectedRow)
       })
     )
   }
