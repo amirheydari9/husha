@@ -175,6 +175,12 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     this.subscription.push(
       compRef.instance.rowDoubleClicked.subscribe(event => this.handleRowDbClicked(event))
     )
+    //TODO test
+    this.subscription.push(
+      compRef.instance.paginationChanged.subscribe(event => {
+        this.gridApi.setNodesSelected({nodes: this.gridApi.getSelectedNodes(), newValue: false})
+      })
+    )
   }
 
   async ngAfterViewInit(): Promise<void> {
@@ -224,7 +230,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         originalSort: sortModel,
         criteria: null,
       })
-      this.gridApi.forEachNode(node => node.setSelected(false))
+      this.gridApi.setNodesSelected({nodes: this.gridApi.getSelectedNodes(), newValue: false})
       await this.handleCreateDynamicGrid()
       console.log(this.selectedRow)
       this.storageService.setSessionStorage(multiLevelGridInfo, sessionGetData)
@@ -301,7 +307,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         this.masterId
       )).subscribe(async data => {
         this.gridApi.paginationGoToPage(this.gridApi.paginationGetCurrentPage())
-        this.gridApi.forEachNode(node => node.setSelected(false))
         console.log(this.selectedRow)
       })
     )
