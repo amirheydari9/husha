@@ -261,7 +261,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     return this.gridApi?.getSelectedRows()[0]
   }
 
-  handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
+  async handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
     if ($event === ACCESS_FORM_ACTION_TYPE.ADD) {
       this.handleAdd()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.UPDATE) {
@@ -273,9 +273,9 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     } else if ($event === ACCESS_FORM_ACTION_TYPE.IMPORT) {
       this.handleImport()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH) {
-      this.handleAdvanceSearch()
+      await this.handleAdvanceSearch()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH) {
-      this.handleResetAdvanceSearch()
+      await this.handleResetAdvanceSearch()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.EXPORT) {
       this.handleExport()
     }
