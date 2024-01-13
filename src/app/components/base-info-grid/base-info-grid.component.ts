@@ -307,6 +307,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         this.masterId
       )).subscribe(async data => {
         this.gridApi.paginationGoToPage(this.gridApi.paginationGetCurrentPage())
+        // this.gridApi.applyServerSideTransaction({remove:[this.selectedRow.data]})
         console.log(this.selectedRow)
       })
     )
