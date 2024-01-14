@@ -121,7 +121,7 @@ export class AttachmentListDialogComponent {
         const attachment = new DocumentModelDTO(
           data['name'],
           data['desc'],
-          this.grid.rowDataCount >= 1 ? this.grid.allRows[0].data.id : null,
+          this.grid.rowDataCount >= 1 ? this.grid.rowNodes[0].data.id : null,
           data['data'],
         )
         if (this.attachment) {
@@ -142,13 +142,13 @@ export class AttachmentListDialogComponent {
   handleDeleteAttachment() {
     this.subscription.push(
       this.baseInfoService.removeAttachment(this.handleAttachmentPayload(null, this.grid.selectedRows.id))
-        .subscribe(data => this.grid.removeSelectedRows())
+        .subscribe(data => this.grid.removeByRowData([this.grid.selectedRows]))
     )
   }
 
   handleDeleteAllAttachment() {
     this.subscription.push(
-      this.baseInfoService.removeAllAttachment(this.handleAttachmentPayload(null, this.grid.allRows[0].data.id))
+      this.baseInfoService.removeAllAttachment(this.handleAttachmentPayload(null, this.grid.rowNodes[0].data.id))
         .subscribe(data => this.grid.clearData())
     )
   }

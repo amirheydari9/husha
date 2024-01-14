@@ -19,12 +19,12 @@ import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
 import {
   ColDef,
   ColumnApi,
+  GetContextMenuItemsParams,
   GridApi,
   GridOptions,
-  IDatasource,
   IGetRowsParams,
-  RowClickedEvent,
-  SortChangedEvent
+  MenuItemDef,
+  RowClickedEvent
 } from "ag-grid-community";
 import {BaseInfoService} from "../../api/base-info.service";
 import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
@@ -39,6 +39,9 @@ import {AdvanceSearchDialogComponent} from "../dialog/advance-search-dialog/adva
 import {CommonModule} from "@angular/common";
 import {criteriaInterface} from "../../models/DTOs/fetch-all-form-data.DTO";
 import {ExportExcelDialogComponent} from "../dialog/export-excel-dialog/export-excel-dialog.component";
+import {StorageService} from 'src/app/utils/storage.service';
+import {firstHistoryMultiLevelGrid, multiLevelGridInfo} from 'src/app/constants/keys';
+import 'ag-grid-enterprise'
 import {FetchFormDataByIdDTO} from "../../models/DTOs/fetch-form-data-by-id.DTO";
 import {SignatureDialogComponent} from "../dialog/signature-dialog/signature-dialog.component";
 
@@ -54,6 +57,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   criteria: criteriaInterface[] = null
   criteriaMetaData: any[] = null
 
+
   gridApi: GridApi
   colApi: ColumnApi
   defaultPageSize = 5
@@ -62,16 +66,18 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     defaultColDef: {
       sortable: true, flex: 1, resizable: true, minWidth: 150
     },
+    getContextMenuItems: this.getContextMenuItems,
     rowModelType: 'infinite',
     enableRtl: true,
     rowSelection: 'single',
     cacheBlockSize: this.defaultPageSize,
     paginationPageSize: this.defaultPageSize,
+    maxBlocksInCache: 1,
     // paginationAutoPageSize:true,
     enableRangeSelection: true,
     pagination: true,
     localeText: AG_GRID_LOCALE_FA,
-    overlayNoRowsTemplate: 'رکوری جهت نمایش یافت نشد',
+    overlayNoRowsTemplate: 'رکوردی جهت نمایش یافت نشد',
     domLayout: 'autoHeight',
     multiSortKey: 'ctrl',
     // alwaysShowHorizontalScroll:false
@@ -84,10 +90,9 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   @Input() fetchSummary: boolean = false
 
   @ViewChild('gridActions') gridActions: GridActionsComponent
-  @ViewChild('grid', {read: AgGridAngular}) grid: AgGridAngular
-  // @ViewChild('gridContainer', {read: ViewContainerRef}) gridContainer: ViewContainerRef
+  @ViewChild('gridContainer', {read: ViewContainerRef}) gridContainer: ViewContainerRef
 
-  gridHistory = []
+  gridHistory;
   parentId: number
 
   @Output() onRowDoubleClicked: EventEmitter<any> = new EventEmitter<any>()
@@ -100,125 +105,97 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     private hushaGridUtilService: HushaGridUtilService,
     private router: Router,
     private dialogManagementService: DialogManagementService,
-    // private renderer: Renderer2
+    private storageService: StorageService,
+    private renderer: Renderer2
   ) {
   }
 
-  // async ngAfterViewInit(): Promise<void> {
-  //   this.gridApi = this.grid.api;
-  //   this.colApi = this.grid.columnApi;
-  //   await this.setDataSourceAsync();
-  //   this.gridApi.forEachNode(node => console.log(node));
-  // }
-  //
-  // private async setDataSourceAsync(): Promise<void> {
-  //   return new Promise(((resolve, reject) => {
-  //     const dataSource = {
-  //       getRows: async (params: IGetRowsParams) => {
-  //         const payload = new FetchAllDataPayloadDTO(
-  //           this.form,
-  //           this.parentId,
-  //           this.masterId,
-  //           this.gridApi.paginationGetCurrentPage(),
-  //           this.gridApi.paginationGetPageSize(),
-  //           this.hushaGridUtilService.handleSortParam(params.sortModel),
-  //           this.criteria ?? null,
-  //           null,
-  //           this.fetchSummary ? 'id,code,title' : null
-  //         );
-  //         try {
-  //           const formData = await this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).toPromise();
-  //           const paginationInfo = formData.shift();
-  //           const {colDefs, rowData} = this.hushaGridUtilService.createGrid(formData, this.form, this.fetchSummary);
-  //           this.columnDefs = colDefs;
-  //           params.successCallback(rowData, paginationInfo['paginationTotalElements']);
-  //           resolve()
-  //         } catch (error) {
-  //           params.failCallback();
-  //           reject()
-  //         }
-  //       },
-  //     };
-  //     this.gridApi.setDatasource(dataSource);
-  //   }))
-  // }
+  async setDataSourceAsync(): Promise<void> {
+    return new Promise(((resolve, reject) => {
+      const dataSource = {
+        getRows: async (params: IGetRowsParams) => {
+          const payload = new FetchAllDataPayloadDTO(
+            this.form,
+            this.parentId,
+            this.masterId,
+            this.gridApi.paginationGetCurrentPage(),
+            this.gridApi.paginationGetPageSize(),
+            this.hushaGridUtilService.handleSortParam(params.sortModel),
+            this.criteria ?? null,
+            null,
+            this.fetchSummary ? 'id,code,title' : null
+          );
+          try {
+            const formData = await this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).toPromise();
+            const paginationInfo = formData.shift();
+            const rowData = this.hushaGridUtilService.handleCreateRowData(formData, this.form)
+            params.successCallback(rowData, paginationInfo['paginationTotalElements']);
+            resolve()
+          } catch (error) {
+            params.failCallback();
+            reject()
+          }
+        },
+      };
+      this.gridApi.setDatasource(dataSource);
+    }))
+  }
 
-  // ngAfterViewInit(): void {
-  //   this.gridContainer.clear()
-  //   const compRef = this.gridContainer.createComponent(AgGridAngular)
-  //   compRef.setInput('gridOptions', this.gridOptions)
-  //   this.renderer.addClass(compRef.location.nativeElement, 'ag-theme-alpine')
-  //   compRef.instance.gridReady.subscribe(event => {
-  //     this.gridApi = event.api
-  //     this.colApi = event.columnApi
-  //     event.api.setDatasource({
-  //       getRows: ((params: IGetRowsParams) => {
-  //         const payload = new FetchAllDataPayloadDTO(
-  //           this.form,
-  //           this.parentId,
-  //           this.masterId,
-  //           this.gridApi.paginationGetCurrentPage(),
-  //           this.gridApi.paginationGetPageSize(),
-  //           this.hushaGridUtilService.handleSortParam(params.sortModel),
-  //           this.criteria ?? null,
-  //           null,
-  //           this.fetchSummary ? 'id,code,title' : null
-  //         )
-  //         this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).subscribe(formData => {
-  //             const paginationInfo = formData.shift()
-  //             const {colDefs, rowData} = this.hushaGridUtilService.createGrid(formData, this.form, this.fetchSummary)
-  //             this.columnDefs = colDefs
-  //             compRef.setInput('columnDefs', this.columnDefs)
-  //             this.cdr.detectChanges()
-  //             //TODO وقتی دیتا نداریم باید عیارت دیتا یافت نشد نمایش داده شود
-  //             params.successCallback(rowData, paginationInfo['paginationTotalElements'])
-  //           },
-  //           error => params.failCallback()
-  //         )
-  //       })
-  //     })
-  //   })
-  // }
+  async handleCreateDynamicGrid(gridConfig?: any) {
+    //TODO لاگ برای unsubscribe کردن
+    // این که هر سری داری گرید رو میسازی selected رو باید خالی باشه
+    this.gridContainer.clear()
+    const compRef = this.gridContainer.createComponent(AgGridAngular)
+    this.renderer.addClass(compRef.location.nativeElement, 'ag-theme-alpine')
+    this.columnDefs = this.hushaGridUtilService.handleCreateColumnDefs(this.form, this.fetchSummary)
+    compRef.setInput('gridOptions', this.gridOptions)
+    compRef.setInput('columnDefs', this.columnDefs)
+    this.cdr.detectChanges()
+    await new Promise<void>(resolve => {
+      this.subscription.push(
+        compRef.instance.gridReady.subscribe(event => {
+          this.gridApi = event.api;
+          this.colApi = event.columnApi;
+          resolve();
+        })
+      )
+    });
+    if (gridConfig) {
+      this.colApi.applyColumnState({
+        state: gridConfig.sort,
+        defaultState: {sort: null}
+      })
+      this.gridApi.paginationGoToPage(gridConfig.page)
+      this.gridApi.paginationSetPageSize(gridConfig.pageSize)
+    }
+    await this.setDataSourceAsync();
+    this.subscription.push(
+      compRef.instance.rowClicked.subscribe(event => this.handleRowClicked(event))
+    )
+    this.subscription.push(
+      compRef.instance.rowDoubleClicked.subscribe(event => this.handleRowDbClicked(event))
+    )
+    //TODO test
+    this.subscription.push(
+      compRef.instance.paginationChanged.subscribe(event => {
+        // this.gridApi.setNodesSelected({nodes: this.gridApi.getSelectedNodes(), newValue: false})
+      })
+    )
+  }
 
-  ngAfterViewInit(): void {
-    this.gridApi = this.grid.api;
-    this.colApi = this.grid.columnApi;
-    this.gridApi.setDatasource(this.dataSource)
+  async ngAfterViewInit(): Promise<void> {
+    this.storageService.removeSessionStorage(firstHistoryMultiLevelGrid)
+    this.storageService.removeSessionStorage(multiLevelGridInfo)
+    await this.handleCreateDynamicGrid()
   }
 
   async ngOnInit(): Promise<void> {
     this.accessFormActions = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.fetchSummary)
   }
 
-  dataSource: IDatasource = {
-    getRows: ((params: IGetRowsParams) => {
-      const payload = new FetchAllDataPayloadDTO(
-        this.form,
-        this.parentId,
-        this.masterId,
-        this.gridApi.paginationGetCurrentPage(),
-        this.gridApi.paginationGetPageSize(),
-        this.hushaGridUtilService.handleSortParam(params.sortModel),
-        this.criteria ?? null,
-        null,
-        this.fetchSummary ? 'id,code,title' : null
-      )
-      this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).subscribe(formData => {
-          const paginationInfo = formData.shift()
-          const {colDefs, rowData} = this.hushaGridUtilService.createGrid(formData, this.form, this.fetchSummary)
-          this.columnDefs = colDefs
-          //TODO وقتی دیتا نداریم باید عیارت دیتا یافت نشد نمایش داده شود
-          params.successCallback(rowData, paginationInfo['paginationTotalElements'])
-        },
-        error => params.failCallback()
-      )
-    })
-  }
-
-
-  handleRowDbClicked($event: any) {
+  async handleRowDbClicked($event: any) {
     if (this.form.formKind.id === FORM_KIND.MULTI_LEVEL) {
-      this.handleMultiLevelGid(this.selectedRow)
+      await this.handleMultiLevelGid(this.selectedRow)
     } else if (this.form.formKind.id === FORM_KIND.MASTER) {
       this.onRowDoubleClicked.emit(this.selectedRow?.id)
     }
@@ -228,41 +205,62 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     this.onRowClicked.emit(this.selectedRow)
   }
 
-  handleMultiLevelGid(selectedRow: any) {
-    this.parentId = selectedRow.id
-    this.gridApi.setDatasource(this.dataSource)
-    if (!this.gridHistory.length) this.gridHistory.push(selectedRow)
-    this.cdr.detectChanges()
-    const index = this.gridHistory.findIndex(item => item.id === selectedRow.id)
-    if (index < 0) {
-      this.gridHistory.push(selectedRow)
-      this.cdr.detectChanges()
-      this.gridActions.activeHistory(this.gridHistory.length - 1)
-    } else {
-      this.gridActions.activeHistory(index)
+  async handleMultiLevelGid(selectedRow: any) {
+    try {
+      this.parentId = selectedRow.id
+      this.gridHistory = selectedRow;
+      const sortModel = []
+      this.colApi.getColumnState().map(col => {
+        if (col.sort !== null) sortModel.push({colId: col.colId, sort: col.sort, sortIndex: col.sortIndex})
+      })
+      const sessionGetData = this.storageService.getSessionStorage(multiLevelGridInfo) ?? []
+      if (!sessionGetData.length) {
+        this.storageService.setSessionStorage(firstHistoryMultiLevelGrid, {
+          selectedChildId: selectedRow.id,
+          page: this.gridApi.paginationGetCurrentPage(),
+          pageSize: this.gridApi.paginationGetPageSize(),
+          sort: sortModel,
+          criteria: null,
+        })
+      }
+      sessionGetData.push({
+        historyId: selectedRow.id,
+        originalPage: this.gridApi.paginationGetCurrentPage(),
+        originalPageSize: this.gridApi.paginationGetPageSize(),
+        originalSort: sortModel,
+        criteria: null,
+      })
+      this.gridApi.setNodesSelected({nodes: this.gridApi.getSelectedNodes(), newValue: false})
+      await this.handleCreateDynamicGrid()
+      console.log(this.selectedRow)
+      this.storageService.setSessionStorage(multiLevelGridInfo, sessionGetData)
+    } catch (e) {
+      console.log(e)
     }
   }
 
-  handleClickHistory(item: any) {
+  async handleClickHistory(item: any) {
     this.parentId = item ? item.id : null
-    this.gridApi.setDatasource(this.dataSource)
+    let currentRow;
+    if (this.parentId) {
+      const sessionData = this.storageService.getSessionStorage(multiLevelGridInfo)
+      currentRow = sessionData.find(row => row.historyId == item.id)
+    } else {
+      currentRow = this.storageService.getSessionStorage(firstHistoryMultiLevelGrid)
+      this.storageService.removeSessionStorage(firstHistoryMultiLevelGrid)
+      this.storageService.removeSessionStorage(multiLevelGridInfo)
+    }
+    await this.handleCreateDynamicGrid(currentRow)
+    this.gridApi.forEachNode(node => {
+      if (node.data?.id === currentRow.selectedChildId) node.setSelected(true)
+    })
   }
 
   get selectedRow() {
     return this.gridApi?.getSelectedRows()[0]
   }
 
-  handleSortChange($event: SortChangedEvent<any>) {
-    const columnWithSort = this.colApi.getColumnState().find(col => col.sort !== null);
-    if (columnWithSort) {
-      console.log("Column that is sorted right now is " + columnWithSort.colId);
-      console.log("The sort order right now is " + columnWithSort.sort);  // prints "asc" or "desc"
-    } else {
-
-    }
-  }
-
-  handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
+  async handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
     if ($event === ACCESS_FORM_ACTION_TYPE.ADD) {
       this.handleAdd()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.UPDATE) {
@@ -274,9 +272,9 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     } else if ($event === ACCESS_FORM_ACTION_TYPE.IMPORT) {
       this.handleImport()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH) {
-      this.handleAdvanceSearch()
+      await this.handleAdvanceSearch()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH) {
-      this.handleResetAdvanceSearch()
+      await this.handleResetAdvanceSearch()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.EXPORT) {
       this.handleExport()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.SIGN) {
@@ -302,13 +300,16 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   handleDelete() {
     //TODO تست حذف در حالت مستر دیتیل
+    //TODO چک کال شدن سرویس
     this.subscription.push(
       this.baseInfoService.deleteFormData(this.hushaGridUtilService.handleCreatePayloadForDeleteRow(
         this.form,
         this.selectedRow?.id,
         this.masterId
-      )).subscribe(data => {
-        this.gridApi.setDatasource(this.dataSource)
+      )).subscribe(async data => {
+        this.gridApi.paginationGoToPage(this.gridApi.paginationGetCurrentPage())
+        // this.gridApi.applyServerSideTransaction({remove:[this.selectedRow.data]})
+        console.log(this.selectedRow)
       })
     )
   }
@@ -327,10 +328,10 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     })
   }
 
-  handleAdvanceSearch() {
+  async handleAdvanceSearch() {
     this.dialogManagementService.openDialog(AdvanceSearchDialogComponent, {
       data: {form: this.form, colDefs: this.gridApi.getColumnDefs(), criteria: this.criteriaMetaData},
-    }).subscribe(data => {
+    }).subscribe(async data => {
       if (data) {
         this.gridActions.handleResetCriteria()
         if (data.length) {
@@ -345,16 +346,16 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
           this.criteriaMetaData = null
           this.criteria = null
         }
-        this.gridApi.setDatasource(this.dataSource)
+        await this.handleCreateDynamicGrid()
       }
     })
   }
 
-  handleResetAdvanceSearch() {
+  async handleResetAdvanceSearch() {
     this.criteria = null
     this.criteriaMetaData = null
     this.gridActions.handleResetCriteria()
-    this.gridApi.setDatasource(this.dataSource)
+    await this.handleCreateDynamicGrid()
   }
 
   handleExport() {
@@ -373,15 +374,33 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     })
   }
 
-  handleAddCriteria(criteria: any) {
+  async handleAddCriteria(criteria: any) {
     this.criteria = [criteria].map(cr => ({
       key: cr.key,
       operation: cr.operation,
       value: cr.value,
       valueType: cr.valueType,
     }))
-    this.gridApi.setDatasource(this.dataSource)
+    await this.handleCreateDynamicGrid()
     this.criteriaMetaData = null
+  }
+
+  getContextMenuItems(params: GetContextMenuItemsParams): (string | MenuItemDef)[] {
+    var result: (string | MenuItemDef)[] = [
+      {
+        name: 'copy' + params.value,
+        action: () => {
+        },
+        cssClasses: ['red', 'bold'],
+      },
+      {
+        name: 'cut',
+        action: () => {
+        },
+        cssClasses: ['red', 'bold'],
+      },
+    ]
+    return result
   }
 
   private handleSign() {

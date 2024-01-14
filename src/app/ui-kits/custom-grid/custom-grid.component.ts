@@ -1,5 +1,15 @@
 import {Component, EventEmitter, Input, NgModule, OnInit, Output} from '@angular/core';
-import {ColDef, GridApi, GridOptions, GridReadyEvent, RowClickedEvent} from "ag-grid-community";
+import {
+  CellKeyDownEvent,
+  CellPosition,
+  ColDef,
+  FullWidthCellKeyDownEvent,
+  GridApi,
+  GridOptions,
+  GridReadyEvent,
+  IRowNode,
+  RowClickedEvent
+} from "ag-grid-community";
 import {AG_GRID_LOCALE_FA} from "../../constants/ag-grid-locale-fa";
 import {AgGridModule} from "ag-grid-angular";
 
@@ -14,6 +24,7 @@ import {AgGridModule} from "ag-grid-angular";
       [gridOptions]="gridOptions"
       (rowClicked)="rowClicked.emit($event)"
       (gridReady)="onGridReady($event)"
+      (cellKeyDown)="onCellKeyDown($event)"
     ></ag-grid-angular>
   `,
   styles: []
@@ -29,13 +40,14 @@ export class CustomGridComponent implements OnInit {
     defaultColDef: {
       sortable: true, filter: true, flex: 1, minWidth: 150, resizable: true
     },
-    overlayNoRowsTemplate: 'رکوری جهت نمایش یافت نشد',
+    overlayNoRowsTemplate: 'رکوردی جهت نمایش یافت نشد',
     rowSelection: 'single',
     localeText: AG_GRID_LOCALE_FA,
     domLayout: 'autoHeight',
     enableRtl: true,
     pagination: true,
     paginationPageSize: 5,
+    suppressContextMenu: true
   }
   @Input() set gridOptions(data: GridOptions) {
     if (data) {
@@ -53,6 +65,7 @@ export class CustomGridComponent implements OnInit {
 
   @Output() rowClicked: EventEmitter<RowClickedEvent<any>> = new EventEmitter<RowClickedEvent<any>>()
   @Output() gridReady: EventEmitter<GridReadyEvent<any>> = new EventEmitter<GridReadyEvent<any>>()
+  @Output() onEnterKeyDown: EventEmitter<GridReadyEvent<any>> = new EventEmitter<GridReadyEvent<any>>()
 
   constructor() {
   }
@@ -66,8 +79,11 @@ export class CustomGridComponent implements OnInit {
     $event.api.sizeColumnsToFit()
   }
 
+  get gridID(): string {
+    return this.gridApi.getGridId()
+  }
 
-  get allRows() {
+  get rowNodes(): IRowNode[] {
     const allRowNodes = [];
     this.gridApi.forEachNode(node => allRowNodes.push(node));
     return allRowNodes
@@ -81,20 +97,28 @@ export class CustomGridComponent implements OnInit {
     return this.gridOptions.rowSelection === "single" ? this.gridApi?.getSelectedRows()[0] : this.gridApi?.getSelectedRows()
   }
 
+  get focusedCell(): CellPosition {
+    return this.gridApi.getFocusedCell()
+  }
+
+  getRowDataByIndex(index) {
+    return this.gridApi.getDisplayedRowAtIndex(index).data
+  }
+
   clearData() {
     const rowData: any[] = [];
     this.gridApi.forEachNode((node) => rowData.push(node.data))
     this.gridApi.applyTransaction({remove: rowData})
   }
 
-  removeSelectedRows() {
-    const selectedData = this.gridApi.getSelectedRows();
-    this.gridApi.applyTransaction({remove: selectedData});
+  removeByRowData(rowData: any[]) {
+    this.gridApi.applyTransaction({remove: rowData});
   }
 
   addRows(data) {
     this.gridApi.applyTransaction({add: data})
     this.gridApi.paginationGoToLastPage()
+    this.selectLastRow()
   }
 
   updateRow(data) {
@@ -104,6 +128,22 @@ export class CustomGridComponent implements OnInit {
       itemsToUpdate.push(data);
     });
     this.gridApi.applyTransaction({update: itemsToUpdate})
+  }
+
+  selectLastRow() {
+    this.gridApi.forEachNode((node) => node.setSelected(node.rowIndex === this.rowDataCount - 1))
+  }
+
+  onCellKeyDown(event: CellKeyDownEvent<any> | FullWidthCellKeyDownEvent<any>) {
+    console.log('onCellKeyDown', event);
+    if (!event.event) return;
+    const keyboardEvent = (event.event as unknown) as KeyboardEvent;
+    const key = keyboardEvent.key;
+    if (key === 'Enter') {
+      //TODO بررسی کن ببین که اصلا وقتی خارج از گردی هستی focusedCell داری یا نه
+      //TODO و اینکه وقتی خارج از گریدی این اکشن کال میشه یا نه
+      this.onEnterKeyDown.emit(this.getRowDataByIndex(this.focusedCell.rowIndex))
+    }
   }
 }
 

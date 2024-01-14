@@ -5,7 +5,7 @@ import {FetchMenuReqDTO} from "../models/DTOs/fetch-menu-req.DTO";
 import {FetchFormDTO} from "../models/DTOs/fetch-form.DTO";
 import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
 import {FetchAllFormDataDTO} from "../models/DTOs/fetch-all-form-data.DTO";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {FetchAccessActionDTO} from "../models/DTOs/fetch-access-action.DTO";
 import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
 import {IFetchTypeValuesRes} from "../models/interface/fetch-type-values-res.interface";

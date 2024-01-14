@@ -1,23 +1,15 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  NgModule,
-  OnInit,
-  Output,
-  QueryList,
-  ViewChild,
-  ViewChildren
-} from '@angular/core';
+import {Component, EventEmitter, Input, NgModule, OnInit, Output, ViewChild} from '@angular/core';
 import {NgClass, NgFor, NgIf} from "@angular/common";
-import {ACCESS_FORM_ACTION_TYPE} from "../../constants/enums";
+import {ACCESS_FORM_ACTION_TYPE, FORM_KIND} from "../../constants/enums";
 import {CustomButtonModule} from "../../ui-kits/custom-button/custom-button.component";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {CriteriaBuilderComponent, CriteriaBuilderModule} from "../criteria-builder/criteria-builder.component";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
-import {ColDef} from "ag-grid-community";
+import {ColDef, GridOptions} from "ag-grid-community";
+import {CustomGridComponent, CustomGridModule} from "../../ui-kits/custom-grid/custom-grid.component";
+import {StorageService} from 'src/app/utils/storage.service';
+import {multiLevelGridInfo} from 'src/app/constants/keys';
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -48,15 +40,14 @@ import {ColDef} from "ag-grid-community";
         (confirm)="handleClickAction(action.type)"
       ></app-custom-button>
     </div>
-    <div class="mb-3 border-2" *ngIf="gridHistory.length">
-      <div class="flex flex-column" *ngFor="let item of gridHistory;let i = index">
-        <span
-          #history
-          class="cursor-pointer p-2"
-          [ngClass]="{'border-bottom-2': i !== gridHistory.length-1}"
-          (click)="handleClickHistory(item,i)">{{item.code}} - {{item.title}}
-        </span>
-      </div>
+    <div class="mb-3" *ngIf="form?.formKind.id=== FORM_KIND.MULTI_LEVEL">
+      <app-custom-grid
+        #grid
+        [columnDefs]="historyGridColDefs"
+        (rowClicked)="handleClickGridRow($event.data, $event.rowIndex);"
+        [gridOptions]="gridOptions"
+        (onEnterKeyDown)="handleEnterKeyDownOnGrid($event)"
+      ></app-custom-grid>
     </div>
   `,
   styles: [],
@@ -65,12 +56,26 @@ export class GridActionsComponent implements OnInit {
 
   subscription: Subscription[] = []
   totalAccessFormActions = []
+  historyGridColDefs: ColDef[] = [
+    {field: 'code', headerName: 'کد'},
+    {field: 'title', headerName: 'عنوان'},
+  ]
 
-  currentHistoryIndex: number
+  currentHistoryIndex: number = -1
+  gridOptions: GridOptions = {
+    pagination: false,
+  }
   @Input() selectedRow: any
   @Input() hasCriteria: boolean
+
+  @Input() set gridHistory(data: any) {
+    if (data) {
+      this.grid.addRows([data])
+      this.currentHistoryIndex += 1;
+    }
+  }
+
   @Input() showSearch: boolean = true
-  @Input() gridHistory = []
   @Input() form: IFetchFormRes
   @Input() colDefs: ColDef[]
 
@@ -85,7 +90,7 @@ export class GridActionsComponent implements OnInit {
     }
   }
 
-  @ViewChildren('history') history: QueryList<ElementRef>
+  @ViewChild('grid', {read: CustomGridComponent}) grid: CustomGridComponent
   @ViewChild('criteriaBuilder', {read: CriteriaBuilderComponent}) criteriaBuilder: CriteriaBuilderComponent
 
   @Output() clickHistory: EventEmitter<any> = new EventEmitter<any>()
@@ -214,16 +219,27 @@ export class GridActionsComponent implements OnInit {
     }
   ]
 
-  constructor() {
+  constructor(
+    private storageService: StorageService
+  ) {
   }
 
   get ACCESS_FORM_ACTION_TYPE(): typeof ACCESS_FORM_ACTION_TYPE {
     return ACCESS_FORM_ACTION_TYPE
   }
 
+  get FORM_KIND(): typeof FORM_KIND {
+    return FORM_KIND
+  }
+
+  ngOnInit(): void {
+
+  }
+
   handleDisableIcon(actionType: ACCESS_FORM_ACTION_TYPE) {
     if (actionType === ACCESS_FORM_ACTION_TYPE.PERV || actionType === ACCESS_FORM_ACTION_TYPE.NEXT) {
-      return !this.gridHistory.length || (actionType === ACCESS_FORM_ACTION_TYPE.PERV ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.gridHistory.length - 1)
+      return !this.grid.rowDataCount ||
+        (actionType === ACCESS_FORM_ACTION_TYPE.PERV ? this.currentHistoryIndex === -1 : this.currentHistoryIndex === this.grid.rowDataCount - 1)
     }
     if (actionType === ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH) {
       return !this.hasCriteria
@@ -232,7 +248,7 @@ export class GridActionsComponent implements OnInit {
       actionType === ACCESS_FORM_ACTION_TYPE.UPDATE ||
       actionType === ACCESS_FORM_ACTION_TYPE.DELETE ||
       actionType === ACCESS_FORM_ACTION_TYPE.ATTACHMENTS ||
-      actionType === ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE||
+      actionType === ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE ||
       actionType === ACCESS_FORM_ACTION_TYPE.SIGN
     ) ? !(!!this.selectedRow) : false
   }
@@ -241,42 +257,59 @@ export class GridActionsComponent implements OnInit {
     if (type === ACCESS_FORM_ACTION_TYPE.DELETE || type === ACCESS_FORM_ACTION_TYPE.DELETE_ALL) {
       return {confirmation: true, header: type === ACCESS_FORM_ACTION_TYPE.DELETE ? 'حذف رکورد' : 'حذف همه رکورد ها'}
     }
-    if (type === ACCESS_FORM_ACTION_TYPE.SIGNATURE || type === ACCESS_FORM_ACTION_TYPE.RETURN_SIGNATURE) {
-      return {confirmation: true, header: type === ACCESS_FORM_ACTION_TYPE.SIGNATURE ? 'امضا' : 'برگشت امضا'}
-    }
     return null
   }
 
-  ngOnInit(): void {
-
+  handleEnterKeyDownOnGrid($event) {
+    this.handleClickGridRow($event, this.grid.focusedCell.rowIndex)
   }
 
-  activeHistory(i: number) {
-    this.currentHistoryIndex = i
-    this.resetActiveHistory()
-    this.history.get(i).nativeElement.classList.add('bg-primary')
-  }
-
-  resetActiveHistory() {
-    this.history.map(item => item.nativeElement.classList.remove('bg-primary'))
-  }
-
-  handleClickHistory(item, i) {
-    this.activeHistory(i)
-    this.clickHistory.emit(item)
+  handleClickGridRow(rowData, rowIndex) {
+    if (rowIndex !== this.grid.rowNodes.length - 1) {
+      const removeRowData = []
+      this.grid.rowNodes.forEach(node => {
+        if (node.rowIndex > rowIndex) removeRowData.push(node.data)
+      })
+      this.handleRemoveHistories(removeRowData)
+      this.currentHistoryIndex = rowIndex
+      this.clickHistory.emit(rowData)
+    }
   }
 
   handleClickPrev() {
+    this.handleRemoveHistories([this.grid.getRowDataByIndex(this.currentHistoryIndex)])
     this.currentHistoryIndex -= 1;
-    this.currentHistoryIndex === -1 ? this.resetActiveHistory() : this.activeHistory(this.currentHistoryIndex)
-    this.clickHistory.emit(this.currentHistoryIndex === -1 ? null : this.gridHistory[this.currentHistoryIndex])
+    const rowData = this.currentHistoryIndex === -1 ? null : this.grid.getRowDataByIndex(this.currentHistoryIndex);
+    this.clickHistory.emit(rowData)
+  }
 
+  handleRemoveHistories(removeRowData: any[]) {
+    this.grid.removeByRowData(removeRowData)
+    this.grid.selectLastRow()
+    const removeIdList = removeRowData.map(row => row.id)
+    const dataSessionList = []
+    const getSessionData = this.storageService.getSessionStorage(multiLevelGridInfo);
+    getSessionData.forEach(item => {
+      if ((removeIdList.indexOf(item.historyId)) === -1) dataSessionList.push(item)
+    })
+    dataSessionList.forEach((item, index) => {
+      if (index === dataSessionList.length - 1) {
+        //TODO برا ی page , page size , criteria هم باید بنویسی
+        item.selectedChildId = removeIdList[0]
+        item.sort = getSessionData.find(item => item.historyId === removeIdList[0]).originalSort
+        item.page = getSessionData.find(item => item.historyId === removeIdList[0]).originalPage
+        item.pageSize = getSessionData.find(item => item.historyId === removeIdList[0]).originalPageSize
+      }
+    })
+    this.storageService.setSessionStorage(multiLevelGridInfo, dataSessionList)
   }
 
   handleClickNex() {
-    this.currentHistoryIndex += 1;
-    this.activeHistory(this.currentHistoryIndex)
-    this.clickHistory.emit(this.gridHistory[this.currentHistoryIndex])
+    // this.currentHistoryIndex += 1;
+    // if (this.currentHistoryIndex < this.grid.rowDataCount) {
+    //   const rowData = this.grid.getRowDataByIndex(this.currentHistoryIndex);
+    //   this.grid.selectLastRow()
+    // }
   }
 
   handleResetCriteria() {
@@ -285,7 +318,7 @@ export class GridActionsComponent implements OnInit {
 
   handleClickAction(type) {
     switch (type) {
-      case ACCESS_FORM_ACTION_TYPE.PERV :
+      case ACCESS_FORM_ACTION_TYPE.PERV:
         this.handleClickPrev()
         break
       case ACCESS_FORM_ACTION_TYPE.NEXT:
@@ -308,6 +341,7 @@ export class GridActionsComponent implements OnInit {
         break
     }
   }
+
 }
 
 @NgModule({
@@ -318,6 +352,7 @@ export class GridActionsComponent implements OnInit {
     NgIf,
     CustomButtonModule,
     CriteriaBuilderModule,
+    CustomGridModule,
   ],
   exports: [GridActionsComponent]
 })
