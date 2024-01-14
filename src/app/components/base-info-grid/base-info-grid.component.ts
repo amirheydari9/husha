@@ -251,9 +251,12 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       this.storageService.removeSessionStorage(multiLevelGridInfo)
     }
     await this.handleCreateDynamicGrid(currentRow)
-    this.gridApi.forEachNode(node => {
-      if (node.data?.id === currentRow.selectedChildId) node.setSelected(true)
-    })
+    this.gridApi.paginationGoToPage(currentRow.page)
+    setTimeout(() => {
+      this.gridApi.forEachNode(node => {
+        if (node.data?.id === currentRow.selectedChildId) node.setSelected(true)
+      })
+    }, 1000)
   }
 
   get selectedRow() {

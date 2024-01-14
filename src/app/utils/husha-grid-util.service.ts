@@ -145,39 +145,6 @@ export class HushaGridUtilService {
     return rowData
   }
 
-  createGrid(rowData: any[], form: IFetchFormRes, fetchSummary: boolean) {
-    const colDefs: ColDef[] = []
-    const jalaliFieldsName = []
-    form.fields.forEach(item => {
-      //TODO که دیگه کاری به viewType نداریم  چک و تیک برای وقتی که حلت خلاصه داریم
-      if (fetchSummary) {
-        if (item.name === 'code' || item.name === 'title') {
-          colDefs.push({field: item.name, headerName: item.caption})
-        }
-      } else {
-        if (item.isActive && (item.viewType == VIEW_TYPE.SHOW_IN_GRID || item.viewType === VIEW_TYPE.SHOW_IN_GRID_AND_FORM)) {
-          const col: ColDef = {field: item.name, headerName: item.caption}
-          colDefs.push(col)
-        }
-      }
-      if (item.fieldType.id === INPUT_FIELD_TYPE.JALALI_DATE_PICKER || item.fieldType.id === INPUT_FIELD_TYPE.JALALI_DATE_PICKER_WITH_TIME) {
-        jalaliFieldsName.push(item.name)
-      }
-    })
-
-    rowData.forEach(row => {
-      for (const [key, value] of Object.entries(row)) {
-        if (jalaliFieldsName.indexOf(key) > -1) {
-          row[key] = this.dateService.convertGeorgianToJalali(value as string)
-        }
-        if (typeof row[key] === 'object' && row[key] !== null) {
-          row[key] = row[key].title;
-        }
-      }
-    })
-    return {colDefs, rowData}
-  }
-
   handleSortParam(sortModel: any[]) {
     let sort = null
     if (sortModel.length) {
