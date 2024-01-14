@@ -76,6 +76,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     // paginationAutoPageSize:true,
     enableRangeSelection: true,
     pagination: true,
+    paginationPageSizeSelector: [5, 50, 100, 200],
     localeText: AG_GRID_LOCALE_FA,
     overlayNoRowsTemplate: 'رکوردی جهت نمایش یافت نشد',
     domLayout: 'autoHeight',
@@ -161,7 +162,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       )
     });
     if (gridConfig) {
-      this.colApi.applyColumnState({
+      this.gridApi.applyColumnState({
         state: gridConfig.sort,
         defaultState: {sort: null}
       })
@@ -210,7 +211,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       this.parentId = selectedRow.id
       this.gridHistory = selectedRow;
       const sortModel = []
-      this.colApi.getColumnState().map(col => {
+      this.gridApi.getColumnState().map(col => {
         if (col.sort !== null) sortModel.push({colId: col.colId, sort: col.sort, sortIndex: col.sortIndex})
       })
       const sessionGetData = this.storageService.getSessionStorage(multiLevelGridInfo) ?? []
@@ -260,7 +261,10 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   }
 
   get selectedRow() {
-    return this.gridApi?.getSelectedRows()[0]
+    if (!this.gridApi?.isDestroyed()) {
+      return this.gridApi?.getSelectedRows()[0]
+    }
+    return null
   }
 
   async handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
