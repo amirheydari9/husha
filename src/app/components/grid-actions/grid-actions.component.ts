@@ -69,8 +69,10 @@ export class GridActionsComponent implements OnInit {
   @Input() hasCriteria: boolean
 
   @Input() set gridHistory(data: any) {
-    this.grid.addRows([data])
-    this.currentHistoryIndex += 1;
+    if (data) {
+      this.grid.addRows([data])
+      this.currentHistoryIndex += 1;
+    }
   }
 
   @Input() form: IFetchFormRes
@@ -288,6 +290,8 @@ export class GridActionsComponent implements OnInit {
         //TODO برا ی page , page size , criteria هم باید بنویسی
         item.selectedChildId = removeIdList[0]
         item.sort = getSessionData.find(item => item.historyId === removeIdList[0]).originalSort
+        item.page = getSessionData.find(item => item.historyId === removeIdList[0]).originalPage
+        item.pageSize = getSessionData.find(item => item.historyId === removeIdList[0]).originalPageSize
       }
     })
     this.storageService.setSessionStorage(multiLevelGridInfo, dataSessionList)
