@@ -41,6 +41,7 @@ import {criteriaInterface} from "../../models/DTOs/fetch-all-form-data.DTO";
 import {ExportExcelDialogComponent} from "../dialog/export-excel-dialog/export-excel-dialog.component";
 import {StorageService} from 'src/app/utils/storage.service';
 import {firstHistoryMultiLevelGrid, multiLevelGridInfo} from 'src/app/constants/keys';
+import 'ag-grid-enterprise'
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -63,7 +64,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     defaultColDef: {
       sortable: true, flex: 1, resizable: true, minWidth: 150
     },
-    // getContextMenuItems: this.getContextMenuItems,
+    getContextMenuItems: this.getContextMenuItems,
     rowModelType: 'infinite',
     enableRtl: true,
     rowSelection: 'single',

@@ -47,6 +47,7 @@ export class CustomGridComponent implements OnInit {
     enableRtl: true,
     pagination: true,
     paginationPageSize: 5,
+    suppressContextMenu: true
   }
   @Input() set gridOptions(data: GridOptions) {
     if (data) {
