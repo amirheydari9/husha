@@ -39,7 +39,6 @@ import {AdvanceSearchDialogComponent} from "../dialog/advance-search-dialog/adva
 import {CommonModule} from "@angular/common";
 import {criteriaInterface} from "../../models/DTOs/fetch-all-form-data.DTO";
 import {ExportExcelDialogComponent} from "../dialog/export-excel-dialog/export-excel-dialog.component";
-// import 'ag-grid-enterprise';
 import {StorageService} from 'src/app/utils/storage.service';
 import {firstHistoryMultiLevelGrid, multiLevelGridInfo} from 'src/app/constants/keys';
 
@@ -58,14 +57,14 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   gridApi: GridApi
   colApi: ColumnApi
-  defaultPageSize = 2
+  defaultPageSize = 5
   columnDefs: ColDef[] = []
   gridOptions: GridOptions = {
     defaultColDef: {
       sortable: true, flex: 1, resizable: true, minWidth: 150
     },
     // getContextMenuItems: this.getContextMenuItems,
-    rowModelType: 'serverSide',
+    rowModelType: 'infinite',
     enableRtl: true,
     rowSelection: 'single',
     cacheBlockSize: this.defaultPageSize,
@@ -178,7 +177,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     //TODO test
     this.subscription.push(
       compRef.instance.paginationChanged.subscribe(event => {
-        this.gridApi.setNodesSelected({nodes: this.gridApi.getSelectedNodes(), newValue: false})
+        // this.gridApi.setNodesSelected({nodes: this.gridApi.getSelectedNodes(), newValue: false})
       })
     )
   }
@@ -225,8 +224,8 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       }
       sessionGetData.push({
         historyId: selectedRow.id,
-        page: this.gridApi.paginationGetCurrentPage(),
-        pageSize: this.gridApi.paginationGetPageSize(),
+        originalPage: this.gridApi.paginationGetCurrentPage(),
+        originalPageSize: this.gridApi.paginationGetPageSize(),
         originalSort: sortModel,
         criteria: null,
       })
@@ -250,10 +249,9 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       this.storageService.removeSessionStorage(firstHistoryMultiLevelGrid)
       this.storageService.removeSessionStorage(multiLevelGridInfo)
     }
-    // console.log(currentRow)
     await this.handleCreateDynamicGrid(currentRow)
     this.gridApi.forEachNode(node => {
-      if (node.data.id === currentRow.selectedChildId) node.setSelected(true)
+      if (node.data?.id === currentRow.selectedChildId) node.setSelected(true)
     })
   }
 
