@@ -95,6 +95,7 @@ export class CustomLookupFormComponent extends BaseControlValueAccessor<any> imp
       this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
       this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
       this.form.formKind.id === FORM_KIND.DETAIL ? this.activatedRoute.snapshot.queryParams['masterId'] : null,
+      this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.serviceTypeId : null,
     )
   }
 

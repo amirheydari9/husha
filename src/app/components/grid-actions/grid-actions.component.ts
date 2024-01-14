@@ -23,7 +23,8 @@ import {ColDef} from "ag-grid-community";
 @Component({
   selector: 'app-grid-actions',
   template: `
-    <div class="flex align-items-center mb-3" [ngClass]="[showSearch ? 'justify-content-between' :'justify-content-end']">
+    <div class="flex align-items-center mb-3"
+         [ngClass]="[showSearch ? 'justify-content-between' :'justify-content-end']">
       <div class="flex-grow-1" *ngIf="showSearch">
         <app-criteria-builder
           #criteriaBuilder
@@ -189,11 +190,31 @@ export class GridActionsComponent implements OnInit {
       type: ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH,
       tooltip: "حذف نتایج جستجو",
       order: 13
+    },
+    {
+      icon: "pi pi-file-edit",
+      styleClass: "p-button-rounded p-button-success",
+      type: ACCESS_FORM_ACTION_TYPE.SIGN,
+      tooltip: "تاریخچه امضا",
+      order: 14
+    },
+    {
+      icon: "pi pi-check",
+      styleClass: "p-button-rounded p-button-success",
+      type: ACCESS_FORM_ACTION_TYPE.SIGNATURE,
+      tooltip: "امضا",
+      order: 15
+    },
+    {
+      icon: "pi pi-times",
+      styleClass: "p-button-rounded p-button-danger",
+      type: ACCESS_FORM_ACTION_TYPE.RETURN_SIGNATURE,
+      tooltip: "برگشت امضا",
+      order: 16
     }
   ]
 
-  constructor(
-  ) {
+  constructor() {
   }
 
   get ACCESS_FORM_ACTION_TYPE(): typeof ACCESS_FORM_ACTION_TYPE {
@@ -211,13 +232,17 @@ export class GridActionsComponent implements OnInit {
       actionType === ACCESS_FORM_ACTION_TYPE.UPDATE ||
       actionType === ACCESS_FORM_ACTION_TYPE.DELETE ||
       actionType === ACCESS_FORM_ACTION_TYPE.ATTACHMENTS ||
-      actionType === ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE
+      actionType === ACCESS_FORM_ACTION_TYPE.DOWNLOAD_FILE||
+      actionType === ACCESS_FORM_ACTION_TYPE.SIGN
     ) ? !(!!this.selectedRow) : false
   }
 
   handleConfirmationConfig(type: ACCESS_FORM_ACTION_TYPE) {
     if (type === ACCESS_FORM_ACTION_TYPE.DELETE || type === ACCESS_FORM_ACTION_TYPE.DELETE_ALL) {
       return {confirmation: true, header: type === ACCESS_FORM_ACTION_TYPE.DELETE ? 'حذف رکورد' : 'حذف همه رکورد ها'}
+    }
+    if (type === ACCESS_FORM_ACTION_TYPE.SIGNATURE || type === ACCESS_FORM_ACTION_TYPE.RETURN_SIGNATURE) {
+      return {confirmation: true, header: type === ACCESS_FORM_ACTION_TYPE.SIGNATURE ? 'امضا' : 'برگشت امضا'}
     }
     return null
   }
@@ -276,6 +301,9 @@ export class GridActionsComponent implements OnInit {
       case ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH:
       case ACCESS_FORM_ACTION_TYPE.EXPORT:
       case ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH:
+      case ACCESS_FORM_ACTION_TYPE.SIGN:
+      case ACCESS_FORM_ACTION_TYPE.SIGNATURE:
+      case ACCESS_FORM_ACTION_TYPE.RETURN_SIGNATURE:
         this.onAction.emit(type)
         break
     }

@@ -7,7 +7,9 @@ import {
   NgModule,
   OnInit,
   Output,
-  ViewChild
+  Renderer2,
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
 import {GridActionsComponent, GridActionsModule} from "../grid-actions/grid-actions.component";
 import {AgGridAngular, AgGridModule} from "ag-grid-angular";
@@ -37,6 +39,8 @@ import {AdvanceSearchDialogComponent} from "../dialog/advance-search-dialog/adva
 import {CommonModule} from "@angular/common";
 import {criteriaInterface} from "../../models/DTOs/fetch-all-form-data.DTO";
 import {ExportExcelDialogComponent} from "../dialog/export-excel-dialog/export-excel-dialog.component";
+import {FetchFormDataByIdDTO} from "../../models/DTOs/fetch-form-data-by-id.DTO";
+import {SignatureDialogComponent} from "../dialog/signature-dialog/signature-dialog.component";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -81,6 +85,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
 
   @ViewChild('gridActions') gridActions: GridActionsComponent
   @ViewChild('grid', {read: AgGridAngular}) grid: AgGridAngular
+  // @ViewChild('gridContainer', {read: ViewContainerRef}) gridContainer: ViewContainerRef
 
   gridHistory = []
   parentId: number
@@ -95,8 +100,85 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     private hushaGridUtilService: HushaGridUtilService,
     private router: Router,
     private dialogManagementService: DialogManagementService,
+    // private renderer: Renderer2
   ) {
   }
+
+  // async ngAfterViewInit(): Promise<void> {
+  //   this.gridApi = this.grid.api;
+  //   this.colApi = this.grid.columnApi;
+  //   await this.setDataSourceAsync();
+  //   this.gridApi.forEachNode(node => console.log(node));
+  // }
+  //
+  // private async setDataSourceAsync(): Promise<void> {
+  //   return new Promise(((resolve, reject) => {
+  //     const dataSource = {
+  //       getRows: async (params: IGetRowsParams) => {
+  //         const payload = new FetchAllDataPayloadDTO(
+  //           this.form,
+  //           this.parentId,
+  //           this.masterId,
+  //           this.gridApi.paginationGetCurrentPage(),
+  //           this.gridApi.paginationGetPageSize(),
+  //           this.hushaGridUtilService.handleSortParam(params.sortModel),
+  //           this.criteria ?? null,
+  //           null,
+  //           this.fetchSummary ? 'id,code,title' : null
+  //         );
+  //         try {
+  //           const formData = await this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).toPromise();
+  //           const paginationInfo = formData.shift();
+  //           const {colDefs, rowData} = this.hushaGridUtilService.createGrid(formData, this.form, this.fetchSummary);
+  //           this.columnDefs = colDefs;
+  //           params.successCallback(rowData, paginationInfo['paginationTotalElements']);
+  //           resolve()
+  //         } catch (error) {
+  //           params.failCallback();
+  //           reject()
+  //         }
+  //       },
+  //     };
+  //     this.gridApi.setDatasource(dataSource);
+  //   }))
+  // }
+
+  // ngAfterViewInit(): void {
+  //   this.gridContainer.clear()
+  //   const compRef = this.gridContainer.createComponent(AgGridAngular)
+  //   compRef.setInput('gridOptions', this.gridOptions)
+  //   this.renderer.addClass(compRef.location.nativeElement, 'ag-theme-alpine')
+  //   compRef.instance.gridReady.subscribe(event => {
+  //     this.gridApi = event.api
+  //     this.colApi = event.columnApi
+  //     event.api.setDatasource({
+  //       getRows: ((params: IGetRowsParams) => {
+  //         const payload = new FetchAllDataPayloadDTO(
+  //           this.form,
+  //           this.parentId,
+  //           this.masterId,
+  //           this.gridApi.paginationGetCurrentPage(),
+  //           this.gridApi.paginationGetPageSize(),
+  //           this.hushaGridUtilService.handleSortParam(params.sortModel),
+  //           this.criteria ?? null,
+  //           null,
+  //           this.fetchSummary ? 'id,code,title' : null
+  //         )
+  //         this.hushaGridUtilService.handleFetchData(this.fetchSummary, payload).subscribe(formData => {
+  //             const paginationInfo = formData.shift()
+  //             const {colDefs, rowData} = this.hushaGridUtilService.createGrid(formData, this.form, this.fetchSummary)
+  //             this.columnDefs = colDefs
+  //             compRef.setInput('columnDefs', this.columnDefs)
+  //             this.cdr.detectChanges()
+  //             //TODO وقتی دیتا نداریم باید عیارت دیتا یافت نشد نمایش داده شود
+  //             params.successCallback(rowData, paginationInfo['paginationTotalElements'])
+  //           },
+  //           error => params.failCallback()
+  //         )
+  //       })
+  //     })
+  //   })
+  // }
 
   ngAfterViewInit(): void {
     this.gridApi = this.grid.api;
@@ -197,6 +279,8 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       this.handleResetAdvanceSearch()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.EXPORT) {
       this.handleExport()
+    } else if ($event === ACCESS_FORM_ACTION_TYPE.SIGN) {
+      this.handleSign()
     }
   }
 
@@ -299,6 +383,28 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     this.gridApi.setDatasource(this.dataSource)
     this.criteriaMetaData = null
   }
+
+  private handleSign() {
+    const payload = new FetchFormDataByIdDTO(
+      this.hushaCustomerUtilService.customer.id,
+      this.hushaCustomerUtilService.serviceTypeId,
+      this.form.id,
+      this.form.formKind.id,
+      this.selectedRow.id,
+      this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
+      this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
+      this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null,
+      this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.serviceTypeId : null,
+    )
+    this.subscription.push(
+      this.baseInfoService.fetchFormData(payload).subscribe(data => {
+        this.dialogManagementService.openDialog(SignatureDialogComponent, {
+          data: {row: data, form: this.form}
+        })
+      })
+    )
+  }
+
 }
 
 @NgModule({
