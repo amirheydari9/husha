@@ -135,13 +135,10 @@ export class CustomGridComponent implements OnInit {
   }
 
   onCellKeyDown(event: CellKeyDownEvent<any> | FullWidthCellKeyDownEvent<any>) {
-    console.log('onCellKeyDown', event);
     if (!event.event) return;
     const keyboardEvent = (event.event as unknown) as KeyboardEvent;
     const key = keyboardEvent.key;
     if (key === 'Enter') {
-      //TODO بررسی کن ببین که اصلا وقتی خارج از گردی هستی focusedCell داری یا نه
-      //TODO و اینکه وقتی خارج از گریدی این اکشن کال میشه یا نه
       this.onEnterKeyDown.emit(this.getRowDataByIndex(this.focusedCell.rowIndex))
     }
   }
