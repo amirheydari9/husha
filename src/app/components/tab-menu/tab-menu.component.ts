@@ -1,4 +1,4 @@
-import {Component, ElementRef, NgModule, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, NgModule, OnInit, ViewChild} from '@angular/core';
 import {AppConfigService} from "../../utils/app-config.service";
 import {INavbarData} from "../dashboard/navbar-data.interface";
 import {CommonModule} from "@angular/common";
@@ -62,8 +62,12 @@ export class TabMenuComponent implements OnInit {
   constructor(
     private appConfigService: AppConfigService,
     public router: Router,
-    private renderer: Renderer2,
   ) {
+  }
+
+  @HostListener('window:click', ['$event'])
+  onWindowClick(event: Event) {
+    if (event.target !== this.contextMenu.nativeElement) this.closeContextMenu();
   }
 
   ngOnInit(): void {
@@ -79,9 +83,6 @@ export class TabMenuComponent implements OnInit {
       })
     )
     this.closeContextMenu()
-    this.renderer.listen('window', 'click', (e: Event) => {
-      if (e.target !== this.contextMenu.nativeElement) this.closeContextMenu()
-    });
   }
 
   drop(event: CdkDragDrop<INavbarData[]>): void {
