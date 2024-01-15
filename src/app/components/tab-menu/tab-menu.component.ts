@@ -33,13 +33,9 @@ export class TabMenuItemDTO {
       </div>
       <div #contextMenu class="contextMenu" [ngStyle]="rightPanelStyle">
         <ul class="menu">
-          <li (click)="closeOtherTabs()" class="flex align-items-center">
-            <i class="pi pi-times me-1"></i>
-            <a class="text-1 font-xs-regular">بستن تب های دیگر</a>
-          </li>
-          <li (click)="closeAllTabs()" class="flex align-items-center">
-            <i class="pi pi-times me-1"></i>
-            <a class="text-1 font-xs-regular">بستن همه تب ها</a>
+          <li *ngFor="let item of contextMenuItems" (click)="item.action()" class="flex align-items-center">
+            <i class="me-1" [ngClass]="item.icon"></i>
+            <a class="text-1 font-xs-regular">{{item.label}}</a>
           </li>
         </ul>
       </div>
@@ -56,10 +52,17 @@ export class TabMenuComponent implements OnInit {
 
   @ViewChild('contextMenu') contextMenu: ElementRef;
 
+  contextMenuItems = [
+    {icon: 'pi pi-times', label: 'بستن تب های دیگر', action: () => this.closeOtherTabs()},
+    {icon: 'pi pi-times', label: 'بستن همه تب ها', action: () => this.closeAllTabs()},
+    {icon: 'pi pi-times', label: 'باز کردن در تب جدید', action: () => this.handleOpenNewWindow(false)},
+    {icon: 'pi pi-times', label: 'باز کردن در مرورگر جدید', action: () => this.handleOpenNewWindow()},
+  ]
+
   constructor(
     private appConfigService: AppConfigService,
     public router: Router,
-    private renderer: Renderer2
+    private renderer: Renderer2,
   ) {
   }
 
@@ -127,6 +130,11 @@ export class TabMenuComponent implements OnInit {
 
   closeCurrentTab() {
     this.closeContextMenu()
+  }
+
+  handleOpenNewWindow(isNewWindow: boolean = true) {
+    const tabMenu = this.tabMenus.find(menu => menu.routerLink === this.contextTabManu.routerLink)
+    window.open(new URL(window.location.href).origin + tabMenu.routerLink, '_blank', isNewWindow ? 'location=yes,scrollbars=yes,status=yes' : '')
   }
 }
 
