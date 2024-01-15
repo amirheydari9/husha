@@ -90,7 +90,7 @@ export class TabMenuComponent implements OnInit {
     this.tabMenus = this.tabMenus.filter(item => item.routerLink !== menu.routerLink)
     if (this.router.url === menu.routerLink) {
       this.tabMenus.length
-        ? this.router.navigate([this.tabMenus[i - 1].routerLink])
+        ? this.router.navigate([this.tabMenus[i == 0 ? 0 : i - 1].routerLink])
         : this.router.navigate(['/'])
     }
   }
