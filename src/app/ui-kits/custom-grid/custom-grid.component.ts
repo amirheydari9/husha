@@ -80,7 +80,7 @@ export class CustomGridComponent implements OnInit {
   }
 
   get gridID(): string {
-    return this.gridApi.getGridId()
+    return this.gridApi?.getGridId()
   }
 
   get rowNodes(): IRowNode[] {
@@ -90,7 +90,7 @@ export class CustomGridComponent implements OnInit {
   }
 
   get rowDataCount(): number {
-    return this.gridApi.getDisplayedRowCount()
+    return this.gridApi?.getDisplayedRowCount()
   }
 
   get selectedRows() {
@@ -98,7 +98,7 @@ export class CustomGridComponent implements OnInit {
   }
 
   get focusedCell(): CellPosition {
-    return this.gridApi.getFocusedCell()
+    return this.gridApi?.getFocusedCell()
   }
 
   getRowDataByIndex(index) {
