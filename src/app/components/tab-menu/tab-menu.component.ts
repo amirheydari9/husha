@@ -24,10 +24,10 @@ export class TabMenuItemDTO {
         <div cdkDropList (cdkDropListDropped)="drop($event)" class="flex" cdkDropListOrientation="horizontal">
           <div class="tab-menu-item" *ngFor="let menu of tabMenus;let i = index" cdkDrag
                (mouseup)="detectRightClick($event,menu)">
-            <a class="text-1 me-2" [ngClass]="[router.url === menu.routerLink ? 'font-xs-bold' :'font-xs-medium']"
+            <a class="text-1" [ngClass]="[router.url === menu.routerLink ? 'font-xs-bold' :'font-xs-medium']"
                routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
                [routerLink]="menu.routerLink">{{ menu.label }}</a>
-            <i class="pi pi-times cursor-pointer pr-1" (click)="handleCloseTab($event,menu,i)"></i>
+            <i class="pi pi-times cursor-pointer mr-3" (click)="handleCloseTab($event,menu,i)"></i>
           </div>
         </div>
       </div>
