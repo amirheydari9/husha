@@ -7,6 +7,14 @@ import {Router, RouterModule} from "@angular/router";
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 
+export class TabMenuItemDTO {
+  constructor(
+    public label: string,
+    public routerLink: string
+  ) {
+  }
+}
+
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
   selector: 'app-tab-menu',
@@ -41,10 +49,10 @@ import {Subscription} from "rxjs";
 })
 export class TabMenuComponent implements OnInit {
 
-  tabMenus: INavbarData[] = []
+  tabMenus: TabMenuItemDTO[] = []
   subscription: Subscription[] = []
   rightPanelStyle: any = {}
-  contextTabManu: INavbarData
+  contextTabManu: TabMenuItemDTO
 
   @ViewChild('contextMenu') contextMenu: ElementRef;
 
@@ -58,7 +66,8 @@ export class TabMenuComponent implements OnInit {
   ngOnInit(): void {
     this.subscription.push(
       this.appConfigService.tabMenu().subscribe((data) => {
-        if (!this.tabMenus.length || (this.tabMenus.length && !this.tabMenus.includes(data))) this.tabMenus.push(data)
+        const tab = this.tabMenus.find(tab => tab.routerLink == data.routerLink)
+        if (!tab) this.tabMenus.push(data)
       })
     )
     this.subscription.push(
@@ -76,9 +85,9 @@ export class TabMenuComponent implements OnInit {
     moveItemInArray(this.tabMenus, event.previousIndex, event.currentIndex);
   }
 
-  handleCloseTab($event: MouseEvent, menu: INavbarData, i: number) {
+  handleCloseTab($event: MouseEvent, menu: TabMenuItemDTO, i: number) {
     $event.preventDefault()
-    this.tabMenus = this.tabMenus.filter(item => item.id !== menu.id)
+    this.tabMenus = this.tabMenus.filter(item => item.routerLink !== menu.routerLink)
     if (this.router.url === menu.routerLink) {
       this.tabMenus.length
         ? this.router.navigate([this.tabMenus[i - 1].routerLink])
@@ -106,7 +115,7 @@ export class TabMenuComponent implements OnInit {
 
   closeOtherTabs() {
     this.closeContextMenu()
-    this.tabMenus = this.tabMenus.filter(item => item.id === this.contextTabManu.id)
+    this.tabMenus = this.tabMenus.filter(item => item.routerLink === this.contextTabManu.routerLink)
     this.router.navigate([this.contextTabManu.routerLink])
   }
 

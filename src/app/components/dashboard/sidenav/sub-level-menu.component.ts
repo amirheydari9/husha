@@ -3,6 +3,7 @@ import {INavbarData} from "../navbar-data.interface";
 import {fadeInOut, subMenu} from "../animations";
 import {Router} from "@angular/router";
 import {AppConfigService} from "../../../utils/app-config.service";
+import {TabMenuItemDTO} from "../../tab-menu/tab-menu.component";
 
 @Component({
   selector: 'app-sub-level-menu',
@@ -83,6 +84,6 @@ export class SubLevelMenuComponent implements OnInit {
   }
 
   handleSelectMenu(item: INavbarData) {
-    if (item.items.length === 0) this.appConfigService.setTabMenu(item)
+    if (item.items.length === 0) this.appConfigService.setTabMenu(new TabMenuItemDTO(item.label, item.routerLink))
   }
 }

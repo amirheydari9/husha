@@ -16,6 +16,9 @@ import {DeleteFormDataDTO} from "../models/DTOs/delete-form-data.DTO";
 import {BaseInfoService} from "../api/base-info.service";
 import {FetchAccessActionDTO} from "../models/DTOs/fetch-access-action.DTO";
 import {DateService} from "./date.service";
+import {Router} from "@angular/router";
+import {TabMenuItemDTO} from "../components/tab-menu/tab-menu.component";
+import {AppConfigService} from "./app-config.service";
 
 export class FetchAllDataPayloadDTO {
   constructor(
@@ -40,7 +43,9 @@ export class HushaGridUtilService {
   constructor(
     private hushaCustomerUtilService: HushaCustomerUtilService,
     private baseInfoService: BaseInfoService,
-    private dateService: DateService
+    private dateService: DateService,
+    private router: Router,
+    private appConfigService: AppConfigService
   ) {
   }
 
@@ -174,4 +179,25 @@ export class HushaGridUtilService {
     const payload = this.handleCreatePayloadForFetchAllData(data)
     return this.baseInfoService.fetchAllFormData(payload)
   }
+
+  handleRedirectActions(action: ACCESS_FORM_ACTION_TYPE, form: IFetchFormRes, masterId: number, selectedRow?: any) {
+    let routerLink;
+    let label;
+    if (action === ACCESS_FORM_ACTION_TYPE.ADD) {
+      routerLink = `/form/${form.id}/create`
+      label = `ایجاد رکورد برای ${form.title}`
+    } else if (action === ACCESS_FORM_ACTION_TYPE.IMPORT) {
+      routerLink = `/form/${form.id}/import-excel`
+      label = `ایمپورت اطلاعات برای ${form.title}`
+    } else if (action === ACCESS_FORM_ACTION_TYPE.UPDATE) {
+      routerLink = `/form/${form.id}/update/${selectedRow['id']}`
+      label = `ویرایش اطلاعات ${selectedRow['title']}`
+    }
+    this.router.navigate([routerLink], {
+      queryParams: {
+        masterId: form.formKind.id === FORM_KIND.DETAIL ? masterId : null
+      }
+    }).then(() => this.appConfigService.setTabMenu(new TabMenuItemDTO(label, routerLink)))
+  }
+
 }

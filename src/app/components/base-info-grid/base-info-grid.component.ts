@@ -106,7 +106,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     private router: Router,
     private dialogManagementService: DialogManagementService,
     private storageService: StorageService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
   ) {
   }
 
@@ -264,16 +264,14 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   }
 
   async handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
-    if ($event === ACCESS_FORM_ACTION_TYPE.ADD) {
-      this.handleAdd()
+    if ($event === ACCESS_FORM_ACTION_TYPE.ADD || $event === ACCESS_FORM_ACTION_TYPE.IMPORT) {
+      this.hushaGridUtilService.handleRedirectActions($event, this.form, this.masterId)
     } else if ($event === ACCESS_FORM_ACTION_TYPE.UPDATE) {
-      this.handleUpdate()
+      this.hushaGridUtilService.handleRedirectActions($event, this.form, this.masterId, this.selectedRow)
     } else if ($event === ACCESS_FORM_ACTION_TYPE.DELETE) {
       this.handleDelete()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.ATTACHMENTS) {
       this.handleAttachment()
-    } else if ($event === ACCESS_FORM_ACTION_TYPE.IMPORT) {
-      this.handleImport()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH) {
       await this.handleAdvanceSearch()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH) {
@@ -283,22 +281,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     } else if ($event === ACCESS_FORM_ACTION_TYPE.SIGN) {
       this.handleSign()
     }
-  }
-
-  handleAdd() {
-    this.router.navigate([`/form/${this.form.id}/create`], {
-      queryParams: {
-        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
-      }
-    })
-  }
-
-  handleUpdate() {
-    this.router.navigate([`/form/${this.form.id}/update/${this.selectedRow?.id}`], {
-      queryParams: {
-        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
-      }
-    })
   }
 
   handleDelete() {
@@ -320,14 +302,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   handleAttachment() {
     this.dialogManagementService.openDialog(AttachmentListDialogComponent, {
       data: {form: this.form, ownId: this.selectedRow?.id},
-    })
-  }
-
-  handleImport() {
-    this.router.navigate([`/form/${this.form.id}/import-excel`], {
-      queryParams: {
-        masterId: this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null
-      }
     })
   }
 

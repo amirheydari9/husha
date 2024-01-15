@@ -16,6 +16,7 @@ import {AutoUnsubscribe} from "../../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {IMenuRes} from "../../../models/interface/menu-res.interface";
 import {AppConfigService} from "../../../utils/app-config.service";
+import {TabMenuItemDTO} from "../../tab-menu/tab-menu.component";
 
 export interface SidenavToggle {
   screenWidth: number;
@@ -96,7 +97,9 @@ export class SidenavComponent implements OnInit {
   }
 
   shrinkItems(item: INavbarData, i: number): void {
-    if (item.items.length === 0) this.appConfigService.setTabMenu(item)
+    if (item.items.length === 0) {
+      this.appConfigService.setTabMenu(new TabMenuItemDTO(item.label, item.routerLink))
+    }
     this.sideNavItem.map(item => item.nativeElement.children[0].classList.remove('active'))
     this.sideNavItem.get(i).nativeElement.children[0].classList.add('active')
     if (!this.multiple) {
