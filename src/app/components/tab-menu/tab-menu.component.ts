@@ -16,10 +16,10 @@ import {Subscription} from "rxjs";
         <div cdkDropList (cdkDropListDropped)="drop($event)" class="flex" cdkDropListOrientation="horizontal">
           <div class="tab-menu-item" *ngFor="let menu of tabMenus;let i = index" cdkDrag
                (mouseup)="detectRightClick($event,menu)">
-            <a class="text-1 me-2" [ngClass]="[router.url === menu.routerLink ? 'font-sm-bold' :'font-sm-regular']"
+            <a class="text-1 me-2" [ngClass]="[router.url === menu.routerLink ? 'font-xs-bold' :'font-xs-medium']"
                routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
                [routerLink]="menu.routerLink">{{ menu.label }}</a>
-            <i class="pi pi-times cursor-pointer" (click)="handleCloseTab($event,menu,i)"></i>
+            <i class="pi pi-times cursor-pointer pr-1" (click)="handleCloseTab($event,menu,i)"></i>
           </div>
         </div>
       </div>
@@ -61,6 +61,8 @@ export class TabMenuComponent implements OnInit {
         if (!this.tabMenus.length || (this.tabMenus.length && !this.tabMenus.includes(data))) this.tabMenus.push(data)
       })
     )
+    console.log("menu",this.tabMenus);
+    
     this.subscription.push(
       this.appConfigService.onResetTabMenu().subscribe(() => {
         this.tabMenus = []
@@ -87,6 +89,8 @@ export class TabMenuComponent implements OnInit {
   }
 
   detectRightClick($event, menu) {
+    console.log("m",menu);
+    
     if ($event.which === 3) {
       this.rightPanelStyle = {
         'display': 'block',
