@@ -299,6 +299,7 @@ export class GridActionsComponent implements OnInit {
         item.sort = getSessionData.find(item => item.historyId === removeIdList[0]).originalSort
         item.page = getSessionData.find(item => item.historyId === removeIdList[0]).originalPage
         item.pageSize = getSessionData.find(item => item.historyId === removeIdList[0]).originalPageSize
+        item.metaCriteria = getSessionData.find(item => item.historyId === removeIdList[0]).originalMetaCriteria
       }
     })
     this.storageService.setSessionStorage(multiLevelGridInfo, dataSessionList)

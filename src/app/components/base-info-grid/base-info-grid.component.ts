@@ -220,7 +220,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
           page: this.gridApi.paginationGetCurrentPage(),
           pageSize: this.gridApi.paginationGetPageSize(),
           sort: sortModel,
-          criteria: null,
+          metaCriteria: this.criteriaMetaData,
         })
       }
       sessionGetData.push({
@@ -228,8 +228,9 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         originalPage: this.gridApi.paginationGetCurrentPage(),
         originalPageSize: this.gridApi.paginationGetPageSize(),
         originalSort: sortModel,
-        criteria: null,
+        originalMetaCriteria: this.criteriaMetaData,
       })
+      this.handleResetCriteria()
       this.gridApi.setNodesSelected({nodes: this.gridApi.getSelectedNodes(), newValue: false})
       await this.handleCreateDynamicGrid()
       console.log(this.selectedRow)
@@ -250,6 +251,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       this.storageService.removeSessionStorage(firstHistoryMultiLevelGrid)
       this.storageService.removeSessionStorage(multiLevelGridInfo)
     }
+    this.handleCreateCriteria(currentRow.metaCriteria)
     await this.handleCreateDynamicGrid(currentRow)
     this.gridApi.paginationGoToPage(currentRow.page)
     setTimeout(() => {
@@ -311,27 +313,14 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     }).subscribe(async data => {
       if (data) {
         this.gridActions.handleResetCriteria()
-        if (data.length) {
-          this.criteriaMetaData = data;
-          this.criteria = data.map(cr => ({
-            key: cr.key,
-            operation: cr.operation,
-            value: cr.value,
-            valueType: cr.valueType,
-          }))
-        } else {
-          this.criteriaMetaData = null
-          this.criteria = null
-        }
+        this.handleCreateCriteria(data)
         await this.handleCreateDynamicGrid()
       }
     })
   }
 
   async handleResetAdvanceSearch() {
-    this.criteria = null
-    this.criteriaMetaData = null
-    this.gridActions.handleResetCriteria()
+    this.handleResetCriteria()
     await this.handleCreateDynamicGrid()
   }
 
@@ -399,6 +388,27 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         })
       })
     )
+  }
+
+  handleCreateCriteria(metaCriteria) {
+    if (metaCriteria && metaCriteria.length) {
+      this.criteriaMetaData = metaCriteria;
+      this.criteria = metaCriteria.map(cr => ({
+        key: cr.key,
+        operation: cr.operation,
+        value: cr.value,
+        valueType: cr.valueType,
+      }))
+    } else {
+      this.criteriaMetaData = null
+      this.criteria = null
+    }
+  }
+
+  handleResetCriteria() {
+    this.criteria = null
+    this.criteriaMetaData = null
+    this.gridActions.handleResetCriteria()
   }
 
 }
