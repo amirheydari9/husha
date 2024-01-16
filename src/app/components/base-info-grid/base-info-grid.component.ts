@@ -66,7 +66,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     defaultColDef: {
       sortable: true, flex: 1, resizable: true, minWidth: 150
     },
-    getContextMenuItems: this.getContextMenuItems,
+    // getContextMenuItems: this.getContextMenuItems,
     rowModelType: 'infinite',
     enableRtl: true,
     rowSelection: 'single',
@@ -84,6 +84,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     // alwaysShowHorizontalScroll:false
   }
   accessFormActions: ACCESS_FORM_ACTION_TYPE[] = []
+  contextMenuActions: ACCESS_FORM_ACTION_TYPE[] = null
 
   @Input() class: string
   @Input() form: IFetchFormRes
@@ -169,6 +170,9 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       this.gridApi.paginationGoToPage(gridConfig.page)
       this.gridApi.paginationSetPageSize(gridConfig.pageSize)
     }
+    if (this.contextMenuActions) {
+      this.gridApi.setGridOption('getContextMenuItems', this.getContextMenuItems)
+    }
     await this.setDataSourceAsync();
     this.subscription.push(
       compRef.instance.rowClicked.subscribe(event => this.handleRowClicked(event))
@@ -188,10 +192,14 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     this.storageService.removeSessionStorage(firstHistoryMultiLevelGrid)
     this.storageService.removeSessionStorage(multiLevelGridInfo)
     await this.handleCreateDynamicGrid()
+
   }
 
   async ngOnInit(): Promise<void> {
-    this.accessFormActions = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.fetchSummary)
+    const {actions, contextMenu} = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.fetchSummary)
+    this.accessFormActions = actions
+    this.contextMenuActions = contextMenu
+    this.gridApi.setGridOption('getContextMenuItems', this.getContextMenuItems)
   }
 
   async handleRowDbClicked($event: any) {
@@ -392,21 +400,21 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     this.criteriaMetaData = null
   }
 
-  getContextMenuItems(params: GetContextMenuItemsParams): (string | MenuItemDef)[] {
-    var result: (string | MenuItemDef)[] = [
-      {
-        name: 'copy' + params.value,
-        action: () => {
-        },
-        cssClasses: ['red', 'bold'],
-      },
-      {
-        name: 'cut',
-        action: () => {
-        },
-        cssClasses: ['red', 'bold'],
-      },
-    ]
+
+  getContextMenuItems = (params: GetContextMenuItemsParams): (string | MenuItemDef)[] => {
+    const result: (string | MenuItemDef)[] = []
+    if (this.contextMenuActions.indexOf(ACCESS_FORM_ACTION_TYPE.DELETE) > -1) {
+      result.push({name: 'حذف '})
+    }
+    if (this.contextMenuActions.indexOf(ACCESS_FORM_ACTION_TYPE.UPDATE) > -1) {
+      result.push({name: 'ویرایش '})
+    }
+    if (this.contextMenuActions.indexOf(ACCESS_FORM_ACTION_TYPE.SIGN) > -1) {
+      result.push({name: 'تایید سند و امضاها '})
+    }
+    if (this.contextMenuActions.indexOf(ACCESS_FORM_ACTION_TYPE.ATTACHMENTS) > -1) {
+      result.push({name: 'لیست ضمیمه ها'})
+    }
     return result
   }
 
