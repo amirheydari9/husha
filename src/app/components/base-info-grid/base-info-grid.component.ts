@@ -209,17 +209,13 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     try {
       this.parentId = selectedRow.id
       this.gridHistory = selectedRow;
-      const sortModel = []
-      this.colApi.getColumnState().map(col => {
-        if (col.sort !== null) sortModel.push({colId: col.colId, sort: col.sort, sortIndex: col.sortIndex})
-      })
       const sessionGetData = this.storageService.getSessionStorage(multiLevelGridInfo) ?? []
       if (!sessionGetData.length) {
         this.storageService.setSessionStorage(firstHistoryMultiLevelGrid, {
           selectedChildId: selectedRow.id,
           page: this.gridApi.paginationGetCurrentPage(),
           pageSize: this.gridApi.paginationGetPageSize(),
-          sort: sortModel,
+          sort: this.hushaGridUtilService.handleCreateSortModel(this.colApi),
           metaCriteria: this.criteriaMetaData,
         })
       }
@@ -227,7 +223,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         historyId: selectedRow.id,
         originalPage: this.gridApi.paginationGetCurrentPage(),
         originalPageSize: this.gridApi.paginationGetPageSize(),
-        originalSort: sortModel,
+        originalSort: this.hushaGridUtilService.handleCreateSortModel(this.colApi),
         originalMetaCriteria: this.criteriaMetaData,
       })
       this.handleResetCriteria()
@@ -294,9 +290,16 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         this.selectedRow?.id,
         this.masterId
       )).subscribe(async data => {
-        this.gridApi.paginationGoToPage(this.gridApi.paginationGetCurrentPage())
         // this.gridApi.applyServerSideTransaction({remove:[this.selectedRow.data]})
-        console.log(this.selectedRow)
+        // this.gridApi.paginationGoToPage(this.gridApi.paginationGetCurrentPage())
+
+        const gridConfig = {
+          page: this.gridApi.paginationGetCurrentPage(),
+          pageSize: this.gridApi.paginationGetPageSize(),
+          sort: this.hushaGridUtilService.handleCreateSortModel(this.colApi)
+        }
+        await this.handleCreateDynamicGrid(gridConfig)
+        this.gridApi.paginationGoToPage(gridConfig.page)
       })
     )
   }
