@@ -34,7 +34,7 @@ export class TabMenuItemDTO {
       <div #contextMenu class="contextMenu" [ngStyle]="rightPanelStyle">
         <ul class="menu">
           <li *ngFor="let item of contextMenuItems" (click)="item.action()" class="flex align-items-center">
-            <i class="me-1" [ngClass]="item.icon"></i>
+<!--            <i class="me-1" [ngClass]="item.icon"></i>-->
             <a class="text-1 font-xs-regular">{{item.label}}</a>
           </li>
         </ul>
