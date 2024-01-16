@@ -15,7 +15,8 @@ import {DialogService} from "primeng/dynamicdialog";
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {ReactiveFormsModule} from "@angular/forms";
 import {NgxSpinnerModule} from "ngx-spinner";
-import {BaseInfoGridComponent, BaseInfoGridModule} from "./components/base-info-grid/base-info-grid.component";
+import {BaseInfoGridModule} from "./components/base-info-grid/base-info-grid.component";
+import 'ag-grid-enterprise'
 
 @NgModule({
   declarations: [

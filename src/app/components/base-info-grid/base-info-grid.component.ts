@@ -40,7 +40,6 @@ import {criteriaInterface} from "../../models/DTOs/fetch-all-form-data.DTO";
 import {ExportExcelDialogComponent} from "../dialog/export-excel-dialog/export-excel-dialog.component";
 import {StorageService} from 'src/app/utils/storage.service';
 import {firstHistoryMultiLevelGrid, multiLevelGridInfo} from 'src/app/constants/keys';
-import 'ag-grid-enterprise'
 import {FetchFormDataByIdDTO} from "../../models/DTOs/fetch-form-data-by-id.DTO";
 import {SignatureDialogComponent} from "../dialog/signature-dialog/signature-dialog.component";
 
