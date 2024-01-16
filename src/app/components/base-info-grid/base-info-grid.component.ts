@@ -66,7 +66,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     defaultColDef: {
       sortable: true, flex: 1, resizable: true, minWidth: 150
     },
-    getContextMenuItems: this.getContextMenuItems,
+    // getContextMenuItems: this.getContextMenuItems,
     rowModelType: 'infinite',
     enableRtl: true,
     rowSelection: 'single',
@@ -76,6 +76,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     // paginationAutoPageSize:true,
     enableRangeSelection: true,
     pagination: true,
+    paginationPageSizeSelector: [5, 50, 100, 200],
     localeText: AG_GRID_LOCALE_FA,
     overlayNoRowsTemplate: 'رکوردی جهت نمایش یافت نشد',
     domLayout: 'autoHeight',
@@ -83,6 +84,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     // alwaysShowHorizontalScroll:false
   }
   accessFormActions: ACCESS_FORM_ACTION_TYPE[] = []
+  contextMenuActions: ACCESS_FORM_ACTION_TYPE[] = null
 
   @Input() class: string
   @Input() form: IFetchFormRes
@@ -106,7 +108,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     private router: Router,
     private dialogManagementService: DialogManagementService,
     private storageService: StorageService,
-    private renderer: Renderer2,
+    private renderer: Renderer2
   ) {
   }
 
@@ -161,12 +163,15 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       )
     });
     if (gridConfig) {
-      this.colApi.applyColumnState({
+      this.gridApi.applyColumnState({
         state: gridConfig.sort,
         defaultState: {sort: null}
       })
       this.gridApi.paginationGoToPage(gridConfig.page)
       this.gridApi.paginationSetPageSize(gridConfig.pageSize)
+    }
+    if (this.contextMenuActions) {
+      this.gridApi.setGridOption('getContextMenuItems', this.getContextMenuItems)
     }
     await this.setDataSourceAsync();
     this.subscription.push(
@@ -190,7 +195,10 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.accessFormActions = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.fetchSummary)
+    const {actions, contextMenu} = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.fetchSummary)
+    this.accessFormActions = actions
+    this.contextMenuActions = contextMenu
+    this.gridApi.setGridOption('getContextMenuItems', this.getContextMenuItems)
   }
 
   async handleRowDbClicked($event: any) {
@@ -258,7 +266,10 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   }
 
   get selectedRow() {
-    return this.gridApi?.getSelectedRows()[0]
+    if (!this.gridApi?.isDestroyed()) {
+      return this.gridApi?.getSelectedRows()[0]
+    }
+    return null
   }
 
   async handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
@@ -354,21 +365,21 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     this.criteriaMetaData = null
   }
 
-  getContextMenuItems(params: GetContextMenuItemsParams): (string | MenuItemDef)[] {
-    var result: (string | MenuItemDef)[] = [
-      {
-        name: 'copy' + params.value,
-        action: () => {
-        },
-        cssClasses: ['red', 'bold'],
-      },
-      {
-        name: 'cut',
-        action: () => {
-        },
-        cssClasses: ['red', 'bold'],
-      },
-    ]
+
+  getContextMenuItems = (params: GetContextMenuItemsParams): (string | MenuItemDef)[] => {
+    const result: (string | MenuItemDef)[] = []
+    if (this.contextMenuActions.indexOf(ACCESS_FORM_ACTION_TYPE.DELETE) > -1) {
+      result.push({name: 'حذف '})
+    }
+    if (this.contextMenuActions.indexOf(ACCESS_FORM_ACTION_TYPE.UPDATE) > -1) {
+      result.push({name: 'ویرایش '})
+    }
+    if (this.contextMenuActions.indexOf(ACCESS_FORM_ACTION_TYPE.SIGN) > -1) {
+      result.push({name: 'تایید سند و امضاها '})
+    }
+    if (this.contextMenuActions.indexOf(ACCESS_FORM_ACTION_TYPE.ATTACHMENTS) > -1) {
+      result.push({name: 'لیست ضمیمه ها'})
+    }
     return result
   }
 

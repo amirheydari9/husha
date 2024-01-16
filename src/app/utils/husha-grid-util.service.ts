@@ -49,8 +49,9 @@ export class HushaGridUtilService {
   ) {
   }
 
-  async handleGridAccessActions(form: IFetchFormRes, fetchSummary: boolean): Promise<ACCESS_FORM_ACTION_TYPE[]> {
+  async handleGridAccessActions(form: IFetchFormRes, fetchSummary: boolean): Promise<{ actions: ACCESS_FORM_ACTION_TYPE[], contextMenu: ACCESS_FORM_ACTION_TYPE[] }> {
     const actions = []
+    const contextMenu = []
     actions.push(ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH)
     actions.push(ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH)
     if (form.formKind.id === FORM_KIND.MULTI_LEVEL) {
@@ -63,8 +64,10 @@ export class HushaGridUtilService {
         actions.push(ACCESS_FORM_ACTION_TYPE.IMPORT)
       }
       if (form.formKind.id === FORM_KIND.MASTER) {
-        actions.push(ACCESS_FORM_ACTION_TYPE.ATTACHMENTS)
-        actions.push(ACCESS_FORM_ACTION_TYPE.SIGN)
+        // actions.push(ACCESS_FORM_ACTION_TYPE.ATTACHMENTS)
+        // actions.push(ACCESS_FORM_ACTION_TYPE.SIGN)
+        contextMenu.push(ACCESS_FORM_ACTION_TYPE.ATTACHMENTS)
+        contextMenu.push(ACCESS_FORM_ACTION_TYPE.SIGN)
       }
       const payload = new FetchAccessActionDTO(
         this.hushaCustomerUtilService.customer.id,
@@ -77,13 +80,15 @@ export class HushaGridUtilService {
         if (item.action === ACCESS_FORM_ACTION_TYPE.ADD) {
           actions.unshift(ACCESS_FORM_ACTION_TYPE.ADD)
         } else if (item.action === ACCESS_FORM_ACTION_TYPE.UPDATE) {
-          actions.unshift(ACCESS_FORM_ACTION_TYPE.UPDATE)
+          // actions.unshift(ACCESS_FORM_ACTION_TYPE.UPDATE)
+          contextMenu.unshift(ACCESS_FORM_ACTION_TYPE.UPDATE)
         } else if (item.action === ACCESS_FORM_ACTION_TYPE.DELETE) {
-          actions.unshift(ACCESS_FORM_ACTION_TYPE.DELETE)
+          // actions.unshift(ACCESS_FORM_ACTION_TYPE.DELETE)
+          contextMenu.unshift(ACCESS_FORM_ACTION_TYPE.DELETE)
         }
       })
     }
-    return actions
+    return {actions, contextMenu}
   }
 
   handleCreatePayloadForFetchAllData(payload: FetchAllDataPayloadDTO) {
