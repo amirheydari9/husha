@@ -18,7 +18,6 @@ import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {IFetchFormRes} from "../../models/interface/fetch-form-res.interface";
 import {
   ColDef,
-  ColumnApi,
   GetContextMenuItemsParams,
   GridApi,
   GridOptions,
@@ -57,9 +56,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   criteria: criteriaInterface[] = null
   criteriaMetaData: any[] = null
 
-
   gridApi: GridApi
-  colApi: ColumnApi
   defaultPageSize = 5
   columnDefs: ColDef[] = []
   gridOptions: GridOptions = {
@@ -157,7 +154,6 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       this.subscription.push(
         compRef.instance.gridReady.subscribe(event => {
           this.gridApi = event.api;
-          this.colApi = event.columnApi;
           resolve();
         })
       )
@@ -198,7 +194,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     const {actions, contextMenu} = await this.hushaGridUtilService.handleGridAccessActions(this.form, this.fetchSummary)
     this.accessFormActions = actions
     this.contextMenuActions = contextMenu
-    this.gridApi.setGridOption('getContextMenuItems', this.getContextMenuItems)
+    this.gridApi?.setGridOption('getContextMenuItems', this.getContextMenuItems)
   }
 
   async handleRowDbClicked($event: any) {
@@ -223,7 +219,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
           selectedChildId: selectedRow.id,
           page: this.gridApi.paginationGetCurrentPage(),
           pageSize: this.gridApi.paginationGetPageSize(),
-          sort: this.hushaGridUtilService.handleCreateSortModel(this.colApi),
+          sort: this.hushaGridUtilService.handleCreateSortModel(this.gridApi),
           metaCriteria: this.criteriaMetaData,
         })
       }
@@ -231,13 +227,12 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
         historyId: selectedRow.id,
         originalPage: this.gridApi.paginationGetCurrentPage(),
         originalPageSize: this.gridApi.paginationGetPageSize(),
-        originalSort: this.hushaGridUtilService.handleCreateSortModel(this.colApi),
+        originalSort: this.hushaGridUtilService.handleCreateSortModel(this.gridApi),
         originalMetaCriteria: this.criteriaMetaData,
       })
       this.handleResetCriteria()
       this.gridApi.setNodesSelected({nodes: this.gridApi.getSelectedNodes(), newValue: false})
       await this.handleCreateDynamicGrid()
-      console.log(this.selectedRow)
       this.storageService.setSessionStorage(multiLevelGridInfo, sessionGetData)
     } catch (e) {
       console.log(e)
@@ -275,39 +270,44 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   async handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
     if ($event === ACCESS_FORM_ACTION_TYPE.ADD || $event === ACCESS_FORM_ACTION_TYPE.IMPORT) {
       this.hushaGridUtilService.handleRedirectActions($event, this.form, this.masterId)
-    } else if ($event === ACCESS_FORM_ACTION_TYPE.UPDATE) {
-      this.hushaGridUtilService.handleRedirectActions($event, this.form, this.masterId, this.selectedRow)
-    } else if ($event === ACCESS_FORM_ACTION_TYPE.DELETE) {
-      this.handleDelete()
-    } else if ($event === ACCESS_FORM_ACTION_TYPE.ATTACHMENTS) {
-      this.handleAttachment()
-    } else if ($event === ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH) {
+    }
+      // else if ($event === ACCESS_FORM_ACTION_TYPE.UPDATE) {
+      //   this.hushaGridUtilService.handleRedirectActions($event, this.form, this.masterId, this.selectedRow)
+      // }
+      // else if ($event === ACCESS_FORM_ACTION_TYPE.DELETE) {
+      //   this.handleDelete()
+      // }
+      // else if ($event === ACCESS_FORM_ACTION_TYPE.ATTACHMENTS) {
+      //   this.handleAttachment()
+    // }
+    else if ($event === ACCESS_FORM_ACTION_TYPE.ADVANCE_SEARCH) {
       await this.handleAdvanceSearch()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.RESET_ADVANCE_SEARCH) {
       await this.handleResetAdvanceSearch()
     } else if ($event === ACCESS_FORM_ACTION_TYPE.EXPORT) {
       this.handleExport()
-    } else if ($event === ACCESS_FORM_ACTION_TYPE.SIGN) {
-      this.handleSign()
     }
+    // else if ($event === ACCESS_FORM_ACTION_TYPE.SIGN) {
+    //   this.handleSign()
+    // }
   }
 
-  handleDelete() {
+  handleDelete(id: number) {
     //TODO تست حذف در حالت مستر دیتیل
     //TODO چک کال شدن سرویس
     this.subscription.push(
       this.baseInfoService.deleteFormData(this.hushaGridUtilService.handleCreatePayloadForDeleteRow(
         this.form,
-        this.selectedRow?.id,
+        // this.selectedRow?.id,
+        id,
         this.masterId
       )).subscribe(async data => {
         // this.gridApi.applyServerSideTransaction({remove:[this.selectedRow.data]})
         // this.gridApi.paginationGoToPage(this.gridApi.paginationGetCurrentPage())
-
         const gridConfig = {
           page: this.gridApi.paginationGetCurrentPage(),
           pageSize: this.gridApi.paginationGetPageSize(),
-          sort: this.hushaGridUtilService.handleCreateSortModel(this.colApi)
+          sort: this.hushaGridUtilService.handleCreateSortModel(this.gridApi)
         }
         await this.handleCreateDynamicGrid(gridConfig)
         this.gridApi.paginationGoToPage(gridConfig.page)
@@ -315,9 +315,13 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     )
   }
 
-  handleAttachment() {
+  handleAttachment(id: number) {
     this.dialogManagementService.openDialog(AttachmentListDialogComponent, {
-      data: {form: this.form, ownId: this.selectedRow?.id},
+      data: {
+        form: this.form,
+        // ownId: this.selectedRow?.id
+        ownId: id
+      },
     })
   }
 
@@ -369,27 +373,40 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   getContextMenuItems = (params: GetContextMenuItemsParams): (string | MenuItemDef)[] => {
     const result: (string | MenuItemDef)[] = []
     if (this.contextMenuActions.indexOf(ACCESS_FORM_ACTION_TYPE.DELETE) > -1) {
-      result.push({name: 'حذف '})
+      result.push({
+        name: 'حذف ',
+        action: () => this.handleDelete(params.node.data.id)
+      })
     }
     if (this.contextMenuActions.indexOf(ACCESS_FORM_ACTION_TYPE.UPDATE) > -1) {
-      result.push({name: 'ویرایش '})
+      result.push({
+        name: 'ویرایش ',
+        action: () => this.hushaGridUtilService.handleRedirectActions(ACCESS_FORM_ACTION_TYPE.UPDATE, this.form, this.masterId, params.node.data)
+      })
     }
     if (this.contextMenuActions.indexOf(ACCESS_FORM_ACTION_TYPE.SIGN) > -1) {
-      result.push({name: 'تایید سند و امضاها '})
+      result.push({
+        name: 'تایید سند و امضاها ',
+        action: () => this.handleSign(params.node.data.id)
+      })
     }
     if (this.contextMenuActions.indexOf(ACCESS_FORM_ACTION_TYPE.ATTACHMENTS) > -1) {
-      result.push({name: 'لیست ضمیمه ها'})
+      result.push({
+        name: 'لیست ضمیمه ها',
+        action: () => this.handleAttachment(params.node.data.id)
+      })
     }
     return result
   }
 
-  private handleSign() {
+  private handleSign(id: number) {
     const payload = new FetchFormDataByIdDTO(
       this.hushaCustomerUtilService.customer.id,
       this.hushaCustomerUtilService.serviceTypeId,
       this.form.id,
       this.form.formKind.id,
-      this.selectedRow.id,
+      // this.selectedRow.id,
+      id,
       this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
       this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
       this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null,

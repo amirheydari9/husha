@@ -9,7 +9,7 @@ import {
   VALUE_TYPE,
   VIEW_TYPE
 } from "../constants/enums";
-import {ColDef, ColumnApi} from "ag-grid-community";
+import {ColDef, GridApi} from "ag-grid-community";
 import {HushaCustomerUtilService} from "./husha-customer-util.service";
 import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
 import {DeleteFormDataDTO} from "../models/DTOs/delete-form-data.DTO";
@@ -205,9 +205,9 @@ export class HushaGridUtilService {
     }).then(() => this.appConfigService.setTabMenu(new TabMenuItemDTO(label, routerLink)))
   }
 
-  handleCreateSortModel(colApi: ColumnApi) {
+  handleCreateSortModel(gridApi: GridApi) {
     const sortModel = []
-    colApi.getColumnState().map(col => {
+    gridApi.getColumnState().map(col => {
       if (col.sort !== null) sortModel.push({colId: col.colId, sort: col.sort, sortIndex: col.sortIndex})
     })
     return sortModel
