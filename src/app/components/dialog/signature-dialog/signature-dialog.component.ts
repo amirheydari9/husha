@@ -43,6 +43,7 @@ export class SignatureDialogComponent implements OnInit {
     {headerName: 'تاریخ امضا', field: 'signTime'}
   ]
   rowData = []
+  currentRow: any
   gridOptions: GridOptions = {
     pagination: false
   }
@@ -74,6 +75,7 @@ export class SignatureDialogComponent implements OnInit {
         signTime: this.dateService.timestampToJalali(item['sign' + i + '_time'])
       })
     }
+    this.currentRow = item
     this.rowData = rowData
   }
 
@@ -94,7 +96,7 @@ export class SignatureDialogComponent implements OnInit {
 
   handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
     if ($event === ACCESS_FORM_ACTION_TYPE.SIGNATURE) {
-      if (this.dynamicDialogConfig.data.row['doc_status']['id'] === DOC_STATUS.DRAFT) {
+      if (this.currentRow['doc_status']['id'] === DOC_STATUS.DRAFT) {
         this.handleTemporaryRegistration()
       } else {
         this.handleSign()
