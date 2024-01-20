@@ -37,6 +37,7 @@
   ul {
     list-style: none;
     width: 100%;
+
     li {
       padding: 0.35rem 1.5rem;
       font-size: 14px;
@@ -46,12 +47,7 @@
 
       &:hover {
         background-color: #EFF6FF;
-        color: blue;
-      }
-
-      img {
-        margin-left: 0.6rem;
-        height: 12px;
+        color: #3165fc;
       }
     }
   }
