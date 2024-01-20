@@ -1,46 +1,35 @@
 <div class="flex justify-content-start">
 
-  <app-custom-menu
-    [items]="customerMenuItems"
-    (selectedMenu)="handleSelectCustomer($event)">
-    <div class="flex align-items-center justify-content-start ml-3" (click)="customerMenu.menu.toggle($event)">
+  <div [cdkMenuTriggerFor]="customerMenu.menu">
+    <div class="flex align-items-center justify-content-start ml-3">
       <i class="pi pi-user ml-2"></i>
       <span class="text-1 font-sm-bold">{{selectedCustomer ? selectedCustomer.label : 'انتخاب مشتری'}}</span>
     </div>
-  </app-custom-menu>
+  </div>
+  <app-cascade-menu #customerMenu [items]="customerMenuItems" (onSelectMenu)="handleSelectCustomer($event)"></app-cascade-menu>
 
-  <app-custom-menu
-    *ngIf="selectedCustomer"
-    #serviceMenu
-    [items]="serviceMenuItems"
-    (selectedMenu)="handleSelectService($event)">
-    <div class="flex align-items-center justify-content-start ml-3" (click)="serviceMenu.menu.toggle($event)">
-      <i class="pi pi-cog ml-2"></i>
-      <span class="text-1 font-sm-bold ">{{selectedService ? selectedService.title : 'انتخاب سرویس'}}</span>
+  <div [cdkMenuTriggerFor]="serviceMenu.menu">
+    <div class="flex align-items-center justify-content-start ml-3">
+      <i class="pi pi-cog cog ml-2"></i>
+      <span class="text-1 font-sm-bold">{{selectedService ? selectedService.title : 'انتخاب سرویس'}}</span>
     </div>
-  </app-custom-menu>
+  </div>
+  <app-cascade-menu #serviceMenu [items]="serviceMenuItems" (onSelectMenu)="handleSelectService($event)"></app-cascade-menu>
 
-
-  <app-custom-menu
-    *ngIf="showUnitMenu"
-    #unitMenu
-    [items]="unitMenuItems"
-    (selectedMenu)="handleSelectUnit($event)">
-    <div class="flex align-items-center justify-content-start ml-3" (click)="unitMenu.menu.toggle($event)">
-      <i class="pi pi-building ml-2"></i>
-      <span class="text-1 font-sm-bold ">{{selectedUnit ? selectedUnit.label : 'انتخاب مرکز'}}</span>
+  <div [cdkMenuTriggerFor]="unitMenu.menu">
+    <div class="flex align-items-center justify-content-start ml-3">
+      <i class="pi pi-building cog ml-2"></i>
+      <span class="text-1 font-sm-bold">{{selectedUnit ? selectedUnit.label : 'انتخاب مرکز'}}</span>
     </div>
-  </app-custom-menu>
+  </div>
+  <app-cascade-menu #unitMenu [items]="unitMenuItems" (onSelectMenu)="handleSelectUnit($event)"></app-cascade-menu>
 
-  <app-custom-menu
-    *ngIf="selectedCustomer"
-    #periodMenu
-    [items]="periodMenuItems"
-    (selectedMenu)="handleSelectPeriod($event)">
-    <div class="flex align-items-center justify-content-start" (click)="periodMenu.menu.toggle($event)">
-      <i class="pi pi-calendar ml-2"></i>
-      <span class="text-1 font-sm-bold ">{{selectedPeriod ? selectedPeriod.label : 'انتخاب دوره'}}</span>
+  <div [cdkMenuTriggerFor]="periodMenu.menu">
+    <div class="flex align-items-center justify-content-start ml-3">
+      <i class="pi pi-calendar cog ml-2"></i>
+      <span class="text-1 font-sm-bold">{{selectedPeriod ? selectedPeriod.label : 'انتخاب دوره'}}</span>
     </div>
-  </app-custom-menu>
+  </div>
+  <app-cascade-menu #periodMenu [items]="periodMenuItems" (onSelectMenu)="handleSelectPeriod($event)"></app-cascade-menu>
 
 </div>
