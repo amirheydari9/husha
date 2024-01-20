@@ -15,6 +15,9 @@
 @import "assets/scss/text-fonts";
 @import "scss/variabels";
 
+//cdk
+@import "@angular/cdk/overlay-prebuilt.css";
+
 html, body {
   height: 100%;
 }

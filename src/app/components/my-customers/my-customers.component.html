@@ -1,46 +1,49 @@
 <div class="flex justify-content-start">
 
-  <app-custom-menu
-    [items]="customerMenuItems"
-    (selectedMenu)="handleSelectCustomer($event)">
-    <div class="flex align-items-center justify-content-start ml-3" (click)="customerMenu.menu.toggle($event)">
-      <i class="pi pi-user ml-2"></i>
-      <span class="text-1 font-sm-bold">{{selectedCustomer ? selectedCustomer.label : 'انتخاب مشتری'}}</span>
-    </div>
-  </app-custom-menu>
+  <button [cdkMenuTriggerFor]="menuComponent.menu">menu</button>
+  <app-cascade-menu #menuComponent [items]="menuItems"></app-cascade-menu>
 
-  <app-custom-menu
-    *ngIf="selectedCustomer"
-    #serviceMenu
-    [items]="serviceMenuItems"
-    (selectedMenu)="handleSelectService($event)">
-    <div class="flex align-items-center justify-content-start ml-3" (click)="serviceMenu.menu.toggle($event)">
-      <i class="pi pi-cog ml-2"></i>
-      <span class="text-1 font-sm-bold ">{{selectedService ? selectedService.title : 'انتخاب سرویس'}}</span>
-    </div>
-  </app-custom-menu>
+<!--  <app-custom-menu-->
+<!--    [items]="customerMenuItems"-->
+<!--    (selectedMenu)="handleSelectCustomer($event)">-->
+<!--    <div class="flex align-items-center justify-content-start ml-3" (click)="customerMenu.menu.toggle($event)">-->
+<!--      <i class="pi pi-user ml-2"></i>-->
+<!--      <span class="text-1 font-sm-bold">{{selectedCustomer ? selectedCustomer.label : 'انتخاب مشتری'}}</span>-->
+<!--    </div>-->
+<!--  </app-custom-menu>-->
+
+<!--  <app-custom-menu-->
+<!--    *ngIf="selectedCustomer"-->
+<!--    #serviceMenu-->
+<!--    [items]="serviceMenuItems"-->
+<!--    (selectedMenu)="handleSelectService($event)">-->
+<!--    <div class="flex align-items-center justify-content-start ml-3" (click)="serviceMenu.menu.toggle($event)">-->
+<!--      <i class="pi pi-cog ml-2"></i>-->
+<!--      <span class="text-1 font-sm-bold ">{{selectedService ? selectedService.title : 'انتخاب سرویس'}}</span>-->
+<!--    </div>-->
+<!--  </app-custom-menu>-->
 
 
-  <app-custom-menu
-    *ngIf="showUnitMenu"
-    #unitMenu
-    [items]="unitMenuItems"
-    (selectedMenu)="handleSelectUnit($event)">
-    <div class="flex align-items-center justify-content-start ml-3" (click)="unitMenu.menu.toggle($event)">
-      <i class="pi pi-building ml-2"></i>
-      <span class="text-1 font-sm-bold ">{{selectedUnit ? selectedUnit.label : 'انتخاب مرکز'}}</span>
-    </div>
-  </app-custom-menu>
+<!--  <app-custom-menu-->
+<!--    *ngIf="showUnitMenu"-->
+<!--    #unitMenu-->
+<!--    [items]="unitMenuItems"-->
+<!--    (selectedMenu)="handleSelectUnit($event)">-->
+<!--    <div class="flex align-items-center justify-content-start ml-3" (click)="unitMenu.menu.toggle($event)">-->
+<!--      <i class="pi pi-building ml-2"></i>-->
+<!--      <span class="text-1 font-sm-bold ">{{selectedUnit ? selectedUnit.label : 'انتخاب مرکز'}}</span>-->
+<!--    </div>-->
+<!--  </app-custom-menu>-->
 
-  <app-custom-menu
-    *ngIf="selectedCustomer"
-    #periodMenu
-    [items]="periodMenuItems"
-    (selectedMenu)="handleSelectPeriod($event)">
-    <div class="flex align-items-center justify-content-start" (click)="periodMenu.menu.toggle($event)">
-      <i class="pi pi-calendar ml-2"></i>
-      <span class="text-1 font-sm-bold ">{{selectedPeriod ? selectedPeriod.label : 'انتخاب دوره'}}</span>
-    </div>
-  </app-custom-menu>
+<!--  <app-custom-menu-->
+<!--    *ngIf="selectedCustomer"-->
+<!--    #periodMenu-->
+<!--    [items]="periodMenuItems"-->
+<!--    (selectedMenu)="handleSelectPeriod($event)">-->
+<!--    <div class="flex align-items-center justify-content-start" (click)="periodMenu.menu.toggle($event)">-->
+<!--      <i class="pi pi-calendar ml-2"></i>-->
+<!--      <span class="text-1 font-sm-bold ">{{selectedPeriod ? selectedPeriod.label : 'انتخاب دوره'}}</span>-->
+<!--    </div>-->
+<!--  </app-custom-menu>-->
 
 </div>

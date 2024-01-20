@@ -15,6 +15,8 @@ import {Router} from "@angular/router";
 import {AppConfigService} from "../../utils/app-config.service";
 import {CustomMenuComponent, CustomMenuModule} from "../../ui-kits/custom-menu/custom-menu.component";
 import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
+import {CascadeMenuItem, CascadeMenuModule} from "../cascade-menu/cascade-menu.component";
+import {CdkMenuModule} from "@angular/cdk/menu";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -217,6 +219,37 @@ export class MyCustomersComponent implements OnInit {
       }
     }
   }
+
+  menuItems: CascadeMenuItem[] = [
+    {
+      label: 'File',
+      children: [
+        {
+          label: 'New',
+          children: [
+            {
+              label: 'From Template',
+            },
+            { label: 'New File' },
+          ],
+        },
+        {
+          label: 'Open',
+          children: [{ label: 'Browse...' }, { label: 'Recent' }],
+        },
+      ],
+    },
+    {
+      label: 'Edit',
+      children: [
+        { label: 'Undo' },
+        { label: 'Redo' },
+        { label: 'Cut' },
+        { label: 'Copy' },
+        { label: 'Paste' },
+      ],
+    },
+  ];
 }
 
 @NgModule({
@@ -225,6 +258,8 @@ export class MyCustomersComponent implements OnInit {
     CustomerStore,
     CommonModule,
     CustomMenuModule,
+    CascadeMenuModule,
+    CdkMenuModule,
   ],
   exports: [
     MyCustomersComponent
