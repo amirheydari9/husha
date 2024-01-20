@@ -5,7 +5,7 @@ import {FetchMenuReqDTO} from "../models/DTOs/fetch-menu-req.DTO";
 import {FetchFormDTO} from "../models/DTOs/fetch-form.DTO";
 import {IFetchFormRes} from "../models/interface/fetch-form-res.interface";
 import {FetchAllFormDataDTO} from "../models/DTOs/fetch-all-form-data.DTO";
-import {Observable, of} from "rxjs";
+import {Observable} from "rxjs";
 import {FetchAccessActionDTO} from "../models/DTOs/fetch-access-action.DTO";
 import {FetchTypeValuesDTO} from "../models/DTOs/fetch-type-values.DTO";
 import {IFetchTypeValuesRes} from "../models/interface/fetch-type-values-res.interface";
@@ -20,6 +20,7 @@ import {AddListFormDataReqDTO} from "../models/DTOs/add-list-form-data-req.DTO";
 import {SignReqDTO} from "../models/DTOs/sign-req.DTO";
 import {AttachmentReqDTO} from "../models/DTOs/attachment-req.DTO";
 import {AttachmentRes} from "../models/interface/attachment-res.interface";
+import {TemporaryRegistrationReqDTO} from "../models/DTOs/temporary-registration-req.DTO";
 
 @Injectable({
   providedIn: 'root'
@@ -85,13 +86,17 @@ export class BaseInfoService {
     return this.httpService.get(`baseinfo/form/${payload.masterFormId}/getDetails`)
   }
 
+  temporaryRegistration(payload: TemporaryRegistrationReqDTO) {
+    return this.httpService.put(`baseinfo/master/temporary-registration`, payload)
+  }
+
   //TODO صحبت با آقای عبدالهی در مورد position و signNumber
   sign(payload: SignReqDTO) {
-    return this.httpService.put(`baseinfo/signing/sign`, payload)
+    return this.httpService.put(`baseinfo/master/sign`, payload)
   }
 
   returnSign(payload: SignReqDTO) {
-    return this.httpService.put(`baseinfo/signing/return-sign`, payload)
+    return this.httpService.put(`baseinfo/master/return-sign`, payload)
   }
 
   getAllAttachments(payload: AttachmentReqDTO): Observable<AttachmentRes[]> {

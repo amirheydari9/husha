@@ -7,6 +7,7 @@ import {FetchMaxIncValueByFieldNameDTO} from "../models/DTOs/fetch-max-inc-value
 import {HushaCustomerUtilService} from "./husha-customer-util.service";
 import {IFetchFormRes, IFormField} from "../models/interface/fetch-form-res.interface";
 import {ActivatedRoute} from "@angular/router";
+import {DateService} from "./date.service";
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class HushaFormUtilService {
     private baseInfoService: BaseInfoService,
     private hushaCustomerUtilService: HushaCustomerUtilService,
     private activatedRoute: ActivatedRoute,
+    private dateService: DateService
   ) {
   }
 
@@ -105,7 +107,17 @@ export class HushaFormUtilService {
 
   async handleValue(field: IFormField, data, form: IFetchFormRes) {
     if (data) {
-      return (typeof data[field.name] === 'object' && data[field.name] !== null) ? data[field.name].id : data[field.name]
+      if (typeof data[field.name] === 'object' && data[field.name] !== null) {
+        return data[field.name].id
+      } else if (field.fieldType.id === INPUT_FIELD_TYPE.JALALI_DATE_PICKER_WITH_TIME || field.fieldType.id === INPUT_FIELD_TYPE.JALALI_DATE_PICKER) {
+        return this.dateService.convertGeorgianToJalali(
+          data[field.name],
+          field.fieldType.id === INPUT_FIELD_TYPE.JALALI_DATE_PICKER_WITH_TIME ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD',
+          field.fieldType.id === INPUT_FIELD_TYPE.JALALI_DATE_PICKER_WITH_TIME ? 'jYYYY-jMM-jDD HH:mm:ss' : 'jYYYY-jMM-jDD'
+        )
+      } else {
+        return data[field.name]
+      }
     } else {
       if (field.setMaxId) {
         const payload = new FetchMaxIncValueByFieldNameDTO(

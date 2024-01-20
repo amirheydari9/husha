@@ -4,12 +4,13 @@ import {HushaCustomerUtilService} from "../../../utils/husha-customer-util.servi
 import {BaseInfoService} from "../../../api/base-info.service";
 import {GridActionsModule} from "../../grid-actions/grid-actions.component";
 import {CustomGridModule} from "../../../ui-kits/custom-grid/custom-grid.component";
-import {ACCESS_FORM_ACTION_TYPE} from "../../../constants/enums";
+import {ACCESS_FORM_ACTION_TYPE, DOC_STATUS, FORM_KIND} from "../../../constants/enums";
 import {ColDef, GridOptions} from "ag-grid-community";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {AutoUnsubscribe} from "../../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {DateService} from "../../../utils/date.service";
+import {TemporaryRegistrationReqDTO} from "../../../models/DTOs/temporary-registration-req.DTO";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
@@ -31,7 +32,6 @@ export class SignatureDialogComponent implements OnInit {
 
   subscription: Subscription[] = []
 
-
   accessFormActions: ACCESS_FORM_ACTION_TYPE[] = [
     ACCESS_FORM_ACTION_TYPE.SIGNATURE,
     ACCESS_FORM_ACTION_TYPE.RETURN_SIGNATURE
@@ -40,9 +40,7 @@ export class SignatureDialogComponent implements OnInit {
   colDefs: ColDef[] = [
     {headerName: 'نام کاربری', field: 'username'},
     {headerName: 'پوزیشن', field: 'position'},
-    {
-      headerName: 'تاریخ امضا', field: 'signTime', cellRenderer: data => this.dateService.timestampToJalali(data.value)
-    },
+    {headerName: 'تاریخ امضا', field: 'signTime'}
   ]
   rowData = []
   gridOptions: GridOptions = {
@@ -57,11 +55,11 @@ export class SignatureDialogComponent implements OnInit {
     private dateService: DateService,
   ) {
     this.dynamicDialogConfig.closable = true
-    this.dynamicDialogConfig.header = 'تاریخچه امضا'
+    this.dynamicDialogConfig.header = 'تایید سند و امضاها'
   }
 
   ngOnInit() {
-    this.rowData = this.handleCreateRowData(this.dynamicDialogConfig.data.row)
+    this.handleCreateRowData(this.dynamicDialogConfig.data.row)
   }
 
   handleCreateRowData(item) {
@@ -73,10 +71,10 @@ export class SignatureDialogComponent implements OnInit {
       rowData.push({
         username: item['sign' + i + '_userid'].username,
         position: item['sign' + i + 'Position'].title,
-        signTime: item['sign' + i + '_time']
+        signTime: this.dateService.timestampToJalali(item['sign' + i + '_time'])
       })
     }
-    return rowData
+    this.rowData = rowData
   }
 
   handleCreateSignPayload() {
@@ -96,31 +94,45 @@ export class SignatureDialogComponent implements OnInit {
 
   handleOnAction($event: ACCESS_FORM_ACTION_TYPE) {
     if ($event === ACCESS_FORM_ACTION_TYPE.SIGNATURE) {
-      this.handleSign()
+      if (this.dynamicDialogConfig.data.row['doc_status']['id'] === DOC_STATUS.DRAFT) {
+        this.handleTemporaryRegistration()
+      } else {
+        this.handleSign()
+      }
     } else {
       this.handleReturnSign()
-
     }
+  }
+
+  handleTemporaryRegistration() {
+    //TODO detailFormId
+    const payload = new TemporaryRegistrationReqDTO(
+      this.hushaCustomerUtilService.customer.id,
+      this.hushaCustomerUtilService.service.id,
+      this.hushaCustomerUtilService.unit.id,
+      this.hushaCustomerUtilService.period.id,
+      this.dynamicDialogConfig.data.form.id,
+      this.dynamicDialogConfig.data.form.formKind.id,
+      this.dynamicDialogConfig.data.row.id,
+      101203,
+      FORM_KIND.DETAIL,
+    )
+    this.subscription.push(
+      this.baseInfoService.temporaryRegistration(payload).subscribe(data => this.handleCreateRowData(data))
+    )
   }
 
   handleSign() {
     this.subscription.push(
-      this.baseInfoService.sign(this.handleCreateSignPayload()).subscribe(data => {
-        this.rowData = this.handleCreateRowData(data)
-      })
+      this.baseInfoService.sign(this.handleCreateSignPayload()).subscribe(data => this.handleCreateRowData(data))
     )
-
   }
 
   handleReturnSign() {
     this.subscription.push(
-      this.baseInfoService.returnSign(this.handleCreateSignPayload()).subscribe(data => {
-        this.rowData = this.handleCreateRowData(data)
-      })
+      this.baseInfoService.returnSign(this.handleCreateSignPayload()).subscribe(data => this.handleCreateRowData(data))
     )
   }
-
-
 }
 
 @NgModule({
