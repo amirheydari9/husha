@@ -1,4 +1,4 @@
-import {Component, NgModule, OnInit, ViewChild} from '@angular/core';
+import {Component, NgModule, OnInit} from '@angular/core';
 import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {CustomerFacade} from "../../data-core/customer/customer.facade";
@@ -7,13 +7,12 @@ import {CommonModule} from "@angular/common";
 import {BaseInfoFacade} from "../../data-core/base-info/base-info.facade";
 import {GetServicesReqDTO} from "../../models/DTOs/get-services-req.DTO";
 import {GetPeriodReqDTO} from "../../models/DTOs/get-period-req.DTO";
-import {MenuItem} from "primeng/api";
 import {FetchMenuReqDTO} from "../../models/DTOs/fetch-menu-req.DTO";
 import {GetUnitsReqDTO} from "../../models/DTOs/get-units-req.DTO";
 import {IGetServicesRes} from "../../models/interface/get-services-res.interface";
 import {Router} from "@angular/router";
 import {AppConfigService} from "../../utils/app-config.service";
-import {CustomMenuComponent, CustomMenuModule} from "../../ui-kits/custom-menu/custom-menu.component";
+import {CustomMenuModule} from "../../ui-kits/custom-menu/custom-menu.component";
 import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
 import {CascadeMenuItem, CascadeMenuModule} from "../cascade-menu/cascade-menu.component";
 import {CdkMenuModule} from "@angular/cdk/menu";
@@ -30,17 +29,12 @@ export class MyCustomersComponent implements OnInit {
 
   services: IGetServicesRes[] = []
 
-  customerMenuItems: MenuItem[] = []
-  serviceMenuItems: MenuItem[] = []
-  unitMenuItems: MenuItem[] = []
-  periodMenuItems: MenuItem[] = []
+  customerMenuItems: CascadeMenuItem[] = []
+  serviceMenuItems: CascadeMenuItem[] = []
+  unitMenuItems: CascadeMenuItem[] = []
+  periodMenuItems: CascadeMenuItem[] = []
 
   showUnitMenu: boolean = false
-
-  @ViewChild(CustomMenuComponent) customerMenu: CustomMenuComponent
-  @ViewChild(CustomMenuComponent) serviceMenu: CustomMenuComponent
-  @ViewChild(CustomMenuComponent) unitMenu: CustomMenuComponent
-  @ViewChild(CustomMenuComponent) periodMenu: CustomMenuComponent
 
   selectedCustomer = this.hushaCustomerUtilService.customer
   selectedService = this.hushaCustomerUtilService.service
@@ -105,11 +99,11 @@ export class MyCustomersComponent implements OnInit {
     return {
       id: id,
       label: title,
-      items: items && items.length > 0 ? items.map(this.createMenu.bind(this)) : null,
+      children: items && items.length > 0 ? items.map(this.createMenu.bind(this)) : null,
     };
   }
 
-  async handleSelectCustomer($event: MenuItem): Promise<boolean | void> {
+  async handleSelectCustomer($event: CascadeMenuItem): Promise<boolean | void> {
     if (this.selectedCustomer && this.selectedCustomer.id === $event.id) return false
     this.selectedCustomer = $event
     this.hushaCustomerUtilService.customer = $event
@@ -142,7 +136,7 @@ export class MyCustomersComponent implements OnInit {
     }
   }
 
-  async handleSelectService($event: MenuItem): Promise<boolean | void> {
+  async handleSelectService($event: CascadeMenuItem): Promise<boolean | void> {
     if (this.selectedService && this.selectedService.id === +$event.id) return false
     const service = this.services.find(item => item.id === +$event.id)
     this.selectedService = service
@@ -159,14 +153,14 @@ export class MyCustomersComponent implements OnInit {
     )
   }
 
-  async handleSelectUnit($event: MenuItem): Promise<boolean | void> {
+  async handleSelectUnit($event: CascadeMenuItem): Promise<boolean | void> {
     if (this.selectedUnit && this.selectedUnit.id === $event.id) return false
     this.selectedUnit = $event
     this.hushaCustomerUtilService.unit = $event
     await this.handleFetchMenu()
   }
 
-  async handleSelectPeriod($event: MenuItem): Promise<boolean | void> {
+  async handleSelectPeriod($event: CascadeMenuItem): Promise<boolean | void> {
     if (!this.selectedPeriod) {
       this.selectedPeriod = $event
       this.hushaCustomerUtilService.period = $event
@@ -219,37 +213,6 @@ export class MyCustomersComponent implements OnInit {
       }
     }
   }
-
-  menuItems: CascadeMenuItem[] = [
-    {
-      label: 'File',
-      children: [
-        {
-          label: 'New',
-          children: [
-            {
-              label: 'From Template',
-            },
-            { label: 'New File' },
-          ],
-        },
-        {
-          label: 'Open',
-          children: [{ label: 'Browse...' }, { label: 'Recent' }],
-        },
-      ],
-    },
-    {
-      label: 'Edit',
-      children: [
-        { label: 'Undo' },
-        { label: 'Redo' },
-        { label: 'Cut' },
-        { label: 'Copy' },
-        { label: 'Paste' },
-      ],
-    },
-  ];
 }
 
 @NgModule({
