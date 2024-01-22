@@ -11,11 +11,30 @@ import {AutoUnsubscribe} from "../../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {DateService} from "../../../utils/date.service";
 import {TemporaryRegistrationReqDTO} from "../../../models/DTOs/temporary-registration-req.DTO";
+import {JalaliDatePipeModule} from "../../../pipes/jalali-date.pipe";
+import {DividerModule} from "primeng/divider";
+import {CommonModule} from "@angular/common";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
 @Component({
   selector: 'app-signature-dialog',
   template: `
+
+    <div class="flex align-items-center justify-content-between">
+      <div class="flex-grow-1" *ngIf="this.currentRow['create_userid']">
+        <span> ایجاد سند توسط: </span>
+        <span class="font-sm-bold">{{this.currentRow['create_userid']['username']}}</span>
+        <span>درتاریخ  : </span>
+        <span class="font-sm-bold" dir="ltr"> {{this.currentRow['create_time']|jalaliDate:'number':'YYYY-MM-DD'}} </span>
+      </div>
+      <div class="flex-grow-1" *ngIf="this.currentRow['change_userid']">
+        <span> تایید سند توسط: </span>
+        <span class="font-sm-bold">{{this.currentRow['change_userid']['username']}}</span>
+        <span>درتاریخ  : </span>
+        <span class="font-sm-bold" dir="ltr"> {{this.currentRow['change_time']|jalaliDate:'number':'YYYY-MM-DD'}} </span>
+      </div>
+    </div>
+
     <app-grid-actions
       [showSearch]="false"
       [accessFormActions]="accessFormActions"
@@ -141,7 +160,10 @@ export class SignatureDialogComponent implements OnInit {
   declarations: [SignatureDialogComponent],
   imports: [
     GridActionsModule,
-    CustomGridModule
+    CustomGridModule,
+    JalaliDatePipeModule,
+    DividerModule,
+    CommonModule
   ],
   exports: [SignatureDialogComponent]
 })
