@@ -1,9 +1,6 @@
-import {Component, NgModule, OnInit} from '@angular/core';
-import {AvatarModule} from "primeng/avatar";
-import {MenuModule} from "primeng/menu";
+import {Component, OnInit} from '@angular/core';
 import {MenuItem} from "primeng/api";
-import {OauthFacade} from "../../data-core/oauth/oauth.facade";
-import {OauthStore} from "../../data-core/oauth/oauth.store";
+import {OauthFacade} from "../../../../data-core/oauth/oauth.facade";
 import {Subscription} from "rxjs";
 
 @Component({
@@ -41,18 +38,5 @@ export class UserAvatarComponent implements OnInit {
       console.log(data)
     })
   }
-
-}
-
-@NgModule({
-  declarations: [UserAvatarComponent],
-  imports: [
-    AvatarModule,
-    MenuModule,
-    OauthStore
-  ],
-  exports: [UserAvatarComponent]
-})
-export class UserAvatarModule {
 
 }

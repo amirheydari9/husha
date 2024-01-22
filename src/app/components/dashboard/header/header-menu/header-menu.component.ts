@@ -1,29 +1,27 @@
-import {Component, NgModule, OnInit} from '@angular/core';
-import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
+import {Component, OnInit} from '@angular/core';
+
+import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
-import {CustomerFacade} from "../../data-core/customer/customer.facade";
-import {CustomerStore} from "../../data-core/customer/customer.store";
-import {CommonModule} from "@angular/common";
-import {BaseInfoFacade} from "../../data-core/base-info/base-info.facade";
-import {GetServicesReqDTO} from "../../models/DTOs/get-services-req.DTO";
-import {GetPeriodReqDTO} from "../../models/DTOs/get-period-req.DTO";
-import {FetchMenuReqDTO} from "../../models/DTOs/fetch-menu-req.DTO";
-import {GetUnitsReqDTO} from "../../models/DTOs/get-units-req.DTO";
-import {IGetServicesRes} from "../../models/interface/get-services-res.interface";
+import {IGetServicesRes} from "../../../../models/interface/get-services-res.interface";
+import {CascadeMenuItem} from "../../../cascade-menu/cascade-menu.component";
+import {CustomerFacade} from "../../../../data-core/customer/customer.facade";
+import {BaseInfoFacade} from "../../../../data-core/base-info/base-info.facade";
 import {Router} from "@angular/router";
-import {AppConfigService} from "../../utils/app-config.service";
-import {CustomMenuModule} from "../../ui-kits/custom-menu/custom-menu.component";
-import {HushaCustomerUtilService} from "../../utils/husha-customer-util.service";
-import {CascadeMenuItem, CascadeMenuModule} from "../cascade-menu/cascade-menu.component";
-import {CdkMenuModule} from "@angular/cdk/menu";
+import {AppConfigService} from "../../../../utils/app-config.service";
+import {HushaCustomerUtilService} from "../../../../utils/husha-customer-util.service";
+import {FetchMenuReqDTO} from "../../../../models/DTOs/fetch-menu-req.DTO";
+import {GetServicesReqDTO} from "../../../../models/DTOs/get-services-req.DTO";
+import {GetPeriodReqDTO} from "../../../../models/DTOs/get-period-req.DTO";
+import {GetUnitsReqDTO} from "../../../../models/DTOs/get-units-req.DTO";
 
 @AutoUnsubscribe({arrayName: 'subscription'})
+
 @Component({
-  selector: 'app-my-customers',
-  templateUrl: './my-customers.component.html',
-  styleUrls: ['./my-customers.component.scss']
+  selector: 'app-header-menu',
+  templateUrl: './header-menu.component.html',
+  styleUrls: ['./header-menu.component.scss']
 })
-export class MyCustomersComponent implements OnInit {
+export class HeaderMenuComponent implements OnInit {
 
   subscription: Subscription[] = []
 
@@ -213,21 +211,4 @@ export class MyCustomersComponent implements OnInit {
       }
     }
   }
-}
-
-@NgModule({
-  declarations: [MyCustomersComponent],
-  imports: [
-    CustomerStore,
-    CommonModule,
-    CustomMenuModule,
-    CascadeMenuModule,
-    CdkMenuModule,
-  ],
-  exports: [
-    MyCustomersComponent
-  ]
-})
-export class MyCustomersNodule {
-
 }
