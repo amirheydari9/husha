@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject} from "rxjs";
 import {INavbarData} from "../components/dashboard/navbar-data.interface";
-import {TabMenuItemDTO} from "../components/tab-menu/tab-menu.component";
+import {TabMenuItemDTO} from "../components/dashboard/body/tab-menu/tab-menu.component";
 
 @Injectable({
   providedIn: 'root'

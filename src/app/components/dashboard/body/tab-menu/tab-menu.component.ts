@@ -1,10 +1,9 @@
-import {Component, ElementRef, HostListener, NgModule, OnInit, ViewChild} from '@angular/core';
-import {AppConfigService} from "../../utils/app-config.service";
-import {INavbarData} from "../dashboard/navbar-data.interface";
-import {CommonModule} from "@angular/common";
-import {CdkDragDrop, DragDropModule, moveItemInArray,} from '@angular/cdk/drag-drop';
-import {Router, RouterModule} from "@angular/router";
-import {AutoUnsubscribe} from "../../decorators/AutoUnSubscribe";
+import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {AppConfigService} from "../../../../utils/app-config.service";
+import {INavbarData} from "../../navbar-data.interface";
+import {CdkDragDrop, moveItemInArray,} from '@angular/cdk/drag-drop';
+import {Router} from "@angular/router";
+import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 
 export class TabMenuItemDTO {
@@ -34,7 +33,7 @@ export class TabMenuItemDTO {
       <div #contextMenu class="contextMenu" [ngStyle]="rightPanelStyle">
         <ul class="menu">
           <li *ngFor="let item of contextMenuItems" (click)="item.action()" class="flex align-items-center">
-<!--            <i class="me-1" [ngClass]="item.icon"></i>-->
+            <!--            <i class="me-1" [ngClass]="item.icon"></i>-->
             <a class="text-1 font-xs-regular">{{item.label}}</a>
           </li>
         </ul>
@@ -137,17 +136,4 @@ export class TabMenuComponent implements OnInit {
     const tabMenu = this.tabMenus.find(menu => menu.routerLink === this.contextTabManu.routerLink)
     window.open(new URL(window.location.href).origin + tabMenu.routerLink, '_blank', isNewWindow ? 'location=yes,scrollbars=yes,status=yes' : '')
   }
-}
-
-@NgModule({
-  declarations: [TabMenuComponent],
-  imports: [
-    CommonModule,
-    DragDropModule,
-    RouterModule,
-  ],
-  exports: [TabMenuComponent]
-})
-export class TabMenuModule {
-
 }

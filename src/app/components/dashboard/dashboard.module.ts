@@ -8,7 +8,7 @@ import {BodyComponent} from "./body/body.component";
 import {HeaderComponent} from './header/header.component';
 import {UserAvatarComponent} from "./header/user-avatar/user-avatar.component";
 import {BaseInfoStore} from "../../data-core/base-info/base-info.store";
-import {TabMenuModule} from "../tab-menu/tab-menu.component";
+import {TabMenuComponent} from "./body/tab-menu/tab-menu.component";
 import {MenuModule} from "primeng/menu";
 import {OauthStore} from "../../data-core/oauth/oauth.store";
 import {AvatarModule} from "primeng/avatar";
@@ -16,6 +16,7 @@ import {CustomerStore} from "../../data-core/customer/customer.store";
 import {CascadeMenuModule} from "../cascade-menu/cascade-menu.component";
 import {CdkMenuModule} from "@angular/cdk/menu";
 import {HeaderMenuComponent} from './header/header-menu/header-menu.component';
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import {HeaderMenuComponent} from './header/header-menu/header-menu.component';
     SubLevelMenuComponent,
     HeaderComponent,
     UserAvatarComponent,
-    HeaderMenuComponent
+    HeaderMenuComponent,
+    TabMenuComponent
   ],
   exports: [
     DashboardComponent
@@ -35,13 +37,13 @@ import {HeaderMenuComponent} from './header/header-menu/header-menu.component';
     CommonModule,
     RouterModule,
     BaseInfoStore,
-    TabMenuModule,
     MenuModule,
     OauthStore,
     AvatarModule,
     CustomerStore,
     CascadeMenuModule,
     CdkMenuModule,
+    DragDropModule
   ]
 })
 export class DashboardModule {

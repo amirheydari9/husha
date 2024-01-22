@@ -3,7 +3,7 @@ import {INavbarData} from "../navbar-data.interface";
 import {fadeInOut, subMenu} from "../animations";
 import {Router} from "@angular/router";
 import {AppConfigService} from "../../../utils/app-config.service";
-import {TabMenuItemDTO} from "../../tab-menu/tab-menu.component";
+import {TabMenuItemDTO} from "../body/tab-menu/tab-menu.component";
 
 @Component({
   selector: 'app-sub-level-menu',

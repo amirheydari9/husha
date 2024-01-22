@@ -17,7 +17,7 @@ import {BaseInfoService} from "../api/base-info.service";
 import {FetchAccessActionDTO} from "../models/DTOs/fetch-access-action.DTO";
 import {DateService} from "./date.service";
 import {Router} from "@angular/router";
-import {TabMenuItemDTO} from "../components/tab-menu/tab-menu.component";
+import {TabMenuItemDTO} from "../components/dashboard/body/tab-menu/tab-menu.component";
 import {AppConfigService} from "./app-config.service";
 
 export class FetchAllDataPayloadDTO {

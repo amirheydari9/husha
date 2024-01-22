@@ -16,7 +16,7 @@ import {AutoUnsubscribe} from "../../../decorators/AutoUnSubscribe";
 import {Subscription} from "rxjs";
 import {IMenuRes} from "../../../models/interface/menu-res.interface";
 import {AppConfigService} from "../../../utils/app-config.service";
-import {TabMenuItemDTO} from "../../tab-menu/tab-menu.component";
+import {TabMenuItemDTO} from "../body/tab-menu/tab-menu.component";
 
 export interface SidenavToggle {
   screenWidth: number;
