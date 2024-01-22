@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 
 import {AutoUnsubscribe} from "../../../../decorators/AutoUnSubscribe";
-import {Subscription} from "rxjs";
+import {map, Subscription} from "rxjs";
 import {IGetServicesRes} from "../../../../models/interface/get-services-res.interface";
 import {CascadeMenuItem} from "../../../cascade-menu/cascade-menu.component";
 import {CustomerFacade} from "../../../../data-core/customer/customer.facade";
@@ -64,22 +64,16 @@ export class HeaderMenuComponent implements OnInit {
     try {
       await this.customerFacade.fetchMyCustomers()
       this.subscription.push(
-        this.customerFacade.myCustomers$.subscribe(data => {
-          const x = []
-          const y = []
-          const t = []
-          data.forEach(item => item.parentId === null ? x.push(item) : y.push(item))
-          x.forEach(item => {
-            let q = []
-            y.forEach(value => {
-              if (item.id === value.parentId) q.push(value)
-            })
-            item = {...item, items: q}
-            t.push(item)
-            q = []
-          })
-          this.customerMenuItems = t.map(item => this.createMenu(item))
-        })
+        this.customerFacade.myCustomers$.pipe(
+          map(data => {
+            const parents = data.filter(item => item.parentId === null);
+            return parents.map(parent => {
+              const children = data.filter(item => item.parentId === parent.id);
+              return {...parent, items: children};
+            });
+          }),
+          map(menuItems => menuItems.map(item => this.createMenu(item)))
+        ).subscribe(menuItems => this.customerMenuItems = menuItems)
       )
     } catch (e) {
       console.log(e)
@@ -97,7 +91,7 @@ export class HeaderMenuComponent implements OnInit {
     return {
       id: id,
       label: title,
-      children: items && items.length > 0 ? items.map(this.createMenu.bind(this)) : null,
+      children: items && items.length > 0 ? items.map(this.createMenu) : null,
     };
   }
 
