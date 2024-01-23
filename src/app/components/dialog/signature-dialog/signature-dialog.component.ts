@@ -25,13 +25,15 @@ import {CommonModule} from "@angular/common";
         <span> ایجاد سند توسط: </span>
         <span class="font-sm-bold">{{this.currentRow['create_userid']['username']}}</span>
         <span>درتاریخ  : </span>
-        <span class="font-sm-bold" dir="ltr"> {{this.currentRow['create_time']|jalaliDate:'number':'YYYY-MM-DD'}} </span>
+        <span class="font-sm-bold"
+              dir="ltr"> {{this.currentRow['create_time']|jalaliDate:'number':'YYYY-MM-DD'}} </span>
       </div>
       <div class="flex-grow-1" *ngIf="this.currentRow['change_userid']">
         <span> تایید سند توسط: </span>
         <span class="font-sm-bold">{{this.currentRow['change_userid']['username']}}</span>
         <span>درتاریخ  : </span>
-        <span class="font-sm-bold" dir="ltr"> {{this.currentRow['change_time']|jalaliDate:'number':'YYYY-MM-DD'}} </span>
+        <span class="font-sm-bold"
+              dir="ltr"> {{this.currentRow['change_time']|jalaliDate:'number':'YYYY-MM-DD'}} </span>
       </div>
     </div>
 
@@ -126,7 +128,6 @@ export class SignatureDialogComponent implements OnInit {
   }
 
   handleTemporaryRegistration() {
-    //TODO detailFormId
     const payload = new TemporaryRegistrationReqDTO(
       this.hushaCustomerUtilService.customer.id,
       this.hushaCustomerUtilService.service.id,
@@ -135,7 +136,7 @@ export class SignatureDialogComponent implements OnInit {
       this.dynamicDialogConfig.data.form.id,
       this.dynamicDialogConfig.data.form.formKind.id,
       this.dynamicDialogConfig.data.row.id,
-      101203,
+      this.dynamicDialogConfig.data.detailForms[0].id,
       FORM_KIND.DETAIL,
     )
     this.subscription.push(

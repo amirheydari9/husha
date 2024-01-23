@@ -86,6 +86,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
   @Input() form: IFetchFormRes
   @Input() masterId: number
   @Input() fetchSummary: boolean = false
+  @Input() detailForms: IFetchFormRes[]
 
   @ViewChild('gridActions') gridActions: GridActionsComponent
   @ViewChild('gridContainer', {read: ViewContainerRef}) gridContainer: ViewContainerRef
@@ -414,7 +415,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
     this.subscription.push(
       this.baseInfoService.fetchFormData(payload).subscribe(data => {
         this.dialogManagementService.openDialog(SignatureDialogComponent, {
-          data: {row: data, form: this.form}
+          data: {row: data, form: this.form, detailForms: this.detailForms}
         })
       })
     )

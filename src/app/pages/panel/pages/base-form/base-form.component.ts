@@ -45,6 +45,7 @@ export class BaseFormComponent implements OnInit, AfterViewInit {
       if (form.formKind.id === FORM_KIND.MASTER) {
         this.subscription.push(
           this.baseInfoService.fetchDetailGridForms(new FetchDetailGridFormsReqDTO(form.id)).subscribe(detailForms => {
+            comRef.setInput('detailForms', detailForms)
             this.subscription.push(
               comRef.instance.onRowDoubleClicked.subscribe(masterId => {
                 this.detailContainer.clear()
