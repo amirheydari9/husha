@@ -25,7 +25,7 @@ export interface CascadeMenuItem {
             </ng-container>
             <ng-template #leafNode>
               <div cdkMenuItem class="menu-item">
-                <span (click)="onSelectMenu.emit(item)">{{item.label}}</span>
+                <span class="w-full" (click)="onSelectMenu.emit(item)">{{item.label}}</span>
               </div>
             </ng-template>
           </li>
