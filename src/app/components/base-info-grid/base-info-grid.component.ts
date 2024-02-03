@@ -410,7 +410,7 @@ export class BaseInfoGridComponent implements OnInit, AfterViewInit {
       this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.unit.id : null,
       this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.period.id : null,
       this.form.formKind.id === FORM_KIND.DETAIL ? this.masterId : null,
-      this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.serviceTypeId : null,
+      this.form.formKind.id === FORM_KIND.MASTER ? this.hushaCustomerUtilService.service.id : null,
     )
     this.subscription.push(
       this.baseInfoService.fetchFormData(payload).subscribe(data => {
